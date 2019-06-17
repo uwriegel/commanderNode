@@ -3,11 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "dev": "cross-env NODE_ENV=DEV vue-cli-service serve && electron electron/main.js",
+    "electron": "cross-env NODE_ENV=DEV electron electron/main.js",
     "build": "vue-cli-service build"
   },
   "dependencies": {
     "core-js": "^2.6.5",
+    "cross-env": "^5.2.0",
+    "electron": "^5.0.4",
     "vue": "^2.6.10"
   },
   "devDependencies": {
