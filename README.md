@@ -24,7 +24,7 @@ npm run build
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### Vue devtools:
-run ```vue-devtools```
+run ```vue-devtools``` in separate console
 
 // TODO: in folder components/menu: main-menu.vue, file-menu.vue, view-menu.vue, ...selectable via v-show
 // TODO: 3 css files for each theme
