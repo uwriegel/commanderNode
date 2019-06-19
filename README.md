@@ -7,7 +7,12 @@ npm install
 
 ### Compiles and hot-reloads for development
 ```
-npm run serve
+npm run dev
+```
+
+### Compiles and run electron
+```
+npm run electron
 ```
 
 ### Compiles and minifies for production
@@ -15,13 +20,13 @@ npm run serve
 npm run build
 ```
 
-### Run your tests
-```
-npm run test
-```
-
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### Vue devtools:
 run ```vue-devtools```
+
+// TODO: in folder components/menu: main-menu.vue, file-menu.vue, view-menu.vue, ...selectable via v-show
+// TODO: 3 css files for each theme
+// TODO: 1 css files for selected theme
+
