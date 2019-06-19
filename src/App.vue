@@ -1,19 +1,18 @@
 <template>
     <div id="app">
-        <button @click="onChange">Ändere</button>
-        <HelloWorld msg="Welcome to Your Vue.js App"/>
+        <MainMenu />
     </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import MainMenu from './components/menu/MainMenu.vue'
 
 const root = document.documentElement
 
 export default {
     name: 'app',
     components: {
-        HelloWorld
+        MainMenu
     },
     methods: {
         onChange: function() {
@@ -29,6 +28,11 @@ export default {
     @import 'assets/css/theme.css';
 body {
     background-color: var(--main-color);
+    font-family: sans-serif;
+    font-size: 75%;
+    overflow:hidden;
+    padding: 0px;
+    margin: 0px;    
 }
 #app {
     -webkit-font-smoothing: antialiased;
