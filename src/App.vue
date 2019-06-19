@@ -27,9 +27,7 @@ export default {
 </script>
 
 <style>
-:root {
-    --main-color: yellow;
-}
+    @import 'assets/css/theme.css';
 body {
     background-color: var(--main-color);
 }
