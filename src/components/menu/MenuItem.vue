@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :class="{separatorItem: separator}">
         <div v-show="!menuState.accelerated && !separator">{{name}}</div>
         <div v-show="menuState.accelerated && !separator">
             <span>{{pre}}</span><span class="accelerated">{{acc}}</span><span>{{post}}</span>
@@ -55,11 +55,21 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
     .accelerated {
         text-decoration: underline;
     }
-    hr {
+    .submenuitem:hover {
+        background-color: blue;
+        color: white;
+    }
+    .submenuitem {
+        padding: 5px 20px;
+    }
+    .separatorItem {
+        padding: 0px;
+    }
+    .separatorItem>hr {
         border:solid #ddd 0.5px
     }
 </style>

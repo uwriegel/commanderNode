@@ -105,14 +105,7 @@ export default {
         list-style: none;
         padding: 0;
         margin: 0;
-        background-color: lightgray;
-    }
-
-
-
-    ul.subMenuOpened > li.selected {
-        background-color: rgb(235,235,255);
-        color: black;
+        background-color: #eee;
     }
 </style>
 
