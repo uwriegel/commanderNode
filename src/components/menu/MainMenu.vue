@@ -82,7 +82,6 @@ export default {
                 }, { 
                     name: "_Entwicklerwerkzeuge",
                     action: function () {
-                        console.log("Entwicker usw...")
                         electron.ipcRenderer.send("openDevTools", "")
                     }
                 }]
