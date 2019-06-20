@@ -2,6 +2,13 @@
     <div>
         <div class="flex">
             <ul id="menubar">
+                <li v-for="item in items" :key="item" >
+                    <MainMenuItem :item='item' />
+                </li>
+            </ul>
+        </div>
+        <!-- <div class="flex">
+            <ul id="menubar">
                 <li id="menubar1" tabindex="1" @click="onClick0">
                     <span class="accelerator">D</span><span>atei</span>
                 </li>
@@ -15,18 +22,25 @@
                     <span class="accelerator">A</span><span>nsicht</span>
                 </li>
             </ul>
-        </div>
+        </div> -->
         <SubMenu />
     </div>
 </template>
 
 <script>
 import SubMenu from './SubMenu.vue'
+import MainMenuItem from './MainMenuItem.vue'
 
 export default {
     name: 'MainMenu',
     components: {
-        SubMenu
+        SubMenu,
+        MainMenuItem
+    },
+    data: function () {
+        return {
+            items: ["_Datei", "_Navigation", "_Selektion", "_Ansicht" ]
+        }
     },
     mounted: function() {
         this.menuBar = document.getElementById("menubar")
@@ -90,6 +104,8 @@ export default {
     subMenuOpened: true
 }
 
+// TODO: mainmenuitem: onClick in mainmenu set openedIndex react to openedIndex with mainmanuitem selected
+// TODO: computed: split text in three parts: xxx _X xxx when alt is pressed
 </script>
 
 <style>
