@@ -22,6 +22,8 @@ const createWindow = function() {
     if (settings.get("isMaximized"))
         win.maximize()
 
+    electron.ipcMain.on("openDevTools",  (evt, arg) => win.webContents.openDevTools())
+    win.setMenu(null)
     win.loadURL(url)
 
     win.on('close', () => {

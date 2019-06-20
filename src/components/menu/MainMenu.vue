@@ -6,6 +6,8 @@
 
 <script>
 import MainMenuItem from './MainMenuItem.vue'
+const electron = window.require('electron')
+const ipcRenderer = electron.ipcRenderer
 
 export default {
     name: 'main-menu',
@@ -81,6 +83,7 @@ export default {
                     name: "_Entwicklerwerkzeuge",
                     action: function () {
                         console.log("Entwicker usw...")
+                        electron.ipcRenderer.send("openDevTools", "")
                     }
                 }]
             }],
@@ -96,6 +99,8 @@ export default {
         this.menuState.menubar = this.$el
     }
 }
+// TODO: Theming menubar
+// TODO: keyboard
 // TODO: Keyboard when menu per mouse is finished and electron menu is removed
 // TODO: focuslost by mouse: close when by keyboard
 // TODO: keyboard control: global key event hook
