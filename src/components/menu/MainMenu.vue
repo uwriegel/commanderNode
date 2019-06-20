@@ -91,13 +91,45 @@ export default {
                 selectedIndex: -1,
                 lastActive: null,
                 menubar: null,
-                accelerated: false
+                accelerated: false,
+                isKeyboardActivated: false,
+                close: function () {
+                    this.menuState.isKeyboardActivated = false
+                    this.menuState.accelerated = false
+                }.bind(this)
             }
+        }
+    },
+    methods: {
+        close: function () {
+            this.menuState.close()
+            this.menuState.selectedIndex = -1
+            if (this.menuState.lastActive)
+                this.menuState.lastActive.focus()
         }
     },
     mounted: function () {
         this.menuState.menubar = this.$el
-    }
+        document.addEventListener("keydown", evt => {
+            if (evt.which == 18 && !evt.repeat) { // Alt 
+                if (!this.menuState.isKeyboardActivated) {
+                    this.menuState.isKeyboardActivated = true
+                    this.menuState.accelerated = true
+                    this.menuState.lastActive = document.activeElement
+                } else 
+                    this.close()
+                
+            }
+            else if (evt.which == 27) // ESC
+                this.close()
+        }, true)
+        document.addEventListener("keyup", evt => {
+            if (evt.which == 18) { // Alt 
+                if (this.menuState.isKeyboardActivated && this.menuState.selectedIndex == -1) 
+                    this.menuState.selectedIndex = 0
+            }
+        }, true)
+    },
 }
 // TODO: Theming menubar
 // TODO: keyboard

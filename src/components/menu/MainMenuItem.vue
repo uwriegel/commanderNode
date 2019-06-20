@@ -24,12 +24,16 @@ export default {
     ],
     methods: {
         onClick: function () {
-            this.menuState.selectedIndex = 
-                this.menuState.selectedIndex != this.index
-                ? this.index
-                : -1
-            if (this.menuState.selectedIndex == -1) 
-                this.close(this.menuState.lastActive)
+            if (this.menuState.isKeyboardActivated == true)
+                this.menuState.isKeyboardActivated = false
+            else {
+                this.menuState.selectedIndex = 
+                    this.menuState.selectedIndex != this.index
+                    ? this.index
+                    : -1
+                if (this.menuState.selectedIndex == -1) 
+                    this.close(this.menuState.lastActive)
+            }
         },
         onFocusIn: function(evt) {
             if (!this.menuState.lastActive) 
@@ -50,6 +54,7 @@ export default {
             if (focus && this.menuState.lastActive)
                 this.menuState.lastActive.focus()
             this.menuState.lastActive = null
+            this.menuState.close()
         }
     },
     computed: {
@@ -60,7 +65,7 @@ export default {
                 this.$el.focus()
                 this.menuState.selectedIndex = recentIndex
             }
-            return result
+            return !this.menuState.isKeyboardActivated && result
         }
     },
 }
