@@ -5,13 +5,13 @@
 
 <script>
 export default {
-    name: 'SubMenu'
+    name: 'sub-menu'
 }
 </script>
 
 <style <style scoped>
     .test {
-        background-color: blue;
+        background-color: yellow;
         width: 100px;
         height: 30px;
     }

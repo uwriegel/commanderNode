@@ -1,16 +1,49 @@
 <template>
-    <span>{{item}}</span>
+    <li @click='onClick' :class="{ 'selected': menuState.selectedIndex == index }">{{item}}</li>
     
     <!-- <span class="accelerator">D</span><span>atei</span> -->
 </template>
     
 <script>
 export default {
-    name: 'MainMenuItem',
-    props: [ 'item' ]
+    name: 'main-menu-item',
+    props: [ 
+        'item', 
+        'menuState',
+        'index'
+    ],
+    methods: {
+        onClick: function () {
+            this.menuState.selectedIndex = 
+                this.menuState.selectedIndex != this.index
+                ? this.index
+                : -1
+        }
+    }
 }
 </script>
 
-<style>
+<style scoped>
+    li {
+        cursor: default;
+        display: block;
+        float: left;
+        position: relative;
+        padding-left: 5px;
+        padding-top: 2px;
+        padding-right: 5px;
+        padding-bottom: 2px;
+    }
+    li:focus {
+        outline: none;
+    }
 
+    li:hover {
+        background-color: rgb(235,235,255);
+    }
+
+    li.selected {
+        background-color: blue;
+        color: white;
+    }
 </style>
