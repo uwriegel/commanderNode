@@ -16,15 +16,17 @@ export default {
         return {
             items: ["_Datei", "_Navigation", "_Selektion", "_Ansicht" ],
             menuState: {
-                selectedIndex: -1
+                selectedIndex: -1,
+                lastActive: null,
+                menubar: null
             }
         }
     },
-    methods: {
-    },
+    mounted: function () {
+        this.menuState.menubar = this.$el
+    }
 }
 
-// TODO: submenu opened, focuslost by mouse: close
 // TODO: focuslost by mouse: close when by keyboard
 // TODO: computed: split text in three parts: xxx _X xxx when alt is pressed
 </script>

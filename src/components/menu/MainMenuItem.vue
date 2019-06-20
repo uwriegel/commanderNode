@@ -1,7 +1,7 @@
 <template>
-    <li @click='onClick' @mouseover='onMouseOver' :class="{ 'selected': menuState.selectedIndex == index }">
+    <li @click='onClick' tabindex="1" @focusout='onFocusOut' @focusin='onFocusIn' @mouseover='onMouseOver' :class="{ 'selected': menuState.selectedIndex == index }">
         <div class=item>{{item}}</div>
-        <div class="submenu" v-show="menuState.selectedIndex == index"></div>
+        <div class="submenu" v-show="show"></div>
     </li>
     
     <!-- <span class="accelerator">D</span><span>atei</span> -->
@@ -21,6 +21,23 @@ export default {
                 this.menuState.selectedIndex != this.index
                 ? this.index
                 : -1
+            if (this.menuState.selectedIndex == -1) {
+                if (this.menuState.lastActive)
+                    this.menuState.lastActive.focus()
+                this.menuState.lastActive = null
+            }
+        },
+        onFocusIn: function(evt) {
+            if (!this.menuState.lastActive) 
+                this.menuState.lastActive = evt.relatedTarget
+        },
+        onFocusOut: function(evt) {
+            if (!this.menuState.menubar.contains(evt.relatedTarget)) {
+                this.menuState.selectedIndex = -1
+                if (!evt.relatedTarget)
+                    this.menuState.lastActive.focus()
+                this.menuState.lastActive = null
+            }
         },
         onMouseOver: function () {
             this.menuState.selectedIndex = 
@@ -28,7 +45,18 @@ export default {
                 ? this.index
                 : this.menuState.selectedIndex
         }
-    }
+    },
+    computed: {
+        show: function() {
+            const result = this.menuState.selectedIndex == this.index
+            if (result) {
+                const recentIndex = this.menuState.selectedIndex
+                this.$el.focus()
+                this.menuState.selectedIndex = recentIndex
+            }
+            return result
+        }
+    },
 }
 </script>
 
@@ -50,6 +78,9 @@ export default {
     li.selected {
         background-color: blue;
         color: white;
+    }
+    li:focus {
+        color: yellow;
     }
     .item {
         margin-left: 5px;

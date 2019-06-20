@@ -1,7 +1,15 @@
 <template>
     <div id="app">
         <main-menu />
-        <div class="main">Main Content</div>
+        <div class="main">
+            <div>Main Content</div>
+            <p>
+                <input type="text">
+            </p>
+            <p>
+                <input type="text">
+            </p>
+        </div>
     </div>
 </template>
 
