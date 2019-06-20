@@ -1,6 +1,7 @@
 <template>
     <li @click='onClick' @mouseover='onMouseOver' :class="{ 'selected': menuState.selectedIndex == index }">
-        <div>{{item}}</div>
+        <div class=item>{{item}}</div>
+        <div class="submenu" v-show="menuState.selectedIndex == index"></div>
     </li>
     
     <!-- <span class="accelerator">D</span><span>atei</span> -->
@@ -37,10 +38,6 @@ export default {
         display: block;
         float: left;
         position: relative;
-        padding-left: 5px;
-        padding-top: 2px;
-        padding-right: 5px;
-        padding-bottom: 2px;
     }
     li:focus {
         outline: none;
@@ -53,5 +50,22 @@ export default {
     li.selected {
         background-color: blue;
         color: white;
+    }
+    .item {
+        margin-left: 5px;
+        margin-top: 2px;
+        margin-right: 5px;
+        margin-bottom: 2px;
+    }
+
+    .submenu {
+        width: 100px;
+        height: 300px;
+        background-color: white;
+        position: absolute;
+        border-color: lightgray;
+        border-style: solid;
+        border-width: 1px;
+        box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.21);
     }
 </style>
