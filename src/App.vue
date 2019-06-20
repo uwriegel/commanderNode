@@ -1,6 +1,7 @@
 <template>
     <div id="app">
         <main-menu />
+        <div class="main">Main Content</div>
     </div>
 </template>
 
@@ -31,11 +32,20 @@ body {
     font-family: sans-serif;
     font-size: 75%;
     overflow:hidden;
+    height: 100vh;
     padding: 0px;
     margin: 0px;    
 }
 #app {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.main {
+    background-color: lightblue;
+    flex-grow: 1;   
+    margin: 3px;
 }
 </style>

@@ -5,18 +5,15 @@
                 <main-menu-item v-for="(item, index) in items" :key="item" :item='item' :menuState='menuState' :index='index' />
             </ul>
         </div>
-        <sub-menu />
     </div>
 </template>
 
 <script>
-import SubMenu from './SubMenu.vue'
 import MainMenuItem from './MainMenuItem.vue'
 
 export default {
     name: 'main-menu',
     components: {
-        SubMenu,
         MainMenuItem
     },
     data: function () {
@@ -31,8 +28,8 @@ export default {
     },
 }
 
-// TODO: OnHover when index != -1 track index
-// TODO: focuslost by mouse: close
+// TODO: submenu opened, focuslost by mouse: close
+// TODO: focuslost by mouse: close when by keyboard
 // TODO: computed: split text in three parts: xxx _X xxx when alt is pressed
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-    <li @click='onClick' :class="{ 'selected': menuState.selectedIndex == index }">{{item}}</li>
+    <li @click='onClick' @mouseover='onMouseOver' :class="{ 'selected': menuState.selectedIndex == index }">{{item}}</li>
     
     <!-- <span class="accelerator">D</span><span>atei</span> -->
 </template>
@@ -18,6 +18,12 @@ export default {
                 this.menuState.selectedIndex != this.index
                 ? this.index
                 : -1
+        },
+        onMouseOver: function () {
+            this.menuState.selectedIndex = 
+                this.menuState.selectedIndex != this.index && this.menuState.selectedIndex != -1
+                ? this.index
+                : this.menuState.selectedIndex
         }
     }
 }
