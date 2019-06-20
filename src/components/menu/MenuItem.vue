@@ -1,10 +1,10 @@
 <template>
-    <div :class="{separatorItem: separator}" @click="onClick">
-        <div v-show="!menuState.accelerated && !separator">{{name}}</div>
-        <div v-show="menuState.accelerated && !separator">
+    <div class="menuitem" :class="{separatorItem: separator, 'selected': selected }" @click="onClick" >
+        <div v-if="!menuState.accelerated && !separator">{{name}}</div>
+        <div v-if="menuState.accelerated && !separator">
             <span>{{pre}}</span><span class="accelerated">{{acc}}</span><span>{{post}}</span>
         </div>
-        <hr v-show="separator" />
+        <hr v-if="separator" />
     </div>
 </template>
 
@@ -13,7 +13,9 @@ export default {
     name: 'menu-item',
     props: [
         'item',
-        'menuState'
+        'menuState',
+        'index',
+        'subMenuState'
     ],
     computed: {
         name: function () {
@@ -30,7 +32,11 @@ export default {
         },
         separator: function () {
             return this.item.name == '-'
+        },
+        selected: function () {
+            return this.subMenuState && this.subMenuState.selectedIndex == this.index
         }
+
     },
     methods: {
         onClick: function () {
@@ -63,7 +69,7 @@ export default {
     .accelerated {
         text-decoration: underline;
     }
-    .submenuitem:hover {
+    .menuitem.selected {
         background-color: blue;
         color: white;
     }

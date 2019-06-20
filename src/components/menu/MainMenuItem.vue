@@ -2,7 +2,7 @@
     <li @click='onClick' tabindex="1" @focusout='onFocusOut' @focusin='onFocusIn' @mouseover='onMouseOver' 
         :class="{ 'selected': menuState.selectedIndex == index }">
         <menu-item class=item :item='item' :menuState='menuState' />
-        <sub-menu v-show="show" :items=subItems :menuState='menuState'></sub-menu>
+        <sub-menu ref=subMenu v-if="show" :items=subItems :menuState='menuState' ></sub-menu>
     </li>
 </template>
     
@@ -23,6 +23,9 @@ export default {
         'subItems'
     ],
     methods: {
+        onKeyDown: function (evt) {
+            this.$refs.subMenu.onKeyDown(evt)
+        },
         onClick: function () {
             if (this.menuState.isKeyboardActivated == true)
                 this.menuState.isKeyboardActivated = false
@@ -83,7 +86,7 @@ export default {
     }
 
     li:hover {
-        background-color: rgb(235,235,255);
+        background-color: lightblue;
     }
 
     li.selected {
