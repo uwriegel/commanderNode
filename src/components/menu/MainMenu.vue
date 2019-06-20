@@ -132,10 +132,6 @@ export default {
     },
 }
 // TODO: Theming menubar
-// TODO: keyboard
-// TODO: Keyboard when menu per mouse is finished and electron menu is removed
-// TODO: focuslost by mouse: close when by keyboard
-// TODO: keyboard control: global key event hook
 </script>
 
 <style scoped>
