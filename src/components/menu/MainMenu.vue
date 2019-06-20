@@ -27,8 +27,9 @@ export default {
     }
 }
 
+// TODO: computed: split text in three parts: xxx _X xxx when alt is pressed, keyboardActivated on and off
+// TODO: Control via alt
 // TODO: focuslost by mouse: close when by keyboard
-// TODO: computed: split text in three parts: xxx _X xxx when alt is pressed
 </script>
 
 <style scoped>
