@@ -1,5 +1,5 @@
 <template>
-    <div class="menuitem" :class="{separatorItem: separator, 'selected': selected }" @click="onClick" >
+    <div class="menuitem" :class="{separatorItem: separator, 'selected': selected }" @click="onClick" @mouseover='onMouseOver'>
         <div v-if="!menuState.accelerated && !separator">{{name}}</div>
         <div v-if="menuState.accelerated && !separator">
             <span>{{pre}}</span><span class="accelerated">{{acc}}</span><span>{{post}}</span>
@@ -39,6 +39,10 @@ export default {
 
     },
     methods: {
+        onMouseOver: function () {
+            if (this.subMenuState && !this.separator)
+                this.subMenuState.selectedIndex = this.index 
+        },       
         onClick: function () {
             if (this.item.action)
                 this.item.action()
