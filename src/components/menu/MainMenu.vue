@@ -78,7 +78,10 @@ export default {
                 }, { 
                     name: "-"
                 }, { 
-                    name: "_Entwicklerwerkzeuge"
+                    name: "_Entwicklerwerkzeuge",
+                    action: function () {
+                        console.log("Entwicker usw...")
+                    }
                 }]
             }],
             menuState: {

@@ -1,7 +1,7 @@
 <template>
     <li @click='onClick' tabindex="1" @focusout='onFocusOut' @focusin='onFocusIn' @mouseover='onMouseOver' 
         :class="{ 'selected': menuState.selectedIndex == index }">
-        <menu-item class=item :item='item.name' :menuState='menuState' />
+        <menu-item class=item :item='item' :menuState='menuState' />
         <sub-menu v-show="show" :items=subItems :menuState='menuState'></sub-menu>
     </li>
 </template>

@@ -1,5 +1,5 @@
 <template>
-    <div :class="{separatorItem: separator}">
+    <div :class="{separatorItem: separator}" @click="onClick">
         <div v-show="!menuState.accelerated && !separator">{{name}}</div>
         <div v-show="menuState.accelerated && !separator">
             <span>{{pre}}</span><span class="accelerated">{{acc}}</span><span>{{post}}</span>
@@ -17,7 +17,7 @@ export default {
     ],
     computed: {
         name: function () {
-            return this.item.replace("_", "")
+            return this.item.name.replace("_", "")
         },
         pre: function () {
             return this.getParts()[0]
@@ -29,22 +29,26 @@ export default {
             return this.getParts()[2]
         },
         separator: function () {
-            return this.item == '-'
+            return this.item.name == '-'
         }
     },
     methods: {
+        onClick: function () {
+            if (this.item.action)
+                this.item.action()
+        },
         getParts: function () {
             if (!this.parts) {
-                const pos = this.item.indexOf('_')
+                const pos = this.item.name.indexOf('_')
                 if (pos == -1) 
-                    this.parts = ["", "", this.item]
+                    this.parts = ["", "", this.item.name]
                 else if (pos == 0) 
-                    this.parts = ["", this.item[1], this.item.substring(2)]
+                    this.parts = ["", this.item.name[1], this.item.name.substring(2)]
                 else {
                     this.parts = [ 
-                        this.item.substring(0, pos), 
-                        this.item[pos + 1], 
-                        this.item.substring(pos + 2)
+                        this.item.name.substring(0, pos), 
+                        this.item.name[pos + 1], 
+                        this.item.name.substring(pos + 2)
                     ]
                 } 
             }
