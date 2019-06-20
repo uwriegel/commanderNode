@@ -112,13 +112,16 @@ export default {
         this.menuState.menubar = this.$el
         document.addEventListener("keydown", evt => {
             if (evt.which == 18 && !evt.repeat) { // Alt 
+                if (this.menuState.accelerated) {
+                    this.close()
+                    return
+                }
                 if (!this.menuState.isKeyboardActivated) {
-                    this.menuState.isKeyboardActivated = true
+                    if (this.menuState.selectedIndex == -1)
+                        this.menuState.isKeyboardActivated = true
                     this.menuState.accelerated = true
                     this.menuState.lastActive = document.activeElement
-                } else 
-                    this.close()
-                
+                } 
             }
             else if (evt.which == 27) // ESC
                 this.close()

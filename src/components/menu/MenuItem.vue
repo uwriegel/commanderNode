@@ -71,7 +71,7 @@ export default {
         padding: 5px 20px;
     }
     .separatorItem {
-        padding: 0px;
+        padding: 0px 5px;
     }
     .separatorItem>hr {
         border:solid #ddd 0.5px
