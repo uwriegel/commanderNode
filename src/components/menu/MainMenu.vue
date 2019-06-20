@@ -160,6 +160,8 @@ export default {
         }, true)
     },
 }
+// TODO: Accelerators
+// TODO: Shortcuts with displaying shortcuts, Shortcuts in hook
 // TODO: Theming menubar
 </script>
 
