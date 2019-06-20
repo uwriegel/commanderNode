@@ -18,7 +18,8 @@ export default {
             menuState: {
                 selectedIndex: -1,
                 lastActive: null,
-                menubar: null
+                menubar: null,
+                accelerated: false
             }
         }
     },
@@ -26,10 +27,9 @@ export default {
         this.menuState.menubar = this.$el
     }
 }
-
-// TODO: computed: split text in three parts: xxx _X xxx when alt is pressed, keyboardActivated on and off
-// TODO: Control via alt
+// TODO: Keyboard when menu per mouse is finished and electron menu is removed
 // TODO: focuslost by mouse: close when by keyboard
+// TODO: keyboard control: global key event hook
 </script>
 
 <style scoped>

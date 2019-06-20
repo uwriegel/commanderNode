@@ -1,15 +1,23 @@
 <template>
     <li @click='onClick' tabindex="1" @focusout='onFocusOut' @focusin='onFocusIn' @mouseover='onMouseOver' :class="{ 'selected': menuState.selectedIndex == index }">
-        <div class=item>{{item}}</div>
+        <div class=item>
+            <div v-show="!menuState.accelerated">{{name}}</div>
+            <accelerated-item :item='item' v-show="menuState.accelerated"></accelerated-item>
+        </div>
         <div class="submenu" v-show="show"></div>
     </li>
     
-    <!-- <span class="accelerator">D</span><span>atei</span> -->
+    
 </template>
     
 <script>
+import AcceleratedItem from './AcceleratedItem.vue'
+
 export default {
     name: 'main-menu-item',
+    components: {
+        AcceleratedItem
+    },
     props: [ 
         'item', 
         'menuState',
@@ -21,33 +29,32 @@ export default {
                 this.menuState.selectedIndex != this.index
                 ? this.index
                 : -1
-            if (this.menuState.selectedIndex == -1) {
-                if (this.menuState.lastActive)
-                    this.menuState.lastActive.focus()
-                this.menuState.lastActive = null
-            }
+            if (this.menuState.selectedIndex == -1) 
+                this.close(this.menuState.lastActive)
         },
         onFocusIn: function(evt) {
             if (!this.menuState.lastActive) 
                 this.menuState.lastActive = evt.relatedTarget
         },
         onFocusOut: function(evt) {
-            if (!this.menuState.menubar.contains(evt.relatedTarget)) {
-                this.menuState.selectedIndex = -1
-                if (!evt.relatedTarget)
-                    this.menuState.lastActive.focus()
-                this.menuState.lastActive = null
-            }
+            if (!this.menuState.menubar.contains(evt.relatedTarget)) 
+                this.close(!evt.relatedTarget)
         },
         onMouseOver: function () {
             this.menuState.selectedIndex = 
                 this.menuState.selectedIndex != this.index && this.menuState.selectedIndex != -1
                 ? this.index
                 : this.menuState.selectedIndex
+        },
+        close: function (focus) {
+            this.menuState.selectedIndex = -1
+            if (focus && this.menuState.lastActive)
+                this.menuState.lastActive.focus()
+            this.menuState.lastActive = null
         }
     },
     computed: {
-        show: function() {
+        show: function () {
             const result = this.menuState.selectedIndex == this.index
             if (result) {
                 const recentIndex = this.menuState.selectedIndex
@@ -55,6 +62,12 @@ export default {
                 this.menuState.selectedIndex = recentIndex
             }
             return result
+        },
+        name: function () {
+            return this.item.replace("_", "")
+        },
+        _name: function () {
+            return this.item.replace("_", "")
         }
     },
 }
