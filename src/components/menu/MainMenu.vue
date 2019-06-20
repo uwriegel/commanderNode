@@ -1,6 +1,6 @@
 <template>
     <ul>
-        <main-menu-item v-for="(item, index) in items" :key="item" :item='item' :menuState='menuState' :index='index' />
+        <main-menu-item v-for="(item, index) in items" :key="index" :item='item' :menuState='menuState' :index='index' :subItems='item.subItems' />
     </ul>
 </template>
 
@@ -14,7 +14,73 @@ export default {
     },
     data: function () {
         return {
-            items: ["_Datei", "_Navigation", "_Selektion", "_Ansicht" ],
+            items: [{
+                name: "_Datei",
+                subItems: [{ 
+                    name: "_Umbenennen"
+                }, { 
+                    name: "-"
+                }, { 
+                    name: "_Kopieren"
+                }, { 
+                    name: "_Verschieben"
+                }, { 
+                    name: "_Löschen"
+                }, { 
+                    name: "-"
+                }, { 
+                    name: "_Ordner anlegen"
+                }, { 
+                    name: "-"
+                }, { 
+                    name: "_Eigenschaften"
+                }, { 
+                    name: "Öffnen _mit"
+                }, { 
+                    name: "-"
+                }, { 
+                    name: "_Beenden"
+                }]
+            }, {
+                name: "_Navigation",
+                subItems: [{ 
+                    name: "_Favoriten"
+                }, { 
+                    name: "_Gleichen Ordner öffnen"
+                }]
+            }, {
+                name: "_Selektion",
+                subItems: [{ 
+                    name: "_Alles"
+                }, { 
+                    name: "Alle _deselektieren"
+                }]
+            }, {
+                name: "_Ansicht",
+                subItems: [{ 
+                    name: "_Versteckte Dateien"
+                }, { 
+                    name: "_Aktualisieren"
+                }, { 
+                    name: "-"
+                }, { 
+                    name: "_Vorschau"
+                }, { 
+                    name: "-"
+                }, { 
+                    name: "_Themen"
+                }, { 
+                    name: "-"
+                }, { 
+                    name: "_Zoomlevel"
+                }, { 
+                    name: "_Vollbild"
+                }, { 
+                    name: "-"
+                }, { 
+                    name: "_Entwicklerwerkzeuge"
+                }]
+            }],
             menuState: {
                 selectedIndex: -1,
                 lastActive: null,

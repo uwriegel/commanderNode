@@ -1,27 +1,26 @@
 <template>
-    <li @click='onClick' tabindex="1" @focusout='onFocusOut' @focusin='onFocusIn' @mouseover='onMouseOver' :class="{ 'selected': menuState.selectedIndex == index }">
-        <div class=item>
-            <div v-show="!menuState.accelerated">{{name}}</div>
-            <accelerated-item :item='item' v-show="menuState.accelerated"></accelerated-item>
-        </div>
-        <div class="submenu" v-show="show"></div>
+    <li @click='onClick' tabindex="1" @focusout='onFocusOut' @focusin='onFocusIn' @mouseover='onMouseOver' 
+        :class="{ 'selected': menuState.selectedIndex == index }">
+        <menu-item class=item :item='item.name' :menuState='menuState' />
+        <sub-menu v-show="show" :items=subItems :menuState='menuState'></sub-menu>
     </li>
-    
-    
 </template>
     
 <script>
-import AcceleratedItem from './AcceleratedItem.vue'
+import SubMenu from './SubMenu.vue'
+import MenuItem from './MenuItem.vue'
 
 export default {
     name: 'main-menu-item',
     components: {
-        AcceleratedItem
+        MenuItem,
+        SubMenu
     },
     props: [ 
         'item', 
         'menuState',
-        'index'
+        'index',
+        'subItems'
     ],
     methods: {
         onClick: function () {
@@ -62,12 +61,6 @@ export default {
                 this.menuState.selectedIndex = recentIndex
             }
             return result
-        },
-        name: function () {
-            return this.item.replace("_", "")
-        },
-        _name: function () {
-            return this.item.replace("_", "")
         }
     },
 }
@@ -92,24 +85,13 @@ export default {
         background-color: blue;
         color: white;
     }
-    li:focus {
+    /* li:focus {
         color: yellow;
-    }
+    } */
     .item {
         margin-left: 5px;
         margin-top: 2px;
         margin-right: 5px;
         margin-bottom: 2px;
-    }
-
-    .submenu {
-        width: 100px;
-        height: 300px;
-        background-color: white;
-        position: absolute;
-        border-color: lightgray;
-        border-style: solid;
-        border-width: 1px;
-        box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.21);
     }
 </style>
