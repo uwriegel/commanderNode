@@ -25,21 +25,20 @@ import SubMenu from './SubMenu.vue'
 
 export default {
     name: 'MainMenu',
-    isInitialized: false,
-    isActive: false,
-    keyboardActivated: false,
-    menuBar: null,
-    subMenuOpened: true,
     components: {
         SubMenu
+    },
+    mounted: function() {
+        this.menuBar = document.getElementById("menubar")
+        this.menuBar.addEventListener("focusout", evt => {
+            if (!(this.subMenuOpened && this.keyboardActivated) && !this.menuBar.contains(evt.relatedTarget))
+                this.close()
+        })
     },
     methods: {
         onClick: function (evt, index) {
             const li = evt.target.closest('li')
             const selected = li.classList.contains("selected")
-
-            if (!this.isInitialized)
-                this.initialize()
 
             if (!this.isActive)
                 this.setActive()
@@ -54,13 +53,6 @@ export default {
                 evt.stopPropagation()
                 evt.preventDefault()
             }            
-        },
-        initialize: function () {
-            this.menuBar = document.getElementById("menubar")
-            this.menuBar.addEventListener("focusout", evt => {
-                if (!(this.subMenuOpened && this.keyboardActivated) && !this.menuBar.contains(evt.relatedTarget))
-                    this.close()
-            })
         },
         focusLi: function (li) {
             li.classList.add("selected")
@@ -91,8 +83,13 @@ export default {
         onClick1: function(evt) { this.onClick(evt, 1) },
         onClick2: function(evt) { this.onClick(evt, 2) },
         onClick3: function(evt) { this.onClick(evt, 3) }
-    }
+    },
+    isActive: false,
+    keyboardActivated: false,
+    menuBar: null,
+    subMenuOpened: true
 }
+
 </script>
 
 <style>
@@ -141,3 +138,4 @@ export default {
     color: black;
 }
 </style>
+
