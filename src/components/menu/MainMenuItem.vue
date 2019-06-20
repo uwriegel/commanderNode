@@ -1,5 +1,7 @@
 <template>
-    <li @click='onClick' @mouseover='onMouseOver' :class="{ 'selected': menuState.selectedIndex == index }">{{item}}</li>
+    <li @click='onClick' @mouseover='onMouseOver' :class="{ 'selected': menuState.selectedIndex == index }">
+        <div>{{item}}</div>
+    </li>
     
     <!-- <span class="accelerator">D</span><span>atei</span> -->
 </template>

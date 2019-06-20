@@ -1,11 +1,7 @@
 <template>
-    <div>
-        <div class="flex">
-            <ul>
-                <main-menu-item v-for="(item, index) in items" :key="item" :item='item' :menuState='menuState' :index='index' />
-            </ul>
-        </div>
-    </div>
+    <ul>
+        <main-menu-item v-for="(item, index) in items" :key="item" :item='item' :menuState='menuState' :index='index' />
+    </ul>
 </template>
 
 <script>
@@ -34,15 +30,13 @@ export default {
 </script>
 
 <style scoped>
-    .flex {
-        display: flex;
-    }
     ul {
         user-select: none;
         cursor:default;
         list-style: none;
         padding: 0;
         margin: 0;
+        background-color: lightgray;
     }
 
 
