@@ -1,5 +1,5 @@
 <template>
-    <ul>
+    <ul @keydown="onKeyDown">
         <main-menu-item v-for="(item, index) in items" :key="index" :item='item' :menuState='menuState' :index='index' :subItems='item.subItems' />
     </ul>
 </template>
@@ -101,6 +101,30 @@ export default {
         }
     },
     methods: {
+        onKeyDown:function (evt) {
+            if (this.menuState.selectedIndex == -1)
+                return
+            switch (evt.which) {
+                case 37: // <-
+                    this.menuState.selectedIndex--
+                    if (this.menuState.selectedIndex == -1)
+                        this.menuState.selectedIndex = 3 
+                    break;
+                case 38: //  |^
+                    break
+                case  39:// ->
+                    this.menuState.selectedIndex++
+                    if (this.menuState.selectedIndex == 4)
+                        this.menuState.selectedIndex = 0 
+                    break
+                case 13: // Enter
+                case 32: // Space
+                case 40: //  |d
+                    if (this.menuState.isKeyboardActivated)
+                        this.menuState.isKeyboardActivated = false
+                    break;
+            }
+        },
         close: function () {
             this.menuState.close()
             this.menuState.selectedIndex = -1
