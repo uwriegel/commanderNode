@@ -23,6 +23,7 @@ const createWindow = function() {
         win.maximize()
 
     electron.ipcMain.on("openDevTools",  (evt, arg) => win.webContents.openDevTools())
+    electron.ipcMain.on("fullscreen",  (evt, arg) => win.setFullScreen(!win.isFullScreen()))
     win.setMenu(null)
     win.loadURL(url)
 

@@ -77,13 +77,16 @@ export default {
                 }, { 
                     name: "_Zoomlevel"
                 }, { 
-                    name: "_Vollbild"
+                    name: "_Vollbild",
+                    action: function () {
+                        electron.ipcRenderer.send("fullscreen")
+                    }
                 }, { 
                     name: "-"
                 }, { 
                     name: "_Entwicklerwerkzeuge",
                     action: function () {
-                        electron.ipcRenderer.send("openDevTools", "")
+                        electron.ipcRenderer.send("openDevTools")
                     }
                 }]
             }],

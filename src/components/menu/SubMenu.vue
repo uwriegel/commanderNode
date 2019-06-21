@@ -67,7 +67,6 @@ export default {
                     if (hits.length == 1) {
                         if (this.items[hits[0]].action) 
                             this.items[hits[0]].action()
-                        // TODO: Vollbild
                         this.menuState.closeMenu()
                         evt.preventDefault()
                         evt.stopPropagation()
