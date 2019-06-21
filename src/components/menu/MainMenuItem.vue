@@ -86,16 +86,13 @@ export default {
     }
 
     li:hover {
-        background-color: lightblue;
+        background-color: var(--menu-hover-color);
     }
 
     li.selected {
-        background-color: blue;
-        color: white;
+        background-color: var(--selected-background-color);
+        color: var(--selected-color);
     }
-    /* li:focus {
-        color: yellow;
-    } */
     .item {
         margin-left: 5px;
         margin-top: 2px;

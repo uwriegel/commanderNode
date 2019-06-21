@@ -74,8 +74,8 @@ export default {
         text-decoration: underline;
     }
     .menuitem.selected {
-        background-color: blue;
-        color: white;
+        background-color: var(--selected-background-color);
+        color: var(--selected-color);
     }
     .submenuitem {
         padding: 5px 20px;
@@ -84,6 +84,6 @@ export default {
         padding: 0px 5px;
     }
     .separatorItem>hr {
-        border:solid #ddd 0.5px
+        border:solid var(--menu-separator-color) 0.5px
     }
 </style>

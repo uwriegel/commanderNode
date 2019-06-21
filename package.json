@@ -1,22 +1,45 @@
 {
   "name": "commander",
   "version": "0.1.0",
+  "main": "electron/main.js",
   "private": true,
+  "author": "Uwe Riegel",
+  "description": "A Norton Commander like program to manage files and directories",
+  "build": {
+    "appId": "de.hotmail.uriegel.commander-test",
+    "copyright": "Copyright © 2019 Uwe Riegel",
+    "productName": "Commander Test",
+    "electronVersion": "5.0.0",
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    }
+  },
   "scripts": {
     "dev": "cross-env NODE_ENV=DEV vue-cli-service serve && electron electron/main.js",
     "electron": "cross-env NODE_ENV=DEV electron electron/main.js",
-    "build": "vue-cli-service build"
+    "electron-prod": "electron electron/main.js",
+    "build": "vue-cli-service build",
+    "dist": "build -w --x64 --ia32"
   },
   "dependencies": {
     "core-js": "^2.6.5",
     "cross-env": "^5.2.0",
-    "electron": "^5.0.4",
     "electron-settings": "^3.2.0",
     "vue": "^2.6.10"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.8.0",
     "@vue/cli-service": "^3.8.0",
+    "electron": "^5.0.4",
+    "electron-builder": "^20.44.4",
     "vue-template-compiler": "^2.6.10"
   }
 }

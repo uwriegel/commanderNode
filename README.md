@@ -28,6 +28,4 @@ run ```vue-devtools``` in separate console
 
 // TODO: Build production setup
 // TODO: vue dev tools
-// TODO: 3 css files for each theme
-// TODO: 1 css files for selected theme
 

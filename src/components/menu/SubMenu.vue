@@ -90,13 +90,13 @@ export default {
 
 <style>
     .submenu {
-        background-color: white; 
+        color: var(--main-color);
+        background-color: var(--main-background-color); 
         position: absolute;
-        color: black;
-        border-color: lightgray;
+        border-color: var(--menu-border-color);
         border-style: solid;
         border-width: 1px;
         white-space: nowrap;
-        box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.21);
+        box-shadow: 3px 3px 3px var(--menu-shadow-color);
     }
 </style>

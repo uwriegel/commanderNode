@@ -7,6 +7,7 @@
 <script>
 import MainMenuItem from './MainMenuItem.vue'
 import { getAccelerators, parseAccelerators } from './accelerators'
+import { changeTheme } from '../../themes'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 
@@ -72,7 +73,10 @@ export default {
                 }, { 
                     name: "-"
                 }, { 
-                    name: "_Themen"
+                    name: "_Themen",
+                    action: function () {
+                        changeTheme()
+                    }
                 }, { 
                     name: "-"
                 }, { 
@@ -182,7 +186,6 @@ export default {
 }
 
 // TODO: Shortcuts with displaying shortcuts, Shortcuts in hook
-// TODO: Theming menubar
 </script>
 
 <style scoped>
@@ -192,7 +195,7 @@ export default {
         list-style: none;
         padding: 0;
         margin: 0;
-        background-color: #eee;
+        background-color: var(--menu-background-color);
     }
 </style>
 

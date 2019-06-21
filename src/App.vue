@@ -16,19 +16,10 @@
 <script>
 import MainMenu from './components/menu/MainMenu.vue'
 
-const root = document.documentElement
-
 export default {
     name: 'app',
     components: {
         MainMenu
-    },
-    methods: {
-        onChange: function() {
-            console.log(getComputedStyle(document.body).getPropertyValue('--main-color'))
-            root.style.setProperty('--main-color', 'red')
-            console.log("Geändert 3")
-        }
     }
 }
 </script>
@@ -36,7 +27,7 @@ export default {
 <style>
     @import 'assets/css/theme.css';
 body {
-    background-color: var(--main-color);
+    background-color: var(--main-background-color);
     font-family: sans-serif;
     font-size: 75%;
     overflow:hidden;
@@ -52,7 +43,6 @@ body {
     flex-direction: column;
 }
 .main {
-    background-color: lightblue;
     flex-grow: 1;   
     margin: 3px;
 }

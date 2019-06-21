@@ -1,3 +1,13 @@
 :root {
-    --main-color: white;
+    --main-color: black;
+    --main-background-color: white;
+    
+    --selected-background-color: blue;
+    --selected-color: white;
+
+    --menu-background-color: #eee;
+    --menu-hover-color: lightblue;
+    --menu-separator-color: #ddd;
+    --menu-border-color: lightgray;
+    --menu-shadow-color: rgba(0, 0, 0, 0.21);
 }
