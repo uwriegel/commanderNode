@@ -7,6 +7,7 @@
 
 <script>
 import MenuItem from './MenuItem.vue'
+import { getAccelerators, parseAccelerators } from './accelerators'
 
 export default {
     name: 'sub-menu',
@@ -46,9 +47,18 @@ export default {
                     if (this.items[this.subMenuState.selectedIndex].action)
                         this.items[this.subMenuState.selectedIndex].action()
                     break
+                default:
+                    const hits = parseAccelerators(this.accelerators, evt.key)
+                    if (hits.length == 1 && this.items[hits[0]].action)
+                            this.items[hits[0]].action()
+                    break
             }
         }
-    }
+    },
+    mounted: function () {
+        this.accelerators = getAccelerators(this.items)
+    },
+    accelerators: {}
 }
 </script>
 

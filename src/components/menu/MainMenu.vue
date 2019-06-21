@@ -125,6 +125,9 @@ export default {
                         else
                             this.$refs.mmi[this.menuState.selectedIndex].onKeyDown(evt)
                         break;
+                    default:
+                        if (this.menuState.accelerated)
+                            this.$refs.mmi[this.menuState.selectedIndex].onKeyDown(evt)
                 }
             }
         },
@@ -143,6 +146,8 @@ export default {
                 if (hits.length > 0) {
                     this.menuState.selectedIndex = hits[0]
                     this.menuState.isKeyboardActivated = false
+                    evt.preventDefault()
+                    evt.stopPropagation()
                 }
             }
 
