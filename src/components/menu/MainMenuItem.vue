@@ -7,10 +7,6 @@
 </template>
     
 <script>
-
-// TODO: open with mouse, then turn to left or right: fosus stays. When Arrow up or down, the wrong menitem gets the key events
-// TODO: always set focus to selected menu item!
-
 import SubMenu from './SubMenu.vue'
 import MenuItem from './MenuItem.vue'
 
@@ -33,21 +29,25 @@ export default {
     },
     methods: {
         onKeyDown: function (evt) {
-            switch (evt) {
+            switch (evt.which) {
                 case 38: //  |^
                     // TODO (1) use bindings to child: prop and watch
-                    this.$refs.subMenu.onKeyDown(evt)
+                    if (this.$refs.subMenu)
+                        this.$refs.subMenu.onKeyDown(evt)
                     break
                 case 13: // Enter
                 case 32: // Space
                 case 40: //  |d
                     if (this.menuState.isKeyboardActivated)
                         this.menuState.isKeyboardActivated = false
-                    else 
-                        this.$refs.subMenu.onKeyDown(evt)
+                    else {
+                        if (this.$refs.subMenu)
+                            this.$refs.subMenu.onKeyDown(evt)
+                    }
+                        
                     break;
                 default:
-                    if (this.menuState.accelerated)
+                    if (this.menuState.accelerated     && this.$refs.subMenu)
                         this.$refs.subMenu.onKeyDown(evt)
             }
         },
@@ -72,10 +72,10 @@ export default {
                 this.close(!evt.relatedTarget)
         },
         onMouseOver: function () {
-            this.menuState.selectedIndex = 
-                this.menuState.selectedIndex != this.index && this.menuState.selectedIndex != -1
-                ? this.index
-                : this.menuState.selectedIndex
+            if (this.menuState.selectedIndex != this.index && this.menuState.selectedIndex != -1) {
+                this.menuState.selectedIndex = this.index
+                this.$el.focus()
+            }
         },
         close: function (focus) {
             this.menuState.selectedIndex = -1

@@ -32,6 +32,5 @@ run
 npm run build
 npm run dist
 ```
-// TODO: Build production setup
 // TODO: vue dev tools
 
