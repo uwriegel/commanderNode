@@ -42,7 +42,8 @@ export default {
                 }, { 
                     name: "-"
                 }, { 
-                    name: "_Beenden"
+                    name: "_Beenden",
+                    action: function () { close() }
                 }]
             }, {
                 name: "_Navigation",
