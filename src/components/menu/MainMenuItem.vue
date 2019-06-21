@@ -57,7 +57,7 @@ export default {
             if (focus && this.menuState.lastActive)
                 this.menuState.lastActive.focus()
             this.menuState.lastActive = null
-            this.menuState.close()
+            this.menuState.closeKeyboardActivated()
         }
     },
     computed: {

@@ -93,9 +93,15 @@ export default {
                 menubar: null,
                 accelerated: false,
                 isKeyboardActivated: false,
-                close: function () {
+                closeKeyboardActivated: function () {
                     this.menuState.isKeyboardActivated = false
                     this.menuState.accelerated = false
+                }.bind(this),
+                closeMenu: function () {
+                    this.menuState.closeKeyboardActivated()
+                    this.menuState.selectedIndex = -1
+                    if (this.menuState.lastActive)
+                        this.menuState.lastActive.focus()
                 }.bind(this)
             }
         }
@@ -130,13 +136,7 @@ export default {
                             this.$refs.mmi[this.menuState.selectedIndex].onKeyDown(evt)
                 }
             }
-        },
-        close: function () {
-            this.menuState.close()
-            this.menuState.selectedIndex = -1
-            if (this.menuState.lastActive)
-                this.menuState.lastActive.focus()
-        },
+        }
     },
     mounted: function () {
         this.menuState.menubar = this.$el
@@ -153,7 +153,7 @@ export default {
 
             if (evt.which == 18 && !evt.repeat) { // Alt 
                 if (this.menuState.accelerated) {
-                    this.close()
+                    this.menuState.closeMenu()
                     return
                 }
                 if (!this.menuState.isKeyboardActivated) {
@@ -164,7 +164,7 @@ export default {
                 } 
             }
             else if (evt.which == 27) // ESC
-                this.close()
+                this.menuState.closeMenu()
         }, true)
         document.addEventListener("keyup", evt => {
             if (evt.which == 18) { // Alt 

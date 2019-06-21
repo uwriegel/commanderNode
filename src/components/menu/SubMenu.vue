@@ -46,11 +46,37 @@ export default {
                 case 32: // Space
                     if (this.items[this.subMenuState.selectedIndex].action)
                         this.items[this.subMenuState.selectedIndex].action()
+                    this.menuState.closeMenu()
+                    evt.preventDefault()
+                    evt.stopPropagation()
                     break
                 default:
                     const hits = parseAccelerators(this.accelerators, evt.key)
-                    if (hits.length == 1 && this.items[hits[0]].action)
+
+                    if (this.acceleratorHits) {
+                        if (this.acceleratorHits.key == evt.key) {
+                            this.acceleratorHits.index++
+                            if (this.acceleratorHits.index >= this.acceleratorHits.hits.length)
+                                this.acceleratorHits.index = 0
+                            this.subMenuState.selectedIndex = hits[this.acceleratorHits.index]
+                            return
+                        }
+                        this.acceleratorHits = null
+                    }
+
+                    if (hits.length == 1) {
+                        if (this.items[hits[0]].action) 
                             this.items[hits[0]].action()
+                        // TODO: Vollbild
+                        this.menuState.closeMenu()
+                        evt.preventDefault()
+                        evt.stopPropagation()
+                        return
+                    }
+                    if (hits.length > 1) {
+                        this.acceleratorHits = { key: evt.key, hits: hits, index: 0 }
+                        this.subMenuState.selectedIndex = hits[0]
+                    }
                     break
             }
         }
@@ -58,7 +84,8 @@ export default {
     mounted: function () {
         this.accelerators = getAccelerators(this.items)
     },
-    accelerators: {}
+    accelerators: {},
+    acceleratorHits: null
 }
 </script>
 
