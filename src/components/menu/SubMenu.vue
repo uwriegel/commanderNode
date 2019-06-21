@@ -43,10 +43,10 @@ export default {
                     break
                 case 13: // Enter
                 case 32: // Space
-                    this.items[this.subMenuState.selectedIndex].action()
+                    if (this.items[this.subMenuState.selectedIndex].action)
+                        this.items[this.subMenuState.selectedIndex].action()
                     break
             }
-            console.log("Kidaun sm", evt)
         }
     }
 }

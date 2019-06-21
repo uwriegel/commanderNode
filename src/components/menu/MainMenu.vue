@@ -6,6 +6,7 @@
 
 <script>
 import MainMenuItem from './MainMenuItem.vue'
+import { getAccelerators, parseAccelerators } from './accelerators'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 
@@ -101,30 +102,30 @@ export default {
     },
     methods: {
         onKeyDown:function (evt) {
-            if (this.menuState.selectedIndex == -1)
-                return
-            switch (evt.which) {
-                case 37: // <-
-                    this.menuState.selectedIndex--
-                    if (this.menuState.selectedIndex == -1)
-                        this.menuState.selectedIndex = 3 
-                    break;
-                case  39:// ->
-                    this.menuState.selectedIndex++
-                    if (this.menuState.selectedIndex == 4)
-                        this.menuState.selectedIndex = 0 
-                    break
-                case 38: //  |^
-                    this.$refs.mmi[this.menuState.selectedIndex].onKeyDown(evt)
-                    break
-                case 13: // Enter
-                case 32: // Space
-                case 40: //  |d
-                    if (this.menuState.isKeyboardActivated)
-                        this.menuState.isKeyboardActivated = false
-                    else
+            if (this.menuState.selectedIndex != -1) {
+                switch (evt.which) {
+                    case 37: // <-
+                        this.menuState.selectedIndex--
+                        if (this.menuState.selectedIndex == -1)
+                            this.menuState.selectedIndex = 3 
+                        break;
+                    case  39:// ->
+                        this.menuState.selectedIndex++
+                        if (this.menuState.selectedIndex == 4)
+                            this.menuState.selectedIndex = 0 
+                        break
+                    case 38: //  |^
                         this.$refs.mmi[this.menuState.selectedIndex].onKeyDown(evt)
-                    break;
+                        break
+                    case 13: // Enter
+                    case 32: // Space
+                    case 40: //  |d
+                        if (this.menuState.isKeyboardActivated)
+                            this.menuState.isKeyboardActivated = false
+                        else
+                            this.$refs.mmi[this.menuState.selectedIndex].onKeyDown(evt)
+                        break;
+                }
             }
         },
         close: function () {
@@ -132,11 +133,19 @@ export default {
             this.menuState.selectedIndex = -1
             if (this.menuState.lastActive)
                 this.menuState.lastActive.focus()
-        }
+        },
     },
     mounted: function () {
         this.menuState.menubar = this.$el
         document.addEventListener("keydown", evt => {
+            if (this.menuState.isKeyboardActivated) {
+                const hits = parseAccelerators(this.accelerators, evt.key)
+                if (hits.length > 0) {
+                    this.menuState.selectedIndex = hits[0]
+                    this.menuState.isKeyboardActivated = false
+                }
+            }
+
             if (evt.which == 18 && !evt.repeat) { // Alt 
                 if (this.menuState.accelerated) {
                     this.close()
@@ -158,9 +167,11 @@ export default {
                     this.menuState.selectedIndex = 0
             }
         }, true)
+        this.accelerators = getAccelerators(this.items)
     },
+    accelerators: {}
 }
-// TODO: Accelerators
+
 // TODO: Shortcuts with displaying shortcuts, Shortcuts in hook
 // TODO: Theming menubar
 </script>
