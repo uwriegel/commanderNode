@@ -5,7 +5,7 @@ const BrowserWindow = electron.BrowserWindow
 
 const url = process.env.NODE_ENV === 'DEV' 
     ? 'http://localhost:8080/'
-    : `file://${process.cwd()}/dist/index.html`
+    : `file://${process.cwd()}/renderer/index.html`
 
 const createWindow = function() {    
     const bounds = JSON.parse(settings.get("window-bounds", JSON.stringify({ 
@@ -24,7 +24,7 @@ const createWindow = function() {
 
     electron.ipcMain.on("openDevTools",  (evt, arg) => win.webContents.openDevTools())
     electron.ipcMain.on("fullscreen",  (evt, arg) => win.setFullScreen(!win.isFullScreen()))
-    win.setMenu(null)
+    //win.setMenu(null)
     win.loadURL(url)
 
     win.on('close', () => {

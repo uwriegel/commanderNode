@@ -26,6 +26,12 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 ### Vue devtools:
 run ```vue-devtools``` in separate console
 
+### Create setups:
+run 
+```
+npm run build
+npm run dist
+```
 // TODO: Build production setup
 // TODO: vue dev tools
 
