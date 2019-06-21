@@ -1,7 +1,7 @@
 <template>
     <div class="submenu">
-        <menu-item class="submenuitem" v-for="(item, index) in items" :key="index" :item='item' :menuState='menuState' :index='index' 
-            :subMenuState='subMenuState' />
+        <menu-item class="submenuitem" v-for="(item, index) in items" :key="index" :item='item' 
+            :menuState='menuState' :index='index' :subMenuState='subMenuState' />
     </div>    
 </template>
 
@@ -46,6 +46,7 @@ export default {
                 case 32: // Space
                     if (this.items[this.subMenuState.selectedIndex].action)
                         this.items[this.subMenuState.selectedIndex].action()
+                    // transfer to event
                     this.menuState.closeMenu()
                     evt.preventDefault()
                     evt.stopPropagation()

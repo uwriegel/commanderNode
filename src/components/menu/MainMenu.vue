@@ -1,6 +1,7 @@
 <template>
     <ul @keydown="onKeyDown">
-        <main-menu-item ref="mmi" v-for="(item, index) in items" :key="index" :item='item' :menuState='menuState' :index='index' :subItems='item.subItems' />
+        <main-menu-item :keyDown="keyDown" v-for="(item, index) in items" @keyboard-activated-stopped="stopKeyboardActivated"
+            :key="index" :item='item' :menuState='menuState' :index='index' :subItems='item.subItems' />
     </ul>
 </template>
 
@@ -95,18 +96,16 @@ export default {
                     }
                 }]
             }],
+            keyDown: null,
             menuState: {
                 selectedIndex: -1,
                 lastActive: null,
                 menubar: null,
                 accelerated: false,
                 isKeyboardActivated: false,
-                closeKeyboardActivated: function () {
-                    this.menuState.isKeyboardActivated = false
-                    this.menuState.accelerated = false
-                }.bind(this),
+                // transfer to event
                 closeMenu: function () {
-                    this.menuState.closeKeyboardActivated()
+                    this.stopKeyboardActivated()
                     this.menuState.selectedIndex = -1
                     if (this.menuState.lastActive)
                         this.menuState.lastActive.focus()
@@ -115,7 +114,11 @@ export default {
         }
     },
     methods: {
-        onKeyDown:function (evt) {
+        stopKeyboardActivated: function () {
+            this.menuState.isKeyboardActivated = false
+            this.menuState.accelerated = false
+        },
+        onKeyDown: function (evt) {
             if (this.menuState.selectedIndex != -1) {
                 switch (evt.which) {
                     case 37: // <-
@@ -128,20 +131,6 @@ export default {
                         if (this.menuState.selectedIndex == 4)
                             this.menuState.selectedIndex = 0 
                         break
-                    case 38: //  |^
-                        this.$refs.mmi[this.menuState.selectedIndex].onKeyDown(evt)
-                        break
-                    case 13: // Enter
-                    case 32: // Space
-                    case 40: //  |d
-                        if (this.menuState.isKeyboardActivated)
-                            this.menuState.isKeyboardActivated = false
-                        else
-                            this.$refs.mmi[this.menuState.selectedIndex].onKeyDown(evt)
-                        break;
-                    default:
-                        if (this.menuState.accelerated)
-                            this.$refs.mmi[this.menuState.selectedIndex].onKeyDown(evt)
                 }
             }
         }

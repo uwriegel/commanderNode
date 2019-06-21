@@ -1,12 +1,16 @@
 <template>
-    <li @click='onClick' tabindex="1" @focusout='onFocusOut' @focusin='onFocusIn' @mouseover='onMouseOver' 
-        :class="{ 'selected': menuState.selectedIndex == index }">
+    <li @click='onClick' tabindex="1" @focusout='onFocusOut' @focusin='onFocusIn' @mouseover='onMouseOver' @keydown='onKeyDown'
+            :class="{ 'selected': menuState.selectedIndex == index }">
         <menu-item class=item :item='item' :menuState='menuState' />
         <sub-menu ref=subMenu v-if="show" :items=subItems :menuState='menuState' ></sub-menu>
     </li>
 </template>
     
 <script>
+
+// TODO: open with mouse, then turn to left or right: fosus stays. When Arrow up or down, the wrong menitem gets the key events
+// TODO: always set focus to selected menu item!
+
 import SubMenu from './SubMenu.vue'
 import MenuItem from './MenuItem.vue'
 
@@ -22,9 +26,30 @@ export default {
         'index',
         'subItems'
     ],
+    watch: {
+        keyDown: function(newVal, oldVal) {
+            console.log("Keydown", newVal, oldVal)
+        }
+    },
     methods: {
         onKeyDown: function (evt) {
-            this.$refs.subMenu.onKeyDown(evt)
+            switch (evt) {
+                case 38: //  |^
+                    // TODO (1) use bindings to child: prop and watch
+                    this.$refs.subMenu.onKeyDown(evt)
+                    break
+                case 13: // Enter
+                case 32: // Space
+                case 40: //  |d
+                    if (this.menuState.isKeyboardActivated)
+                        this.menuState.isKeyboardActivated = false
+                    else 
+                        this.$refs.subMenu.onKeyDown(evt)
+                    break;
+                default:
+                    if (this.menuState.accelerated)
+                        this.$refs.subMenu.onKeyDown(evt)
+            }
         },
         onClick: function () {
             if (this.menuState.isKeyboardActivated == true)
@@ -57,7 +82,7 @@ export default {
             if (focus && this.menuState.lastActive)
                 this.menuState.lastActive.focus()
             this.menuState.lastActive = null
-            this.menuState.closeKeyboardActivated()
+            this.$emit('keyboard-activated-stopped')
         }
     },
     computed: {

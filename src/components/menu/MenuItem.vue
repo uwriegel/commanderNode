@@ -36,7 +36,6 @@ export default {
         selected: function () {
             return this.subMenuState && this.subMenuState.selectedIndex == this.index
         }
-
     },
     methods: {
         onMouseOver: function () {
@@ -44,6 +43,7 @@ export default {
                 this.subMenuState.selectedIndex = this.index 
         },       
         onClick: function () {
+            // TODO: transfer to event, parameter is item
             if (this.item.action)
                 this.item.action()
         },
@@ -62,7 +62,7 @@ export default {
                     ]
                 } 
             }
-            return this.parts;
+            return this.parts
         }
     },
     parts: null
