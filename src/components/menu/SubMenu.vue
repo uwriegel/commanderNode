@@ -23,8 +23,14 @@ export default {
     },
     props: [
         'items',
-        'menuState'
+        'menuState', 
+        'keyDown'
     ],
+    watch: {
+        keyDown: function (newVal, oldVal) {
+            this.onKeyDown(newVal)            
+        }
+    },
     methods: {
         onKeyDown: function (evt) {
             switch (evt.which) {

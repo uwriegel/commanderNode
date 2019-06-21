@@ -2,7 +2,7 @@
     <li @click='onClick' tabindex="1" @focusout='onFocusOut' @focusin='onFocusIn' @mouseover='onMouseOver' @keydown='onKeyDown'
             :class="{ 'selected': menuState.selectedIndex == index }">
         <menu-item class=item :item='item' :menuState='menuState' />
-        <sub-menu ref=subMenu v-if="show" :items=subItems :menuState='menuState' ></sub-menu>
+        <sub-menu :keyDown='keyDown' v-if="show" :items=subItems :menuState='menuState' ></sub-menu>
     </li>
 </template>
     
@@ -16,39 +16,34 @@ export default {
         MenuItem,
         SubMenu
     },
+    data: function () {
+        return { 
+            keyDown: null
+        }
+    },
     props: [ 
         'item', 
         'menuState',
         'index',
         'subItems'
     ],
-    watch: {
-        keyDown: function(newVal, oldVal) {
-            console.log("Keydown", newVal, oldVal)
-        }
-    },
     methods: {
         onKeyDown: function (evt) {
             switch (evt.which) {
                 case 38: //  |^
-                    // TODO (1) use bindings to child: prop and watch
-                    if (this.$refs.subMenu)
-                        this.$refs.subMenu.onKeyDown(evt)
+                    this.keyDown = evt
                     break
                 case 13: // Enter
                 case 32: // Space
                 case 40: //  |d
                     if (this.menuState.isKeyboardActivated)
                         this.menuState.isKeyboardActivated = false
-                    else {
-                        if (this.$refs.subMenu)
-                            this.$refs.subMenu.onKeyDown(evt)
-                    }
-                        
+                    else 
+                        this.keyDown = evt
                     break;
                 default:
-                    if (this.menuState.accelerated     && this.$refs.subMenu)
-                        this.$refs.subMenu.onKeyDown(evt)
+                    if (this.menuState.accelerated)
+                        this.keyDown = evt
             }
         },
         onClick: function () {
