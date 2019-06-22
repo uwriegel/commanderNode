@@ -2,19 +2,24 @@
     <div id="app">
         <main-menu :items="menuItems" @on-menu-item-clicked="onMenuItem" />
         <div class="main">
-            <div>Main Content</div>
+            <column-test></column-test>
+            <!-- <div>Main Content</div>
             <p>
                 <input type="text">
             </p>
             <p>
                 <input type="text">
-            </p>
+            </p> -->
         </div>
     </div>
 </template>
 
 <script>
 import MainMenu from './components/menu/MainMenu.vue'
+
+// Tests
+import ColumnTest from './components/test/ColumnTest'
+
 import { makeKey } from './components/menu/accelerators'
 const electron = window.require('electron')
 import { changeTheme } from './themes'
@@ -23,7 +28,9 @@ import { makeRe } from 'minimatch';
 export default {
     name: 'app',
     components: {
-        MainMenu
+        MainMenu,
+        // Tests:
+        ColumnTest
     },
     data: function () {
         return {
@@ -207,6 +214,5 @@ body {
 }
 .main {
     flex-grow: 1;   
-    margin: 3px;
 }
 </style>
