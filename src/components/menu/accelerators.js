@@ -16,3 +16,7 @@ export function getAccelerators(items) {
 export function parseAccelerators(accelerators, key) {
     return accelerators.filter(element => element.key == key).map(n => n.index)
 }
+
+export function makeKey(key, alt, shift, ctrl) {
+    return key << 16 | (alt ? 1 : 0) << 2 | (shift ? 1 : 0) << 1 | (ctrl ? 1 : 0)
+}

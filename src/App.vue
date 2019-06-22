@@ -1,5 +1,5 @@
 <template>
-    <div id="app">
+    <div id="app" @keydown="onKeyDown">
         <main-menu :items="menuItems" @on-menu-item-clicked="onMenuItem" />
         <div class="main">
             <div>Main Content</div>
@@ -15,8 +15,10 @@
 
 <script>
 import MainMenu from './components/menu/MainMenu.vue'
+import { makeKey } from './components/menu/accelerators'
 const electron = window.require('electron')
 import { changeTheme } from './themes'
+import { makeRe } from 'minimatch';
 
 export default {
     name: 'app',
@@ -31,7 +33,10 @@ export default {
                     subItems: [{ 
                             name: "_Umbenennen",
                             action: "rename",
-                            accelerator: { name: "F2"}
+                            accelerator: { 
+                                name: "F2",
+                                key: 113
+                            }
                         }, { 
                             name: "-"
                         }, { 
@@ -112,23 +117,38 @@ export default {
                         }, { 
                             name: "_Vollbild",
                             action: "fullscreen",
-                            accelerator: { name: "F11"}
+                            accelerator: { 
+                                name: "F11",
+                                key: 122
+                            }
                         }, { 
                             name: "-"
                         }, { 
                             name: "_Entwicklerwerkzeuge",
                             action: "devtools",
-                            accelerator: { name: "F12"}
+                            accelerator: { 
+                                name: "F12",
+                                key: 123
+                            }
                         }
                     ]
                 }
             ],
-
-
-            affe: "Affe"
+            acceleratorMap: new Map()
         }
     },
     methods: {
+        // TODO: make javascript eventhandler
+        // TODO: run action
+        onKeyDown: function (evt) {
+            const key = makeKey(evt.which, evt.altKey, evt.shiftKey, evt.ctrlKey)
+            const action = this.acceleratorMap.get(key)
+            if (action) {
+                console.log("Acrion", action)
+                evt.preventDefault()
+                evt.stopPropagation()
+            }
+        },
         onMenuItem: function (action) {
             switch (action) {
                 case "rename":
@@ -153,6 +173,16 @@ export default {
                     break
             }
         }
+    },
+    mounted: function () {
+        const accelerators = this.menuItems.map(n => n.subItems)
+            .flat()
+            .filter(n => n.accelerator && n.action && n.accelerator.key)
+            .map(n => { return { 
+                action: n.action, 
+                key: makeKey(n.accelerator.key, false, false, false)
+            }})
+        accelerators.forEach(n => this.acceleratorMap.set(n.key, n.action))
     }
 }
 </script>
