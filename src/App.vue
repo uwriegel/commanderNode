@@ -1,5 +1,5 @@
 <template>
-    <div id="app" @keydown="onKeyDown">
+    <div id="app">
         <main-menu :items="menuItems" @on-menu-item-clicked="onMenuItem" />
         <div class="main">
             <div>Main Content</div>
@@ -138,13 +138,11 @@ export default {
         }
     },
     methods: {
-        // TODO: make javascript eventhandler
-        // TODO: run action
         onKeyDown: function (evt) {
             const key = makeKey(evt.which, evt.altKey, evt.shiftKey, evt.ctrlKey)
             const action = this.acceleratorMap.get(key)
             if (action) {
-                console.log("Acrion", action)
+                this.onMenuItem(action)
                 evt.preventDefault()
                 evt.stopPropagation()
             }
@@ -183,6 +181,8 @@ export default {
                 key: makeKey(n.accelerator.key, false, false, false)
             }})
         accelerators.forEach(n => this.acceleratorMap.set(n.key, n.action))
+
+        document.addEventListener('keydown', this.onKeyDown, true)
     }
 }
 </script>

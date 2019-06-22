@@ -98,8 +98,6 @@ export default {
     },
     accelerators: {}
 }
-
-// TODO: Shortcuts with displaying shortcuts, Shortcuts in hook
 </script>
 
 <style scoped>
