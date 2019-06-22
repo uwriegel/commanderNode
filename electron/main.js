@@ -22,6 +22,7 @@ const createWindow = function() {
 
     electron.ipcMain.on("openDevTools",  (evt, arg) => win.webContents.openDevTools())
     electron.ipcMain.on("fullscreen",  (evt, arg) => win.setFullScreen(!win.isFullScreen()))
+    // Undocument this to get the default menu with developer tools
     win.setMenu(null)
     if (process.env.NODE_ENV === 'DEV')
         win.loadURL('http://localhost:8080/')

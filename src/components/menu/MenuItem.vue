@@ -43,9 +43,7 @@ export default {
                 this.subMenuState.selectedIndex = this.index 
         },       
         onClick: function () {
-            // TODO: transfer to event, parameter is item
-            if (this.item.action)
-                this.item.action()
+            this.$emit('on-menu-item-clicked', this.item.action)
         },
         getParts: function () {
             if (!this.parts) {

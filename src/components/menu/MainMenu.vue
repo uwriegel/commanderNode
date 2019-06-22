@@ -1,6 +1,7 @@
 <template>
     <ul @keydown="onKeyDown">
-        <main-menu-item :keyDown="keyDown" v-for="(item, index) in items" @keyboard-activated-stopped="stopKeyboardActivated"
+        <main-menu-item :keyDown="keyDown" v-for="(item, index) in items" 
+            @keyboard-activated-stopped="stopKeyboardActivated" @on-menu-item-clicked="onMenuItem"
             :key="index" :item='item' :menuState='menuState' :index='index' :subItems='item.subItems' />
     </ul>
 </template>
@@ -8,94 +9,17 @@
 <script>
 import MainMenuItem from './MainMenuItem.vue'
 import { getAccelerators, parseAccelerators } from './accelerators'
-import { changeTheme } from '../../themes'
-const electron = window.require('electron')
-const ipcRenderer = electron.ipcRenderer
 
 export default {
     name: 'main-menu',
     components: {
         MainMenuItem
     },
+    props: [
+        'items'
+    ],
     data: function () {
         return {
-            items: [{
-                name: "_Datei",
-                subItems: [{ 
-                    name: "_Umbenennen"
-                }, { 
-                    name: "-"
-                }, { 
-                    name: "_Kopieren"
-                }, { 
-                    name: "_Verschieben"
-                }, { 
-                    name: "_Löschen"
-                }, { 
-                    name: "-"
-                }, { 
-                    name: "_Ordner anlegen"
-                }, { 
-                    name: "-"
-                }, { 
-                    name: "_Eigenschaften"
-                }, { 
-                    name: "Öffnen _mit"
-                }, { 
-                    name: "-"
-                }, { 
-                    name: "_Beenden",
-                    action: function () { close() }
-                }]
-            }, {
-                name: "_Navigation",
-                subItems: [{ 
-                    name: "_Favoriten"
-                }, { 
-                    name: "_Gleichen Ordner öffnen"
-                }]
-            }, {
-                name: "_Selektion",
-                subItems: [{ 
-                    name: "_Alles"
-                }, { 
-                    name: "Alle _deselektieren"
-                }]
-            }, {
-                name: "_Ansicht",
-                subItems: [{ 
-                    name: "_Versteckte Dateien"
-                }, { 
-                    name: "_Aktualisieren"
-                }, { 
-                    name: "-"
-                }, { 
-                    name: "_Vorschau"
-                }, { 
-                    name: "-"
-                }, { 
-                    name: "_Themen",
-                    action: function () {
-                        changeTheme()
-                    }
-                }, { 
-                    name: "-"
-                }, { 
-                    name: "_Zoomlevel"
-                }, { 
-                    name: "_Vollbild",
-                    action: function () {
-                        electron.ipcRenderer.send("fullscreen")
-                    }
-                }, { 
-                    name: "-"
-                }, { 
-                    name: "_Entwicklerwerkzeuge",
-                    action: function () {
-                        electron.ipcRenderer.send("openDevTools")
-                    }
-                }]
-            }],
             keyDown: null,
             menuState: {
                 selectedIndex: -1,
@@ -133,6 +57,9 @@ export default {
                         break
                 }
             }
+        },
+        onMenuItem: function (param) {
+            this.$emit('on-menu-item-clicked', param)
         }
     },
     mounted: function () {
