@@ -26,7 +26,7 @@ export default {
         font-weight: normal;
         color: var(--selected-color);
         background-color: var(--selected-background-color);
-        border-left-color: white;
+        border-left-color: var(--columns-separator-color);
         border-left-style: solid;
         border-left-width: 1px;
         transition: background-color 0.3s;
