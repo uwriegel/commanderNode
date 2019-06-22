@@ -30,61 +30,76 @@ export default {
                     name: "_Datei",
                     subItems: [{ 
                             name: "_Umbenennen",
-                            action: "rename"
+                            action: "rename",
+                            accelerator: { name: "F2"}
                         }, { 
                             name: "-"
                         }, { 
-                            name: "_Kopieren"
+                            name: "_Kopieren",
+                            accelerator: { name: "F5"}
                         }, { 
-                            name: "_Verschieben"
+                            name: "_Verschieben",
+                            accelerator: { name: "F6"}
                         }, { 
-                            name: "_Löschen"
+                            name: "_Löschen",
+                            accelerator: { name: "Entf"}
                         }, { 
                             name: "-"
                         }, { 
-                            name: "_Ordner anlegen"
+                            name: "_Ordner anlegen",
+                            accelerator: { name: "F7"}
                         }, { 
                             name: "-"
                         }, { 
-                            name: "_Eigenschaften"
+                            name: "_Eigenschaften",
+                            accelerator: { name: "Alt+Enter"}
                         }, { 
-                            name: "Öffnen _mit"
+                            name: "Öffnen _mit",
+                            accelerator: { name: "Strg+F4"}
                         }, { 
                             name: "-"
                         }, { 
                             name: "_Beenden",
-                            action: "close"
+                            action: "close",
+                            accelerator: { name: "Alt+F4"}
                         }
                     ]
                 }, 
                 {
                     name: "_Navigation",
                     subItems: [{ 
-                            name: "_Favoriten"
+                            name: "_Favoriten",
+                            accelerator: { name: "F1"}
                         }, { 
-                            name: "_Gleichen Ordner öffnen"
+                            name: "_Gleichen Ordner öffnen",
+                            accelerator: { name: "F9"}
                         }
                     ]
                 }, 
                 {
                     name: "_Selektion",
                     subItems: [{ 
-                            name: "_Alles"
+                            name: "_Alles",
+                            accelerator: { name: "Num +"}
                         }, { 
-                            name: "Alle _deselektieren"
+                            name: "Alle _deselektieren",
+                            accelerator: { name: "Num -"}
                         }
                     ]
                 }, 
                 {
                     name: "_Ansicht",
                     subItems: [{ 
-                            name: "_Versteckte Dateien"
+                            name: "_Versteckte Dateien",
+                            accelerator: { name: "Strg+H"}
                         }, { 
-                            name: "_Aktualisieren"
+                            name: "_Aktualisieren",
+                            accelerator: { name: "Strg+R"}
                         }, { 
                             name: "-"
                         }, { 
-                            name: "_Vorschau"
+                            name: "_Vorschau",
+                            accelerator: { name: "F3"}
                         }, { 
                             name: "-"
                         }, { 
@@ -96,12 +111,14 @@ export default {
                             name: "_Zoomlevel"
                         }, { 
                             name: "_Vollbild",
-                            action: "fullscreen"
+                            action: "fullscreen",
+                            accelerator: { name: "F11"}
                         }, { 
                             name: "-"
                         }, { 
                             name: "_Entwicklerwerkzeuge",
-                            action: "devtools"
+                            action: "devtools",
+                            accelerator: { name: "F12"}
                         }
                     ]
                 }

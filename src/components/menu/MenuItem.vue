@@ -1,8 +1,16 @@
 <template>
     <div class="menuitem" :class="{separatorItem: separator, 'selected': selected }" @click="onClick" @mouseover='onMouseOver'>
-        <div v-if="!menuState.accelerated && !separator">{{name}}</div>
-        <div v-if="menuState.accelerated && !separator">
-            <span>{{pre}}</span><span class="accelerated">{{acc}}</span><span>{{post}}</span>
+        <div class="menuitemtext" v-if="!menuState.accelerated && !separator">
+            <span>{{name}}</span>
+            <span class="spacer"> </span>
+            <span v-if='item.accelerator'>{{item.accelerator.name}}</span>
+        </div>
+        <div class="menuitemtext" v-if="menuState.accelerated && !separator">
+            <div>
+                <span>{{pre}}</span><span class="accelerated">{{acc}}</span><span>{{post}}</span>
+            </div>
+            <span class="spacer"> </span>
+            <span v-if='item.accelerator'>{{item.accelerator.name}}</span>
         </div>
         <hr v-if="separator" />
     </div>
@@ -68,6 +76,13 @@ export default {
 </script>
 
 <style>
+    .menuitemtext {
+        display: flex;
+    }
+    .submenuitem .spacer {
+        flex-grow: 1;
+        min-width: 20px;
+    }
     .accelerated {
         text-decoration: underline;
     }
