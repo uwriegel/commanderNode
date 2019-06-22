@@ -2,7 +2,7 @@
     <li @click='onClick' tabindex="1" @focusout='onFocusOut' @focusin='onFocusIn' @mouseover='onMouseOver' @keydown='onKeyDown'
             :class="{ 'selected': menuState.selectedIndex == index }">
         <menu-item class=item :item='item' :menuState='menuState' />
-        <sub-menu :keyDown='keyDown' v-if="show" @on-menu-item-clicked="onMenuItem" :items=subItems :menuState='menuState' ></sub-menu>
+        <sub-menu :keyDown='keyDown' v-if="show" @on-menu-item-clicked="onMenuItem" @on-closing="onMenuClose" :items=subItems :menuState='menuState' ></sub-menu>
     </li>
 </template>
     
@@ -30,6 +30,9 @@ export default {
     methods: {
         onMenuItem: function (param) {
             this.$emit('on-menu-item-clicked', param)
+        },
+        onMenuClose: function () {
+            this.$emit('on-closing')
         },
         onKeyDown: function (evt) {
             switch (evt.which) {

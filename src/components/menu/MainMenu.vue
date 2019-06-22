@@ -1,7 +1,7 @@
 <template>
     <ul @keydown="onKeyDown">
-        <main-menu-item :keyDown="keyDown" v-for="(item, index) in items" 
-            @keyboard-activated-stopped="stopKeyboardActivated" @on-menu-item-clicked="onMenuItem"
+        <main-menu-item v-for="(item, index) in items" 
+            @keyboard-activated-stopped="stopKeyboardActivated" @on-menu-item-clicked="onMenuItem" @on-closing="closeMenu"
             :key="index" :item='item' :menuState='menuState' :index='index' :subItems='item.subItems' />
     </ul>
 </template>
@@ -20,20 +20,12 @@ export default {
     ],
     data: function () {
         return {
-            keyDown: null,
             menuState: {
                 selectedIndex: -1,
                 lastActive: null,
                 menubar: null,
                 accelerated: false,
-                isKeyboardActivated: false,
-                // transfer to event
-                closeMenu: function () {
-                    this.stopKeyboardActivated()
-                    this.menuState.selectedIndex = -1
-                    if (this.menuState.lastActive)
-                        this.menuState.lastActive.focus()
-                }.bind(this)
+                isKeyboardActivated: false
             }
         }
     },
@@ -60,7 +52,13 @@ export default {
         },
         onMenuItem: function (param) {
             this.$emit('on-menu-item-clicked', param)
-        }
+        },
+        closeMenu: function () {
+            this.stopKeyboardActivated()
+            this.menuState.selectedIndex = -1
+            if (this.menuState.lastActive)
+                this.menuState.lastActive.focus()
+        },
     },
     mounted: function () {
         this.menuState.menubar = this.$el
@@ -77,7 +75,7 @@ export default {
 
             if (evt.which == 18 && !evt.repeat) { // Alt 
                 if (this.menuState.accelerated) {
-                    this.menuState.closeMenu()
+                    this.closeMenu()
                     return
                 }
                 if (!this.menuState.isKeyboardActivated) {
@@ -88,7 +86,7 @@ export default {
                 } 
             }
             else if (evt.which == 27) // ESC
-                this.menuState.closeMenu()
+                this.closeMenu()
         }, true)
         document.addEventListener("keyup", evt => {
             if (evt.which == 18) { // Alt 

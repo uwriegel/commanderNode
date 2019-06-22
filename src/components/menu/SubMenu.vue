@@ -52,8 +52,7 @@ export default {
                 case 13: // Enter
                 case 32: // Space
                     this.$emit('on-menu-item-clicked', this.items[this.subMenuState.selectedIndex].action)
-                    // TODO transfer to event
-                    this.menuState.closeMenu()
+                    this.$emit('on-closing')
                     evt.preventDefault()
                     evt.stopPropagation()
                     break
@@ -73,7 +72,7 @@ export default {
 
                     if (hits.length == 1) {
                         this.$emit('on-menu-item-clicked', this.items[hits[0]].action)
-                        this.menuState.closeMenu()
+                        this.$emit('on-closing')
                         evt.preventDefault()
                         evt.stopPropagation()
                         return
