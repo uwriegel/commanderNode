@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import { setTimeout } from 'timers';
 export default {
     name: 'columns',
     props: [
@@ -17,11 +18,24 @@ export default {
          * @param {boolean} isSortable
          * @param {number} columnsType
          */
-        'columns'
+        'columns',
+        'columnsWidths'
     ],
-    // TODO : watcher for columns, initialize widths
+    watch: {
+        columns: function (newVal, oldVal) {
+            const ths = Array.from(this.$refs.tr.children)
+            ths.forEach(th => th.style.width = null)
+        },
+        columnsWidths: function (newVal, olsVal) {
+            if (newVal&& newVal.length == this.columns.length) {
+                setTimeout(() => {
+                    const ths = Array.from(this.$refs.tr.children)
+                    ths.forEach((th, i) => th.style.width = newVal[i])
+                })
+            }            
+        }
+    },
     // TODO: Sorting, event, icon in header
-    // TODO: event for saving widths
     data: function () {
         return {
             draggingReady: false
@@ -53,7 +67,6 @@ export default {
 
                 const currentLeftWidth = currentHeader.offsetWidth
                 const sumWidth = currentLeftWidth + nextHeader.offsetWidth
-                //const columnsCount = this.columns.length
 
                 const onmove = evt => {
                     document.body.style.cursor = 'ew-resize'
@@ -89,12 +102,20 @@ export default {
                 }
 
                 const onup = evt => {
-                    // TODO: 
-                    //const columnsWidths = this.getWidths()
-                    //localStorage[this.getColumnsId()] = JSON.stringify(columnsWidths)
+                    const getWidths = () => {
+                        const ths = Array.from(this.$refs.tr.children)
+                        return ths.map(th => {
+                            let width = th.style.width
+                            if (!width)
+                                width = (100 / this.columns.length) + '%'
+                            return width
+                        })
+                    }
+
                     window.removeEventListener('mousemove', onmove)
                     window.removeEventListener('mouseup', onup)
                     document.body.style.cursor = null
+                    this.$emit('on-columns-widths-changed', getWidths())
                 }
 
                 window.addEventListener('mousemove', onmove)

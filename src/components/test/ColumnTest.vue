@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <table>
-            <columns :columns='columns'></columns>
+            <columns :columns='columns' :columnsWidths='columnsWidths' @on-columns-widths-changed='onColumnsWidthChanged'></columns>
             <tbody>
                 <tr>
                     <td>Test</td>
@@ -18,6 +18,9 @@
         <p>
             <button @click='onChange'>Change</button>
         </p>
+        <p>
+            <button @click='onChange2'>Change with ColumnWidths</button>
+        </p>
     </div>
 </template>
 
@@ -31,7 +34,8 @@ export default {
     },
     data: function () {
         return {
-            columns: {}
+            columns: {},
+            columnsWidths: []
         }
     },
     methods: {
@@ -46,6 +50,22 @@ export default {
                     name: "Beschreibung"
                 }
             ]
+        },
+        onChange2: function () {
+            this.columns = [{
+                    name: "Name"
+                }, {
+                    name: "Größe"
+                }, {
+                    name: "Datum"
+                }, {
+                    name: "Version"
+                }
+            ]
+            this.columnsWidths = ["25%", "35.4305%", "21.2687%", "18.3009%"]
+        },
+        onColumnsWidthChanged: function(widths) {
+            console.log("new columnsWidths", widths)
         }
     },
     mounted: function() {
