@@ -19,10 +19,12 @@ export default {
          */
         'columns'
     ],
+    // TODO : watcher for columns, initialize widths
+    // TODO: Sorting, event, icon in header
+    // TODO: event for saving widths
     data: function () {
         return {
-            draggingReady: false,
-            previous: false
+            draggingReady: false
         }
     },
     methods: {
@@ -39,31 +41,23 @@ export default {
         },
         onMouseDown: function (evt) {
             if (this.draggingReady) {
+                const th = evt.target
+                const mouseX = evt.offsetX + th.clientLeft
+                const dragleft = mouseX < 3
+
                 const startDragPosition = evt.pageX
                 const targetColumn = evt.target
 
-                document.body.style.cursor = 'ew-resize'
-
-                console.log(this.previous)
-                console.log(targetColumn)
-                console.log(targetColumn.previousElementSibling)
-return
-                // const currentHeader = this.previous ? targetColumn : targetColumn.previousElementSibling
-                // console.log(currentHeader)
-
-                // if (!currentHeader)
-                //     currentHeader = targetColumn
-
-
+                const currentHeader = dragleft ? targetColumn.previousElementSibling : targetColumn 
                 const nextHeader = currentHeader.nextElementSibling
+
                 const currentLeftWidth = currentHeader.offsetWidth
                 const sumWidth = currentLeftWidth + nextHeader.offsetWidth
+                //const columnsCount = this.columns.length
 
                 const onmove = evt => {
                     document.body.style.cursor = 'ew-resize'
-                    //this.renderer.setStyle(document.body, "cursor", 'ew-resize')
                     let diff = evt.pageX - startDragPosition
-
                     if (currentLeftWidth + diff < 15)
                         diff = 15 - currentLeftWidth
                     else if (diff > sumWidth - currentLeftWidth - 15)
@@ -73,11 +67,11 @@ return
                         const firstWidth = 
                             column.style.width
                             ? parseFloat(column.style.width.substr(0, column.style.width.length - 1))
-                            : 100 / this.columns.values.length
+                            : 100 / this.columns.length
                         const secondWidth = 
                             nextColumn.style.width
                             ? parseFloat(nextColumn.style.width.substr(0, nextColumn.style.width.length - 1))
-                            : 100 / this.columns.values.length
+                            : 100 / this.columns.length
                         return firstWidth + secondWidth
                     }                        
 
@@ -95,11 +89,12 @@ return
                 }
 
                 const onup = evt => {
+                    // TODO: 
                     //const columnsWidths = this.getWidths()
                     //localStorage[this.getColumnsId()] = JSON.stringify(columnsWidths)
-                    document.body.style.cursor = null
                     window.removeEventListener('mousemove', onmove)
                     window.removeEventListener('mouseup', onup)
+                    document.body.style.cursor = null
                 }
 
                 window.addEventListener('mousemove', onmove)
