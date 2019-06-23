@@ -42,19 +42,13 @@ export default {
         onChange: function () {
             this.columns = [{
                     name: "Name",
-                    isSortable: true,
-                    sortAscending: false,
-                    sortDescending: false
+                    isSortable: true
                 }, {
                     name: "Größe",
-                    isSortable: true,
-                    sortAscending: false,
-                    sortDescending: false
+                    isSortable: true
                 }, {
                     name: "Datum",
-                    isSortable: true,
-                    sortAscending: false,
-                    sortDescending: false
+                    isSortable: true
                 }, {
                     name: "Beschreibung"
                 }

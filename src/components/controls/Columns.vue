@@ -123,12 +123,15 @@ export default {
         },
         onClick: function (column) {
             if (!this.draggingReady && column.isSortable) {
-                const descending = column.sortAscending
-                this.columns.forEach(n => n.sortAscending = n.sortDescending =false)
+                const descending = column.sortAscending == true
+                this.columns.forEach(n => {
+                    this.$set(n, 'sortAscending', false)
+                    this.$set(n, 'sortDescending', false)
+                })
                 if (descending)
-                    column.sortDescending = true
+                    this.$set(column, 'sortDescending', true)
                 else
-                    column.sortAscending = true
+                    this.$set(column, 'sortAscending', true)
                 console.log(column)
             }
         } 
