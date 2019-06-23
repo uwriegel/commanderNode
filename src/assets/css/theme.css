@@ -3,10 +3,11 @@
     --main-background-color: white;
     
     --selected-background-color: blue;
+    --selected-background-hover-color: #0063ff;
     --selected-color: white;
 
     --columns-separator-color: white;
-
+    
     --menu-background-color: #eee;
     --menu-hover-color: lightblue;
     --menu-separator-color: #ddd;

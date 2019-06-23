@@ -41,11 +41,20 @@ export default {
     methods: {
         onChange: function () {
             this.columns = [{
-                    name: "Name"
+                    name: "Name",
+                    isSortable: true,
+                    sortAscending: false,
+                    sortDescending: false
                 }, {
-                    name: "Größe"
+                    name: "Größe",
+                    isSortable: true,
+                    sortAscending: false,
+                    sortDescending: false
                 }, {
-                    name: "Datum"
+                    name: "Datum",
+                    isSortable: true,
+                    sortAscending: false,
+                    sortDescending: false
                 }, {
                     name: "Beschreibung"
                 }

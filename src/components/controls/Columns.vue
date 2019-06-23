@@ -1,7 +1,8 @@
 <template>
     <thead>
         <tr ref='tr' :class="{'pointer-ew': draggingReady }">
-            <th v-for="column in columns" :key="column.name" @mousemove='onMouseMove' @mousedown='onMouseDown'>
+            <th v-for="column in columns" :key="column.name" @mousemove='onMouseMove' @mousedown='onMouseDown' @click='onClick(column)'
+                :class="{'is-sortable': column.isSortable, 'sort-ascending': column.sortAscending, 'sort-descending': column.sortDescending}">
                 {{column.name}}
             </th>
         </tr>
@@ -9,7 +10,6 @@
 </template>
 
 <script>
-import { setTimeout } from 'timers';
 export default {
     name: 'columns',
     props: [
@@ -33,9 +33,8 @@ export default {
                     ths.forEach((th, i) => th.style.width = newVal[i])
                 })
             }            
-        }
+        },
     },
-    // TODO: Sorting, event, icon in header
     data: function () {
         return {
             draggingReady: false
@@ -121,7 +120,18 @@ export default {
                 window.addEventListener('mousemove', onmove)
                 window.addEventListener('mouseup', onup)
             }
-        }
+        },
+        onClick: function (column) {
+            if (!this.draggingReady && column.isSortable) {
+                const descending = column.sortAscending
+                this.columns.forEach(n => n.sortAscending = n.sortDescending =false)
+                if (descending)
+                    column.sortDescending = true
+                else
+                    column.sortAscending = true
+                console.log(column)
+            }
+        } 
     }
 }
 </script>
@@ -149,5 +159,26 @@ export default {
 
     tr.pointer-ew {
         cursor: ew-resize;
+    }
+    .is-sortable:hover {
+        background-color: var(--selected-background-hover-color);
+    }
+    .sort-ascending:before {
+        position: relative;
+        bottom: 11px;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-bottom: 6px solid var(--selected-color);
+        content: '';
+        margin-right: 5px;
+    }
+    .sort-descending:before {
+        position: relative;
+        top: 10px;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-top: 6px solid var(--selected-color);
+        content: '';
+        margin-right: 5px;
     }
 </style>
