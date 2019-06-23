@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div class="container">
         <table>
-            <columns></columns>
+            <columns :columns='columns'></columns>
             <tbody>
                 <tr>
                     <td>Test</td>
@@ -15,6 +15,9 @@
                 </tr>
             </tbody>
         </table>    
+        <p>
+            <button @click='onChange'>Change</button>
+        </p>
     </div>
 </template>
 
@@ -25,11 +28,43 @@ export default {
     name: 'column-test',
     components: {
         Columns        
+    },
+    data: function () {
+        return {
+            columns: {}
+        }
+    },
+    methods: {
+        onChange: function () {
+            this.columns = [{
+                    name: "Name"
+                }, {
+                    name: "Größe"
+                }, {
+                    name: "Datum"
+                }, {
+                    name: "Beschreibung"
+                }
+            ]
+        }
+    },
+    mounted: function() {
+        this.columns = [{
+                name: "Name"
+            }, {
+                name: "Erw."
+            }, {
+                name: "Datum"
+            }
+        ]
     }
 }
 </script>
 
 <style scoped>
+    .container {
+        margin: 0px 55px;
+    }
     table {
         width: 100%;
         box-sizing: border-box;
