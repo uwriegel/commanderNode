@@ -1,12 +1,11 @@
 <template>
     <div class="main">
         <h1>Scrollbar Test</h1>
-        <p>
-            <input type="number" @change="onChange" placeholder="Items count">
-            <p>Message is: {{ itemsCount }}</p>
-            <!-- <input type="number" v-model="itemsCount"/>
-            <div>{{itemsCount}}</div> -->
-        </p>
+        <div>
+            <input type="number" @change="onChange" placeholder="Items count" />
+            <div>Message is: {{ itemsCount }}</div>
+        </div>
+        <scrollbar></scrollbar>
         <div class="list">
             <div v-for="item in items" :key="item">{{item}}</div>
         </div>
@@ -14,8 +13,13 @@
 </template>
 
 <script>
+import Scrollbar from "./../controls/Scrollbar"
+
 export default {
     name: "scrollbar-test",
+    components: {
+        Scrollbar
+    },
     data: function () {
         return {
             itemsCount: 0
