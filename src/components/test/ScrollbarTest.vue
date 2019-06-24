@@ -1,6 +1,12 @@
 <template>
     <div class="main">
         <h1>Scrollbar Test</h1>
+        <p>
+            <input type="number" @change="onChange" placeholder="Items count">
+            <p>Message is: {{ itemsCount }}</p>
+            <!-- <input type="number" v-model="itemsCount"/>
+            <div>{{itemsCount}}</div> -->
+        </p>
         <div class="list">
             <div v-for="item in items" :key="item">{{item}}</div>
         </div>
@@ -10,9 +16,19 @@
 <script>
 export default {
     name: "scrollbar-test",
+    data: function () {
+        return {
+            itemsCount: 0
+        }
+    },
     computed: {
         items () {
-            return Array.from(Array(100).keys()).map((n, i) => `Item # ${i}`)
+            return Array.from(Array(this.itemsCount).keys()).map((n, i) => `Item # ${i}`)
+        }
+    },
+    methods: {
+        onChange: function (evt) {
+            this.itemsCount = parseInt(evt.srcElement.value)
         }
     }
 }

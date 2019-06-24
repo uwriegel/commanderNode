@@ -6,8 +6,6 @@ const app = electron.app
 const BrowserWindow = electron.BrowserWindow
 
 const createWindow = function() {    
-    const affe = settings.get("window-bounds")
-
     const bounds = settings.get("window-bounds", { 
         width: 800,
         height: 600,
