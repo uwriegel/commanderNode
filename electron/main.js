@@ -6,10 +6,12 @@ const app = electron.app
 const BrowserWindow = electron.BrowserWindow
 
 const createWindow = function() {    
-    const bounds = JSON.parse(settings.get("window-bounds", JSON.stringify({ 
+    const affe = settings.get("window-bounds")
+
+    const bounds = settings.get("window-bounds", { 
         width: 800,
         height: 600,
-    })))
+    })
     bounds.webPreferences = { nodeIntegration: true }    
     bounds.icon = 'kirk2.png'
     bounds.webPreferences = {
@@ -37,7 +39,7 @@ const createWindow = function() {
     win.on('close', () => {
         if (!win.isMaximized()) {
             const bounds = win.getBounds()
-            settings.set("window-bounds", JSON.stringify(bounds))
+            settings.set("window-bounds", bounds)
             win.webContents.send("closed")
         }
         //child.send("kill")
