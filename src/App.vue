@@ -2,7 +2,9 @@
     <div id="app">
         <main-menu :items="menuItems" @on-menu-item-clicked="onMenuItem" />
         <div class="main">
-            <column-test></column-test>
+            <!-- <column-test></column-test> -->
+            <scrollbar-test></scrollbar-test>
+
             <!-- <div>Main Content</div>
             <p>
                 <input type="text">
@@ -19,18 +21,21 @@ import MainMenu from './components/menu/MainMenu.vue'
 
 // Tests
 import ColumnTest from './components/test/ColumnTest'
+import ScrollbarTest from './components/test/ScrollbarTest'
+import Scrollbar from './components/controls/Scrollbar'
 
 import { makeKey } from './components/menu/accelerators'
 const electron = window.require('electron')
 import { changeTheme } from './themes'
-import { makeRe } from 'minimatch';
 
 export default {
     name: 'app',
     components: {
         MainMenu,
         // Tests:
-        ColumnTest
+        ColumnTest,
+        ScrollbarTest,
+        Scrollbar
     },
     data: function () {
         return {
@@ -214,5 +219,8 @@ body {
 }
 .main {
     flex-grow: 1;   
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 </style>
