@@ -5,9 +5,11 @@
             <input type="number" @change="onChange" placeholder="Items count" />
             <div>Message is: {{ itemsCount }}</div>
         </div>
-        <scrollbar></scrollbar>
-        <div class="list" ref="list">
-            <div v-for="item in items" :key="item">{{item}}</div>
+        <div class=listcontainer>
+            <div class="list" ref="list">
+                <div v-for="item in items" :key="item">{{item}}</div>
+            </div>
+            <scrollbar></scrollbar>
         </div>
     </div>
 </template>
@@ -56,12 +58,17 @@ export default {
         display: flex;
         flex-direction: column;
     }
-    .list {
+    .listcontainer {
         margin: 20px;
+        position: relative;
         flex-grow: 1;
         overflow: hidden;
+
         border-color: gray;
         border-style: solid;
         border-width: 1px;
+    }
+    .list {
+        position: absolute;
     }
 </style>
