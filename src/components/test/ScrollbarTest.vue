@@ -9,7 +9,7 @@
             <div class="list" ref="list">
                 <div v-for="item in items" :key="item">{{item}}</div>
             </div>
-            <scrollbar></scrollbar>
+            <scrollbar :range="range"></scrollbar>
         </div>
     </div>
 </template>
@@ -26,7 +26,8 @@ export default {
     },
     data: function () {
         return {
-            itemsCount: 0
+            itemsCount: 0,
+            range: 0
         }
     },
     computed: {
@@ -37,10 +38,13 @@ export default {
     methods: {
         onChange: function (evt) {
             this.itemsCount = parseInt(evt.srcElement.value)
+            this.onResize()
         },
-        onResize: function (evt) {
+        onResize: function () {
             const itemCount = this.$refs.list.clientHeight / itemHeight
             console.log("resize", itemCount)
+            this.range = Math.ceil(Math.max(0, this.items.length - itemCount))
+            console.log(this.range)
         }
     },
     created: function () {
@@ -70,5 +74,7 @@ export default {
     }
     .list {
         position: absolute;
+        height: 100%;
+        width: 100%;        
     }
 </style>

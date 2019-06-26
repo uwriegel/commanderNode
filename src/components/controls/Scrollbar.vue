@@ -1,10 +1,15 @@
 <template>
-    <div class="scrollbar"></div>
+    <transition name="slide">
+        <div v-show="range > 0" class="scrollbar"></div>
+    </transition>
 </template>
 
 <script>
 export default {
-    name: "scrollbar"
+    name: "scrollbar",
+    props: [
+        'range'
+    ]
 }
 </script>
 
@@ -12,15 +17,30 @@ export default {
 .scrollbar {
     position: absolute;
     height: 100%;
-    width: 20px;    
+    width: 20px; 
     overflow: hidden;
     box-sizing: border-box;
-    background-color: var(--background-color);
+
+
+    background-color: chartreuse;
+    /* background-color: var(--background-color); */
+
+
+
+
     right: 0px;
     border-style: solid;
     border-color: var(--scrollbar-border-color);
     border-width: 1px;
     user-select: none;
+}
+
+.slide-enter-active, .slide-leave-active {
     transition: width 0.4s, height 0.4s, opacity 0.4s;
+}
+.slide-enter, .slide-leave-to {
+    opacity: 0;
+    width: 0px;
+    height: 0px;
 }
 </style>
