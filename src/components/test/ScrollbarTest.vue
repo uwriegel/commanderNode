@@ -3,13 +3,13 @@
         <h1>Scrollbar Test</h1>
         <div>
             <input type="number" @change="onChange" placeholder="Items count" />
-            <div>Message is: {{ itemsCount }}</div>
+            <div>Message is: {{ totalCount }}</div>
         </div>
         <div class=listcontainer>
             <div class="list" ref="list">
                 <div v-for="item in items" :key="item">{{item}}</div>
             </div>
-            <scrollbar :range="range"></scrollbar>
+            <scrollbar :totalCount="totalCount" :itemsPerPage="itemsPerPage"></scrollbar>
         </div>
     </div>
 </template>
@@ -26,25 +26,22 @@ export default {
     },
     data: function () {
         return {
-            itemsCount: 0,
-            range: 0
+            totalCount: 0,
+            itemsPerPage: 0
         }
     },
     computed: {
         items () {
-            return Array.from(Array(this.itemsCount).keys()).map((n, i) => `Item # ${i}`)
+            return Array.from(Array(this.totalCount).keys()).map((n, i) => `Item # ${i}`)
         }
     },
     methods: {
         onChange: function (evt) {
-            this.itemsCount = parseInt(evt.srcElement.value)
-            this.onResize()
+            this.totalCount = parseInt(evt.srcElement.value)
+            onResize()
         },
         onResize: function () {
-            const itemCount = this.$refs.list.clientHeight / itemHeight
-            console.log("resize", itemCount)
-            this.range = Math.ceil(Math.max(0, this.items.length - itemCount))
-            console.log(this.range)
+            this.itemsPerPage = this.$refs.list.clientHeight / itemHeight
         }
     },
     created: function () {
@@ -53,7 +50,6 @@ export default {
     destroyed: function () {
         window.removeEventListener("resize", this.onResize)
     }
-
 }
 </script>
 

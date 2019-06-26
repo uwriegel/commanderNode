@@ -8,8 +8,14 @@
 export default {
     name: "scrollbar",
     props: [
-        'range'
-    ]
+        'totalCount',
+        'itemsPerPage'
+    ],
+    computed: {
+        range: function () {
+            return Math.ceil(Math.max(0, this.totalCount - this.itemsPerPage))
+        }
+    }
 }
 </script>
 
@@ -20,14 +26,7 @@ export default {
     width: 20px; 
     overflow: hidden;
     box-sizing: border-box;
-
-
-    background-color: chartreuse;
-    /* background-color: var(--background-color); */
-
-
-
-
+    background-color: var(--background-color);
     right: 0px;
     border-style: solid;
     border-color: var(--scrollbar-border-color);

@@ -24,8 +24,10 @@ const createWindow = function() {
     electron.ipcMain.on("fullscreen",  (evt, arg) => win.setFullScreen(!win.isFullScreen()))
     // Undocument this to get the default menu with developer tools
     win.setMenu(null)
-    if (process.env.NODE_ENV === 'DEV')
+    if (process.env.NODE_ENV === 'DEV') {
+        require('vue-devtools').install()        
         win.loadURL('http://localhost:8080/')
+    }
     else {
         win.loadURL(url.format({
             pathname: path.join(__dirname, `/../renderer/index.html`),
