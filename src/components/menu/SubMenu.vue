@@ -101,6 +101,7 @@ export default {
         color: var(--main-color);
         background-color: var(--main-background-color); 
         position: absolute;
+        z-index: 10000;
         border-color: var(--menu-border-color);
         border-style: solid;
         border-width: 1px;
