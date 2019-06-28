@@ -9,6 +9,13 @@
     --columns-separator-color: white;
 
     --scrollbar-border-color: lightgray;
+    --scrollbar-grip-color: rgb(209, 209, 209);
+    --scrollbar-button-active-color: #aaa;
+    --scrollbar-image-color: #666;
+    --scrollbar-border-active-color: #444;
+    --scrollbar-grip-color: rgb(209, 209, 209);
+    --scrollbar-grip-hover-color: #bbb;
+    --scrollbar-grip-active-color: #999;
     
     --menu-background-color: #eee;
     --menu-hover-color: lightblue;

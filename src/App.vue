@@ -4,14 +4,6 @@
         <div class="main">
             <!-- <column-test></column-test> -->
             <scrollbar-test></scrollbar-test>
-
-            <!-- <div>Main Content</div>
-            <p>
-                <input type="text">
-            </p>
-            <p>
-                <input type="text">
-            </p> -->
         </div>
     </div>
 </template>

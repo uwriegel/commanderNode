@@ -38,7 +38,7 @@ export default {
     methods: {
         onChange: function (evt) {
             this.totalCount = parseInt(evt.srcElement.value)
-            onResize()
+            this.onResize()
         },
         onResize: function () {
             this.itemsPerPage = this.$refs.list.clientHeight / itemHeight
