@@ -4,7 +4,9 @@
             <div class="scrollbarUp" @mousedown="upMouseDown" @mouseup="mouseup">
                 <div class="scrollbarUpImg"></div>
             </div>
-            <div class="scrollbarGrip" @mousedown="gripMouseDown" @mouseup="mouseup"></div>
+            <div class="scrollbarGrip" @mousedown="gripMouseDown" @mouseup="mouseup"
+                v-bind:style="{ height: gripHeight + 'px' }">
+            </div>
             <div class="scrollbarDown" @mousedown="downMouseDown" @mouseup="mouseup">
                 <div class="scrollbarDownImg"></div>
             </div>
@@ -19,9 +21,17 @@ export default {
         'totalCount',
         'itemsPerPage'
     ],
+    data: function() {
+        return {
+            Affenkopf: 5
+        }
+    },
     computed: {
         range: function () {
             return Math.ceil(Math.max(0, this.totalCount - this.itemsPerPage))
+        },
+        gripHeight: function () {
+            return this.Affenkopf;
         }
     }, 
     methods: {
