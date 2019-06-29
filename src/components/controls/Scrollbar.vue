@@ -1,11 +1,11 @@
 <template>
     <transition name="slide">
-        <div ref="scrollbar" v-show="range > 0" class="scrollbar">
+        <div ref="scrollbar" v-show="range > 1" class="scrollbar">
             <div class="scrollbarUp" @mousedown="upMouseDown" @mouseup="mouseup">
                 <div class="scrollbarUpImg"></div>
             </div>
             <div class="scrollbarGrip" @mousedown="gripMouseDown" @mouseup="mouseup"
-                v-bind:style="{ height: gripHeight + 'px' }">
+                v-bind:style="{ height: gripHeight + 'px', top: gripTop + 'px' }">
             </div>
             <div class="scrollbarDown" @mousedown="downMouseDown" @mouseup="mouseup">
                 <div class="scrollbarDownImg"></div>
@@ -15,6 +15,7 @@
 </template>
 
 <script>
+const scrollerHeight = 15
 export default {
     name: "scrollbar",
     props: [
@@ -24,31 +25,36 @@ export default {
     ],
     data: function() {
         return {
-            height: 0
+            height: 0,
+            position: 0
         }
     },
     watch: {
         parentHeight: function (newVal, oldVal) {
             this.height = this.$refs.scrollbar.parentElement.clientHeight
+            this.position = Math.min(this.range -1, this.position)
         }
     },
     computed: {
         range: function () {
-            return Math.max(0, this.totalCount - this.itemsPerPage)
+            return Math.max(0, this.totalCount - this.itemsPerPage) + 1
         },
         gripHeight: function () {
             var gripHeight = (this.height - 32) * (this.itemsPerPage / this.totalCount)
             if (gripHeight < 5)
                 gripHeight = 5
             return gripHeight
+        },
+        gripTop: function () {
+            return scrollerHeight + ((this.parentHeight - this.gripHeight - 30) * (this.position / (this.range - 1)))
         }
     }, 
     methods: {
         upMouseDown: function (evt) {
-
+            this.position = Math.max(0, this.position - 1)
         },
         downMouseDown: function (evt) {
-
+            this.position   = Math.min(this.range -1, this.position + 1)
         },
         gripMouseDown: function (evt) {
 
