@@ -37,7 +37,7 @@ export default {
     },
     computed: {
         items () {
-            return this.totalItems.filter((n, i) => i >= this.startIndex)
+            return this.totalItems.slice(this.startIndex, this.startIndex + this.itemsPerPage + 1)
         }
     },
     methods: {
