@@ -6,7 +6,7 @@
             <div>Message is: {{ totalCount }}</div>
         </div>
         <div class=listcontainer>
-            <div class="list" ref="list">
+            <div class="list" ref="list" @mousewheel="onMouseWheel">
                 <div v-for="item in items" :key="item">{{item}}</div>
             </div>
             <scrollbar :totalCount="totalCount" :itemsPerPage="itemsPerPage" :parentHeight="height"
@@ -50,7 +50,8 @@ export default {
             this.height = this.$refs.list.clientHeight
             this.itemsPerPage = Math.floor(this.height / itemHeight)
         },
-        onPosition: function (position) { this.startIndex = position }
+        onPosition: function (position) { this.startIndex = position },
+        onMouseWheel: function (evt) { this.$emit('mousewheel', evt) }
     },
     created: function () {
         window.addEventListener("resize", this.onResize)

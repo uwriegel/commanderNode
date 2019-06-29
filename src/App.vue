@@ -192,7 +192,7 @@ export default {
 </script>
 
 <style>
-    @import 'assets/css/theme.css';
+@import 'assets/css/theme.css';
 body {
     background-color: var(--main-background-color);
     font-family: sans-serif;

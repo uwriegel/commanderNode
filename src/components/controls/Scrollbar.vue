@@ -1,6 +1,7 @@
 <template>
     <transition name="slide">
-        <div ref="scrollbar" v-show="range > 1" class="scrollbar" @mousedown="pageMouseDown" @mouseleave="mouseleave" @mouseup="mouseup">
+        <div ref="scrollbar" v-show="range > 1" class="scrollbar" 
+                @mousedown="pageMouseDown" @mouseleave="mouseleave" @mouseup="mouseup" @mousewheel="onMouseWheel">
             <div class="scrollbarUp" @mousedown.stop="upMouseDown" @mouseleave="mouseleave" @mouseup="mouseup">
                 <div class="scrollbarUpImg"></div>
             </div>
@@ -16,9 +17,6 @@
 
 <script>
 const scrollerHeight = 15
-
-// TODO: Mouse wheel
-// TODO: Gripping
 
 export default {
     name: "scrollbar",
@@ -83,7 +81,21 @@ export default {
             this.timer = setTimeout(() => this.interval = setInterval(page, 50), 600)
         },
         gripMouseDown: function (evt) {
-
+            const startPos = evt.y - this.gripTop
+            const range = this.parentHeight - this.gripHeight - 2 * scrollerHeight
+            const maxPosition = this.totalCount - this.itemsPerPage
+            const onmove = evt => {
+                const delta = evt.y - startPos
+                const factor = Math.min(1, (Math.max(0, delta * 1.0 / range)))
+                this.setPosition(Math.floor(factor * maxPosition))
+            }
+            const onup = evt => {
+                console.log("Aus")
+                window.removeEventListener('mousemove', onmove)
+                window.removeEventListener('mouseup', onup)
+            }
+            window.addEventListener('mousemove', onmove)
+            window.addEventListener('mouseup', onup)
         },
         mouseup:  function (evt) {
             clearTimeout(this.timer)
@@ -92,6 +104,9 @@ export default {
         mouseleave:  function (evt) {
             clearTimeout(this.timer)
             clearInterval(this.interval)
+        },
+        onMouseWheel: function(evt) {
+            console.log(evt)
         },
         setPosition: function (position) {
             this.position = position

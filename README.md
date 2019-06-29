@@ -28,6 +28,7 @@ run
 ```
 npm run build
 npm run dist
-```
 
+```
+TODO: Mouse wheel in TableView (not scrollbar)
 
