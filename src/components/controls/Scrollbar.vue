@@ -16,6 +16,10 @@
 
 <script>
 const scrollerHeight = 15
+
+// TODO: Mouse wheel
+// TODO: Gripping
+
 export default {
     name: "scrollbar",
     props: [
