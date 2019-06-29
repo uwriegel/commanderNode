@@ -2,7 +2,7 @@
     <div class="root">
         <h1>Table View Test</h1>
         <div class="container">
-            <table-view></table-view>
+            <table-view :columns='columns' :columnsWidths='columnsWidths'></table-view>
         </div>
         <p>Status</p>
     </div>
@@ -15,6 +15,25 @@ export default {
     name: 'table-view-test',
     components: {
         TableView
+    },
+    data: function () {
+        return {
+            columns: [
+                {
+                    name: "Name",
+                    isSortable: true
+                }, {
+                    name: "Größe",
+                    isSortable: true
+                }, {
+                    name: "Datum",
+                    isSortable: true
+                }, {
+                    name: "Beschreibung"
+                }
+            ],
+            columnsWidths: ["25%", "35.4305%", "21.2687%", "18.3009%"]
+        }
     }
 }
 </script>
