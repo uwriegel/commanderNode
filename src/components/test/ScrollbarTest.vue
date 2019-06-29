@@ -9,7 +9,7 @@
             <div class="list" ref="list">
                 <div v-for="item in items" :key="item">{{item}}</div>
             </div>
-            <scrollbar :totalCount="totalCount" :itemsPerPage="itemsPerPage"></scrollbar>
+            <scrollbar :totalCount="totalCount" :itemsPerPage="itemsPerPage" :parentHeight="height"></scrollbar>
         </div>
     </div>
 </template>
@@ -27,7 +27,8 @@ export default {
     data: function () {
         return {
             totalCount: 0,
-            itemsPerPage: 0
+            itemsPerPage: 0,
+            height: 0
         }
     },
     computed: {
@@ -41,7 +42,8 @@ export default {
             this.onResize()
         },
         onResize: function () {
-            this.itemsPerPage = this.$refs.list.clientHeight / itemHeight
+            this.height = this.$refs.list.clientHeight
+            this.itemsPerPage = Math.floor(this.height / itemHeight)
         }
     },
     created: function () {

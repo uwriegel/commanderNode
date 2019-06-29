@@ -1,6 +1,6 @@
 <template>
     <transition name="slide">
-        <div v-show="range > 0" class="scrollbar">
+        <div ref="scrollbar" v-show="range > 0" class="scrollbar">
             <div class="scrollbarUp" @mousedown="upMouseDown" @mouseup="mouseup">
                 <div class="scrollbarUpImg"></div>
             </div>
@@ -19,19 +19,28 @@ export default {
     name: "scrollbar",
     props: [
         'totalCount',
-        'itemsPerPage'
+        'itemsPerPage',
+        'parentHeight'
     ],
     data: function() {
         return {
-            Affenkopf: 5
+            height: 0
+        }
+    },
+    watch: {
+        parentHeight: function (newVal, oldVal) {
+            this.height = this.$refs.scrollbar.parentElement.clientHeight
         }
     },
     computed: {
         range: function () {
-            return Math.ceil(Math.max(0, this.totalCount - this.itemsPerPage))
+            return Math.max(0, this.totalCount - this.itemsPerPage)
         },
         gripHeight: function () {
-            return this.Affenkopf;
+            var gripHeight = (this.height - 32) * (this.itemsPerPage / this.totalCount)
+            if (gripHeight < 5)
+                gripHeight = 5
+            return gripHeight
         }
     }, 
     methods: {
