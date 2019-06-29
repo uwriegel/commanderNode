@@ -32,7 +32,7 @@ export default {
     watch: {
         parentHeight: function (newVal, oldVal) {
             this.height = this.$refs.scrollbar.parentElement.clientHeight
-            this.position = Math.min(this.range -1, this.position)
+            this.setPosition(Math.min(this.range -1, this.position))
         }
     },
     computed: {
@@ -51,16 +51,20 @@ export default {
     }, 
     methods: {
         upMouseDown: function (evt) {
-            this.position = Math.max(0, this.position - 1)
+            this.setPosition(Math.max(0, this.position - 1))
         },
         downMouseDown: function (evt) {
-            this.position   = Math.min(this.range -1, this.position + 1)
+            this.setPosition(Math.min(this.range -1, this.position + 1))
         },
         gripMouseDown: function (evt) {
 
         },
         mouseup:  function (evt) {
 
+        },
+        setPosition: function (position) {
+            this.position = position
+            this.$emit('on-position', this.position)
         }
     }
 }
