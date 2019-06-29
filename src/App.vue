@@ -3,18 +3,20 @@
         <main-menu :items="menuItems" @on-menu-item-clicked="onMenuItem" />
         <div class="main">
             <!-- <column-test></column-test> -->
-            <scrollbar-test></scrollbar-test>
+            <!-- <scrollbar-test></scrollbar-test> -->
+            <table-view-test></table-view-test>
         </div>
     </div>
 </template>
 
 <script>
 import MainMenu from './components/menu/MainMenu.vue'
+import Scrollbar from './components/controls/Scrollbar'
 
 // Tests
 import ColumnTest from './components/test/ColumnTest'
 import ScrollbarTest from './components/test/ScrollbarTest'
-import Scrollbar from './components/controls/Scrollbar'
+import TableViewTest from './components/test/TableViewTest'
 
 import { makeKey } from './components/menu/accelerators'
 const electron = window.require('electron')
@@ -24,10 +26,11 @@ export default {
     name: 'app',
     components: {
         MainMenu,
+        Scrollbar,
         // Tests:
         ColumnTest,
         ScrollbarTest,
-        Scrollbar
+        TableViewTest
     },
     data: function () {
         return {
