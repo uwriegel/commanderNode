@@ -1,13 +1,13 @@
 <template>
     <transition name="slide">
-        <div ref="scrollbar" v-show="range > 1" class="scrollbar" @mousedown="pageMouseDown">
-            <div class="scrollbarUp" @mousedown.stop="upMouseDown" @mouseup="mouseup">
+        <div ref="scrollbar" v-show="range > 1" class="scrollbar" @mousedown="pageMouseDown" @mouseleave="mouseleave" @mouseup="mouseup">
+            <div class="scrollbarUp" @mousedown.stop="upMouseDown" @mouseleave="mouseleave" @mouseup="mouseup">
                 <div class="scrollbarUpImg"></div>
             </div>
             <div class="scrollbarGrip" @mousedown.stop="gripMouseDown" @mouseup="mouseup"
                 v-bind:style="{ height: gripHeight + 'px', top: gripTop + 'px' }">
             </div>
-            <div class="scrollbarDown" @mousedown.stop="downMouseDown" @mouseup="mouseup">
+            <div class="scrollbarDown" @mousedown.stop="downMouseDown" @mouseleave="mouseleave" @mouseup="mouseup">
                 <div class="scrollbarDownImg"></div>
             </div>
         </div>
@@ -51,28 +51,51 @@ export default {
     }, 
     methods: {
         upMouseDown: function (evt) {
-            this.setPosition(Math.max(0, this.position - 1))
+            const mouseUp = () => this.setPosition(Math.max(0, this.position - 1))
+            mouseUp()
+            this.timer = setTimeout(() => this.interval = setInterval(mouseUp, 10), 600)
         },
         downMouseDown: function (evt) {
-            this.setPosition(Math.min(this.range -1, this.position + 1))
+            const mouseDown = () => this.setPosition(Math.min(this.range -1, this.position + 1))
+            mouseDown()
+            this.timer = setTimeout(() => this.interval = setInterval(mouseDown, 10), 600)
+
         },
         pageMouseDown: function (evt) {
-            this.setPosition(evt.offsetY <= this.gripTop
-                ? Math.max(0, this.position - this.itemsPerPage + 1)
-                : Math.min(this.range -1, this.position + this.itemsPerPage - 1)
-            )
+            let up = evt.offsetY <= this.gripTop 
+            const page = () => {
+                if ((evt.offsetY > this.gripTop && evt.offsetY < this.gripTop + this.gripHeight)
+                        || up ? evt.offsetY > this.gripTop : evt.offsetY < this.gripTop + this.gripHeight) {
+                    this.mouseUp()          
+                    return
+                }
+                    
+                this.setPosition(evt.offsetY <= this.gripTop
+                    ? Math.max(0, this.position - this.itemsPerPage + 1)
+                    : Math.min(this.range -1, this.position + this.itemsPerPage - 1)
+                )
+            }
+            page()
+            this.timer = setTimeout(() => this.interval = setInterval(page, 50), 600)
         },
         gripMouseDown: function (evt) {
 
         },
         mouseup:  function (evt) {
-
+            clearTimeout(this.timer)
+            clearInterval(this.interval)
+        },
+        mouseleave:  function (evt) {
+            clearTimeout(this.timer)
+            clearInterval(this.interval)
         },
         setPosition: function (position) {
             this.position = position
             this.$emit('on-position', this.position)
         }
-    }
+    },
+    timer: 0,
+    interval: 0
 }
 </script>
 
