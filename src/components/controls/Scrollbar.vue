@@ -1,13 +1,13 @@
 <template>
     <transition name="slide">
-        <div ref="scrollbar" v-show="range > 1" class="scrollbar">
-            <div class="scrollbarUp" @mousedown="upMouseDown" @mouseup="mouseup">
+        <div ref="scrollbar" v-show="range > 1" class="scrollbar" @mousedown="pageMouseDown">
+            <div class="scrollbarUp" @mousedown.stop="upMouseDown" @mouseup="mouseup">
                 <div class="scrollbarUpImg"></div>
             </div>
-            <div class="scrollbarGrip" @mousedown="gripMouseDown" @mouseup="mouseup"
+            <div class="scrollbarGrip" @mousedown.stop="gripMouseDown" @mouseup="mouseup"
                 v-bind:style="{ height: gripHeight + 'px', top: gripTop + 'px' }">
             </div>
-            <div class="scrollbarDown" @mousedown="downMouseDown" @mouseup="mouseup">
+            <div class="scrollbarDown" @mousedown.stop="downMouseDown" @mouseup="mouseup">
                 <div class="scrollbarDownImg"></div>
             </div>
         </div>
@@ -55,6 +55,12 @@ export default {
         },
         downMouseDown: function (evt) {
             this.setPosition(Math.min(this.range -1, this.position + 1))
+        },
+        pageMouseDown: function (evt) {
+            this.setPosition(evt.offsetY <= this.gripTop
+                ? Math.max(0, this.position - this.itemsPerPage + 1)
+                : Math.min(this.range -1, this.position + this.itemsPerPage - 1)
+            )
         },
         gripMouseDown: function (evt) {
 
