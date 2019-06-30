@@ -56,16 +56,19 @@ export default {
         },
         onChange2: function () {
             this.columns = [{
-                    name: "Name"
+                    name: "Name",
+                    width: "25%"
                 }, {
-                    name: "Größe"
+                    name: "Größe",
+                    width: "35.4305%"
                 }, {
-                    name: "Datum"
+                    name: "Datum",
+                    width: "21.2687%"
                 }, {
-                    name: "Version"
+                    name: "Version",
+                    width: "18.3009%"
                 }
             ]
-            this.columnsWidths = ["25%", "35.4305%", "21.2687%", "18.3009%"]
         },
         onColumnsWidthChanged: function(widths) {
             console.log("new columnsWidths", widths)

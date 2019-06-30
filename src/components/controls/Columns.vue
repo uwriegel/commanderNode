@@ -17,23 +17,20 @@ export default {
          * @param {string} name
          * @param {boolean} isSortable
          * @param {number} columnsType
+         * @param {number} width
          */
         'columns',
         'columnsWidths'
     ],
     watch: {
         columns: function (newVal, oldVal) {
-            const ths = Array.from(this.$refs.tr.children)
-            ths.forEach(th => th.style.width = null)
-        },
-        columnsWidths: function (newVal, olsVal) {
-            if (newVal&& newVal.length == this.columns.length) {
+            console.log("Gleich?",  oldVal == newVal)
+            if (oldVal != newVal)
                 setTimeout(() => {
                     const ths = Array.from(this.$refs.tr.children)
-                    ths.forEach((th, i) => th.style.width = newVal[i])
+                    ths.forEach((th, i) => th.style.width = this.columns[i].width || (100 / this.columns.length) + '%')
                 })
-            }            
-        },
+        }
     },
     data: function () {
         return {
@@ -101,6 +98,7 @@ export default {
                 }
 
                 const onup = evt => {
+                    console.log("Abbb")
                     const getWidths = () => {
                         const ths = Array.from(this.$refs.tr.children)
                         return ths.map(th => {
