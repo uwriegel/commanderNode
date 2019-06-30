@@ -23,13 +23,15 @@ export default {
         'columnsWidths'
     ],
     watch: {
-        columns: function (newVal, oldVal) {
-            console.log("Gleich?",  oldVal == newVal)
-            if (oldVal != newVal)
-                setTimeout(() => {
-                    const ths = Array.from(this.$refs.tr.children)
-                    ths.forEach((th, i) => th.style.width = this.columns[i].width || (100 / this.columns.length) + '%')
-                })
+        columns: {
+            immediate: true,
+            handler (newVal, oldVal) {
+                if (oldVal != newVal)
+                    setTimeout(() => {
+                        const ths = Array.from(this.$refs.tr.children)
+                        ths.forEach((th, i) => th.style.width = this.columns[i].width || (100 / this.columns.length) + '%')
+                    })
+            }
         }
     },
     data: function () {

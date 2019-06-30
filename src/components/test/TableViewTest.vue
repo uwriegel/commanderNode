@@ -2,9 +2,12 @@
     <div class="root">
         <h1>Table View Test</h1>
         <div class="container">
-            <table-view :columns='columns' :columnsWidths='columnsWidths'></table-view>
+            <table-view :columns='columns' :items='items'></table-view>
         </div>
-        <p>Status</p>
+        <div class="input">
+            <input type="number" autofocus @change="onChange" placeholder="Items count" />
+            <div>Message is: {{ totalCount }}</div>
+        </div>    
     </div>
 </template>
 
@@ -21,18 +24,40 @@ export default {
             columns: [
                 {
                     name: "Name",
-                    isSortable: true
+                    isSortable: true,
+                    width: "25%"
                 }, {
                     name: "Größe",
-                    isSortable: true
+                    isSortable: true,
+                    width: "35.4305%"
                 }, {
                     name: "Datum",
-                    isSortable: true
+                    isSortable: true,
+                    width: "21.2687%"
                 }, {
-                    name: "Beschreibung"
+                    name: "Beschreibung",
+                    width: "18.3009%"
                 }
             ],
-            columnsWidths: ["25%", "35.4305%", "21.2687%", "18.3009%"]
+            items: []
+        }
+    },
+    computed: {
+        totalCount: function () {
+            return this.items.length
+        }
+    },
+    methods: {
+        onChange (evt) {
+            const count = parseInt(evt.srcElement.value)
+            this.items = Array.from(Array(count).keys()).map((n, i) => {
+                return {
+                    name: `name ${i}`,
+                    extension: `extension ${i}`,
+                    date: `datum ${i}`,
+                    description: `description ${i}`
+                }
+            })
         }
     }
 }
@@ -47,5 +72,9 @@ export default {
 .container {
     flex-grow: 1;
     padding: 20px;
+    display: flex;
+}
+.input {
+    margin: 20px;
 }
 </style>
