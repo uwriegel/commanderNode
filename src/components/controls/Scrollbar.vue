@@ -27,13 +27,11 @@ export default {
     ],
     data: function() {
         return {
-            height: 0,
             position: 0
         }
     },
     watch: {
         parentHeight: function (newVal, oldVal) {
-            this.height = this.$refs.scrollbar.parentElement.clientHeight
             this.setPosition(Math.min(this.range -1, this.position))
         }
     },
@@ -42,7 +40,7 @@ export default {
             return Math.max(0, this.totalCount - this.itemsPerPage) + 1
         },
         gripHeight: function () {
-            var gripHeight = (this.height - 32) * (this.itemsPerPage / this.totalCount)
+            var gripHeight = (this.parentHeight - 32) * (this.itemsPerPage / this.totalCount)
             if (gripHeight < 5)
                 gripHeight = 5
             return gripHeight

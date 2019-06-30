@@ -2,7 +2,7 @@
     <div class="root">
         <h1>Table View Test</h1>
         <div class="container">
-            <table-view :columns='columns' :items='items'>
+            <table-view :columns='columns' :items='items' :itemHeight='16'>
                 <tr slot-scope="row">
                     <td>{{row.item.name}}</td>
                     <td>{{row.item.extension}}</td>
