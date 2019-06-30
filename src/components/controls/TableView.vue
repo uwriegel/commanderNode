@@ -3,12 +3,7 @@
         <table>
             <columns :columns='columns' @on-columns-widths-changed='onColumnsWidthChanged'></columns>
             <tbody>
-                <tr v-for="item in items" :key="item.name + item.ext" >
-                    <td>{{item.name}}</td>
-                    <td>{{item.extension}}</td>
-                    <td>{{item.date}}</td>
-                    <td>{{item.description}}</td>
-                </tr>
+                <slot v-for="item in items" :item="item"></slot>
             </tbody>
         </table>    
         <div class=scrollbar-container>

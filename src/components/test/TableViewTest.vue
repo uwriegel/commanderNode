@@ -2,7 +2,14 @@
     <div class="root">
         <h1>Table View Test</h1>
         <div class="container">
-            <table-view :columns='columns' :items='items'></table-view>
+            <table-view :columns='columns' :items='items'>
+                <tr slot-scope="row">
+                    <td>{{row.item.name}}</td>
+                    <td>{{row.item.extension}}</td>
+                    <td>{{row.item.date}}</td>
+                    <td>{{row.item.description}}</td>
+                </tr>
+            </table-view>
         </div>
         <div class="input">
             <input type="number" autofocus @change="onChange" placeholder="Items count" />
