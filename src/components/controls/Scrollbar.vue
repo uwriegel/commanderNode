@@ -1,7 +1,7 @@
 <template>
     <transition name="slide">
         <div ref="scrollbar" v-show="range > 1" class="scrollbar" 
-                @mousedown="pageMouseDown" @mouseleave="mouseleave" @mouseup="mouseup" @mousewheel="onMouseWheel">
+                @mousedown="pageMouseDown" @mouseleave="mouseleave" @mouseup="mouseup">
             <div class="scrollbarUp" @mousedown.stop="upMouseDown" @mouseleave="mouseleave" @mouseup="mouseup">
                 <div class="scrollbarUpImg"></div>
             </div>
@@ -36,7 +36,7 @@ export default {
             this.setPosition(Math.min(this.range -1, this.position))
         },
         value: function (newVal, oldVal) {
-            this.position = value
+            this.position = newVal
         },
         totalCount: function (newVal, oldVal) {
             this.setPosition(0)
@@ -95,7 +95,6 @@ export default {
                 this.setPosition(Math.floor(factor * maxPosition))
             }
             const onup = evt => {
-                console.log("Aus")
                 window.removeEventListener('mousemove', onmove)
                 window.removeEventListener('mouseup', onup)
             }
@@ -109,9 +108,6 @@ export default {
         mouseleave:  function (evt) {
             clearTimeout(this.timer)
             clearInterval(this.interval)
-        },
-        onMouseWheel: function(evt) {
-            console.log(evt)
         },
         setPosition: function (position) {
             this.position = position

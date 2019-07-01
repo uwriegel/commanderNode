@@ -1,5 +1,5 @@
 <template>
-    <div class="root" ref="list">
+    <div class="root" ref="list" @mousewheel="onMouseWheel">
         <table>
             <columns ref="column" :columns='columns' @on-columns-widths-changed='onColumnsWidthChanged'></columns>
             <tbody>
@@ -8,7 +8,7 @@
         </table>    
         <div class=scrollbar-container>
             <scrollbar :totalCount="totalCount" :itemsPerPage="itemsPerPage" :parentHeight="height" 
-                v-bind:style="{height: height+'px'}" @on-position="onPosition">
+                v-bind:style="{height: height+'px'}" v-model="position">
             </scrollbar>
         </div>    
     </div>
@@ -31,6 +31,7 @@ export default {
     ],
     data: function () {
         return {
+            position: 0,
             height: 0,
             itemsPerPage: 0,
             startIndex: 0
@@ -40,10 +41,10 @@ export default {
         items: {
             immediate: true,
             handler (newVal, oldVal) {
-                // this.startIndex = 0 // TODO: (Re)set scrollbar position, v-model two way
                 this.onResize()
             }
-        }
+        },
+        position: function (newVal, oldVal) { this.startIndex = newVal }
     },
     computed: {
         totalCount () {
@@ -62,7 +63,17 @@ export default {
                 this.height = this.$refs.list.clientHeight - this.columnHeight
             this.itemsPerPage = Math.floor(this.height / this.itemHeight)
         },
-        onPosition: function (position) { this.startIndex = position }
+        onMouseWheel: function(evt) {
+            var delta = evt.deltaY / Math.abs(evt.deltaY) * 3
+            let newPos = this.position + delta
+            if (newPos < 0)
+                newPos = 0
+            if (newPos > this.items.length - this.itemsPerPage) {
+                newPos = this.items.length - this.itemsPerPage
+                console.log(newPos)
+            }
+            this.position = newPos
+        }
     },
     created: function () {
         window.addEventListener("resize", this.onResize)
