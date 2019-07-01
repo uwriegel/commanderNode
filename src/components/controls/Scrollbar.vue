@@ -21,6 +21,7 @@ const scrollerHeight = 15
 export default {
     name: "scrollbar",
     props: [
+        'value',
         'totalCount',
         'itemsPerPage',
         'parentHeight'
@@ -33,6 +34,12 @@ export default {
     watch: {
         parentHeight: function (newVal, oldVal) {
             this.setPosition(Math.min(this.range -1, this.position))
+        },
+        value: function (newVal, oldVal) {
+            this.position = value
+        },
+        totalCount: function (newVal, oldVal) {
+            this.setPosition(0)
         }
     },
     computed: {
@@ -108,7 +115,7 @@ export default {
         },
         setPosition: function (position) {
             this.position = position
-            this.$emit('on-position', this.position)
+            this.$emit('input', this.position)
         }
     },
     timer: 0,

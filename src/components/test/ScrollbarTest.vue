@@ -9,8 +9,7 @@
             <div class="list" ref="list" @mousewheel="onMouseWheel">
                 <div v-for="item in items" :key="item">{{item}}</div>
             </div>
-            <scrollbar :totalCount="totalCount" :itemsPerPage="itemsPerPage" :parentHeight="height"
-                @on-position="onPosition">
+            <scrollbar :totalCount="totalCount" :itemsPerPage="itemsPerPage" :parentHeight="height" v-model='position'>
             </scrollbar>
         </div>
     </div>
@@ -28,12 +27,16 @@ export default {
     },
     data: function () {
         return {
+            position: 0,
             totalCount: 0,
             itemsPerPage: 0,
             height: 0,
             totalItems: [],
             startIndex: 0
         }
+    },
+    watch: {
+        position: function (newVal, oldVal) { this.startIndex = newVal }
     },
     computed: {
         items () {
@@ -50,7 +53,6 @@ export default {
             this.height = this.$refs.list.clientHeight
             this.itemsPerPage = Math.floor(this.height / itemHeight)
         },
-        onPosition: function (position) { this.startIndex = position },
         onMouseWheel: function (evt) { this.$emit('mousewheel', evt) }
     },
     created: function () {
