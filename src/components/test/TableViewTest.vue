@@ -57,14 +57,15 @@ export default {
     methods: {
         onChange (evt) {
             const count = parseInt(evt.srcElement.value)
-            this.items = Array.from(Array(count).keys()).map((n, i) => {
+            this.items = []
+            Array.from(Array(count).keys()).map((n, i) => {
                 return {
                     name: `name ${i}`,
                     extension: `extension ${i}`,
                     date: `datum ${i}`,
                     description: `description ${i}`
                 }
-            })
+            }).forEach((n, i) => this.items[i] = n)
         }
     }
 }
