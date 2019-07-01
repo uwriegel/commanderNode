@@ -53,7 +53,7 @@ export default {
             return gripHeight
         },
         gripTop: function () {
-            return scrollerHeight + ((this.parentHeight - this.gripHeight - 30) * (this.position / (this.range - 1)))
+            return scrollerHeight + ((this.parentHeight - this.gripHeight - 2 * scrollerHeight) * (this.position / (this.range -1)))
         }
     }, 
     methods: {
@@ -126,7 +126,7 @@ export default {
     width: 16px; 
     overflow: hidden;
     box-sizing: border-box;
-    background-color: var(--background-color);
+    background-color: var(--main-background-color);
     right: 0px;
     border-style: solid;
     border-color: var(--scrollbar-border-color);
@@ -146,6 +146,7 @@ export default {
 .scrollbarUp {
     position: absolute;
     box-sizing: border-box;
+    background-color: var(--main-background-color);
     width: 100%;
     height: 15px;
     transition: background-color 0.5s;
@@ -179,6 +180,7 @@ export default {
 .scrollbarDown {
     position: absolute;
     box-sizing: border-box;
+    background-color: var(--main-background-color);
     width: 100%;
     bottom: 0px;
     height: 15px;
