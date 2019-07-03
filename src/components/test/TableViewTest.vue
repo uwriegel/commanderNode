@@ -2,8 +2,8 @@
     <div class="root">
         <h1>Table View Test</h1>
         <div class="container">
-            <table-view :columns='columns' :items='items' :itemHeight='16'>
-                <tr slot-scope="row">
+            <table-view ref="table" :columns='columns' :items='items' :itemHeight='16'>
+                <tr slot-scope="row" :class="{ 'isCurrent': row.item.isCurrent }">
                     <td>{{row.item.name}}</td>
                     <td>{{row.item.extension}}</td>
                     <td>{{row.item.date}}</td>
@@ -15,6 +15,9 @@
             <input type="number" autofocus @change="onChange" placeholder="Items count" />
             <div>Message is: {{ totalCount }}</div>
         </div>    
+        <div class="input">
+            <button @click="on10">Selektiere #10</button>
+        </div>
     </div>
 </template>
 
@@ -63,9 +66,13 @@ export default {
                     name: `name ${i}`,
                     extension: `extension ${i}`,
                     date: `datum ${i}`,
-                    description: `description ${i}`
+                    description: `description ${i}`,
+                    isCurrent: false
                 }
             }).forEach((n, i) => this.items[i] = n)
+        },
+        on10 () {
+            this.$refs.table.setCurrent(10)
         }
     }
 }
