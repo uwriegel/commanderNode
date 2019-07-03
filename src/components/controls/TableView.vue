@@ -1,5 +1,5 @@
 <template>
-    <div class="root" ref="list" @mousewheel="onMouseWheel">
+    <div class="root" ref="list" @keydown="onKeyDown" @mousewheel="onMouseWheel">
         <table tabindex="1">
             <columns ref="column" :columns='columns' @on-columns-widths-changed='onColumnsWidthChanged'></columns>
             <tbody>
@@ -67,6 +67,27 @@ export default {
             this.itemsPerPage = Math.floor(this.height / this.itemHeight)
             this.setPosition()
         },
+        onKeyDown: function (evt) {
+            switch (evt.which) {
+                case 35: // End
+                    if (!evt.shiftKey)
+                        this.end()
+                    break
+                case 36: //Pos1
+                    if (!evt.shiftKey)
+                        this.pos1()
+                    break
+                case 38:
+                    this.upOne(evt.repeat)
+                    break
+                case 40:
+                    this.downOne(evt.repeat)
+                    break
+                default:
+                    return // exit this handler for other keys
+            }
+            evt.preventDefault() // prevent the default action (scroll / move caret)
+        },
         onMouseWheel: function(evt) {
             var delta = evt.deltaY / Math.abs(evt.deltaY) * 3
             let newPos = this.position + delta
@@ -84,6 +105,47 @@ export default {
         },
         setPosition() {
             this.displayItems = this.items.slice(this.startIndex, this.startIndex + this.itemsPerPage + 1)
+        },
+        end() { this.setCurrentIndex(this.items.length - 1) },
+        pos1() { this.setCurrentIndex(0) },
+        upOne(repeated) {
+//            repeatKey(repeated, () => {
+                const index = this.getCurrentIndex(0)
+                const nextIndex = index > 0 ? index - 1 : index
+                this.setCurrentIndex(nextIndex, index)
+  //          })
+        },
+        downOne(repeated) {
+            //repeatKey(repeated, () => {
+                const index = this.getCurrentIndex(0)
+                const nextIndex = index < this.items.length - 1 ? index + 1 : index
+                this.setCurrentIndex(nextIndex, index)
+            // })
+        },
+        getCurrentIndex(defaultValue) { 
+            const index = this.items.findIndex(n => n.isCurrent) 
+            if (index != -1 || defaultValue == null)
+                return index
+            else
+                return defaultValue
+        },
+        setCurrentIndex(index, lastIndex) {
+            //if (lastIndex == null) 
+                //lastIndex = this.getCurrentIndex(0)
+            if (!this.lastIndex)
+                this.lastIndex = this.getCurrentIndex(0)
+            this.items[this.lastIndex].isCurrent = false
+            this.items[index].isCurrent = true
+            this.lastIndex = index
+            this.scrollIntoView(index)
+        },
+        scrollIntoView(index) {
+            if (index < this.position)
+                this.position = index
+            // if (index > this.position + this._itemsCapacity - 1)
+            //     this.position = index
+            //     this.itemsChanged(this.itemsCountAbsolute, this._itemsCapacity, index - this._itemsCapacity + 1)
+
         }
     },
     created: function () {
