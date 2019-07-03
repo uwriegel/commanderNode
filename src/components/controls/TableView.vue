@@ -35,7 +35,8 @@ export default {
             height: 0,
             itemsPerPage: 0,
             startIndex: 0,
-            displayItems: []
+            displayItems: [],
+            index: 0
         }
     },
     watch: {
@@ -44,6 +45,7 @@ export default {
             handler (newVal, oldVal) {
                 if (this.items.length)
                     this.items[0].isCurrent = true
+                this.items.forEach((n, i) => n.index = i)                    
                 this.onResize()
             }
         },
@@ -110,16 +112,18 @@ export default {
         pos1() { this.setCurrentIndex(0) },
         upOne(repeated) {
 //            repeatKey(repeated, () => {
-                const index = this.getCurrentIndex(0)
-                const nextIndex = index > 0 ? index - 1 : index
-                this.setCurrentIndex(nextIndex, index)
+                this.index++
+                // const index = this.getCurrentIndex(0)
+                // const nextIndex = index > 0 ? index - 1 : index
+                // this.setCurrentIndex(nextIndex, index)
   //          })
         },
         downOne(repeated) {
             //repeatKey(repeated, () => {
-                const index = this.getCurrentIndex(0)
-                const nextIndex = index < this.items.length - 1 ? index + 1 : index
-                this.setCurrentIndex(nextIndex, index)
+                // const index = this.getCurrentIndex(0)
+                // const nextIndex = index < this.items.length - 1 ? index + 1 : index
+                // this.setCurrentIndex(nextIndex, index)
+                this.index--
             // })
         },
         getCurrentIndex(defaultValue) { 
