@@ -26,7 +26,7 @@
     "dev": "cross-env NODE_ENV=DEV vue-cli-service serve && electron electron/main.js",
     "electron": "cross-env NODE_ENV=DEV electron electron/main.js",
     "electron-prod": "electron electron/main.js",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --modern",
     "dist": "build -w --x64 --ia32"
   },
   "dependencies": {

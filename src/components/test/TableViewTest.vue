@@ -15,9 +15,6 @@
             <input type="number" autofocus @change="onChange" placeholder="Items count" />
             <div>Message is: {{ totalCount }}</div>
         </div>    
-        <div class="input">
-            <button @click="on10">Selektiere #10</button>
-        </div>
     </div>
 </template>
 
@@ -70,9 +67,7 @@ export default {
                     isCurrent: false
                 }
             }).forEach((n, i) => this.items[i] = n)
-        },
-        on10 () {
-            this.$refs.table.setCurrent(10)
+            this.$refs.table.focus()
         }
     }
 }

@@ -1,6 +1,6 @@
 <template>
     <div class="root" ref="list" @keydown="onKeyDown" @mousewheel="onMouseWheel">
-        <table ref="table" tabindex="1">
+        <table ref="table" tabindex="1" @mousedown="onMouseDown">
             <columns ref="column" :columns='columns' @on-columns-widths-changed='onColumnsWidthChanged'></columns>
             <tbody>
                 <slot v-for="item in displayItems" :item="item"></slot>
@@ -17,9 +17,6 @@
 <script>
 import Columns from './Columns'
 import Scrollbar from "./Scrollbar"
-
-// TODO: item click: focus and set index
-// TODO: Test program: after items change set focus
 
 export default {
     name: 'table-view',
@@ -49,6 +46,7 @@ export default {
                 if (this.items.length)
                     this.items[0].isCurrent = true
                 this.items.forEach((n, i) => n.index = i)                    
+                this.index = 0
                 this.onResize()
             }
         },
@@ -63,6 +61,7 @@ export default {
         }
     },
     methods: {
+        focus () { this.$refs.table.focus() },
         onColumnsWidthChanged: function(widths) {
             console.log("new columnsWidths", widths)
         },
@@ -99,6 +98,17 @@ export default {
             }
             evt.preventDefault() // prevent the default action (scroll / move caret)
         },
+        onMouseDown: function (evt) {
+            const tr = evt.target.closest("tbody tr")
+            if (tr) {
+                const currentIndex = 
+                    Array.from(this.$refs.table.querySelectorAll("tr"))
+                    .findIndex(n => n == tr)
+                    + this.position -1
+                if (currentIndex != -1)
+                    this.setCurrentIndex(currentIndex)
+            }
+        },
         onMouseWheel: function(evt) {
             var delta = evt.deltaY / Math.abs(evt.deltaY) * 3
             let newPos = this.position + delta
@@ -110,7 +120,7 @@ export default {
             }
             this.position = newPos
         },
-        scrolled: function () { setTimeout(() => this.$refs.table.focus()) },
+        scrolled: function () { this.$refs.table.focus() },
         setPosition() {
             this.displayItems = this.items.slice(this.startIndex, this.startIndex + this.itemsPerPage + 1)
         },
