@@ -4,7 +4,8 @@
         <div class="main">
             <!-- <column-test></column-test> -->
             <!-- <scrollbar-test></scrollbar-test> -->
-            <table-view-test></table-view-test>
+            <!-- <table-view-test></table-view-test> -->
+            <connection-test></connection-test>
         </div>
     </div>
 </template>
@@ -17,9 +18,11 @@ import Scrollbar from './components/controls/Scrollbar'
 import ColumnTest from './components/test/ColumnTest'
 import ScrollbarTest from './components/test/ScrollbarTest'
 import TableViewTest from './components/test/TableViewTest'
+import ConnectionTest from './components/test/ConnectionTest'
 
 import { makeKey } from './components/menu/accelerators'
 const electron = window.require('electron')
+
 import { changeTheme } from './themes'
 
 export default {
@@ -30,7 +33,8 @@ export default {
         // Tests:
         ColumnTest,
         ScrollbarTest,
-        TableViewTest
+        TableViewTest,
+        ConnectionTest
     },
     data: function () {
         return {

@@ -7,6 +7,15 @@
         <title>commander</title>
     </head>
     <body>
+        <script>
+            async function affe() { 
+                const extfs = window.require('extension-fs')            
+                const result = await extfs.getFiles(`c:\windows\system32`)
+                console.log(result)
+            }
+            affe()
+        </script>
+
         <div id="app"></div>
     </body>
 </html>
