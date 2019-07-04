@@ -1,6 +1,6 @@
 <template>
     <div class="root" ref="list" @keydown="onKeyDown" @mousewheel="onMouseWheel">
-        <table tabindex="1">
+        <table ref="table" tabindex="1">
             <columns ref="column" :columns='columns' @on-columns-widths-changed='onColumnsWidthChanged'></columns>
             <tbody>
                 <slot v-for="item in displayItems" :item="item"></slot>
@@ -8,7 +8,7 @@
         </table>    
         <div class=scrollbar-container>
             <scrollbar :totalCount="totalCount" :itemsPerPage="itemsPerPage" :parentHeight="height" 
-                v-bind:style="{height: height+'px'}" v-model="position">
+                v-bind:style="{height: height+'px'}" v-model="position" @scrolled="scrolled">
             </scrollbar>
         </div>    
     </div>
@@ -17,6 +17,9 @@
 <script>
 import Columns from './Columns'
 import Scrollbar from "./Scrollbar"
+
+// TODO: item click: focus and set index
+// TODO: Test program: after items change set focus
 
 export default {
     name: 'table-view',
@@ -71,6 +74,12 @@ export default {
         },
         onKeyDown: function (evt) {
             switch (evt.which) {
+                case 33:
+                    this.pageUp()
+                    break
+                case 34:
+                    this.pageDown()
+                    break                
                 case 35: // End
                     if (!evt.shiftKey)
                         this.end()
@@ -80,10 +89,10 @@ export default {
                         this.pos1()
                     break
                 case 38:
-                    this.upOne(evt.repeat)
+                    this.upOne()
                     break
                 case 40:
-                    this.downOne(evt.repeat)
+                    this.downOne()
                     break
                 default:
                     return // exit this handler for other keys
@@ -101,55 +110,31 @@ export default {
             }
             this.position = newPos
         },
-        setCurrent: function (value) {
-            this.items.forEach(n => n.isCurrent = false)
-            this.items[value].isCurrent = true
-        },
+        scrolled: function () { setTimeout(() => this.$refs.table.focus()) },
         setPosition() {
             this.displayItems = this.items.slice(this.startIndex, this.startIndex + this.itemsPerPage + 1)
         },
         end() { this.setCurrentIndex(this.items.length - 1) },
         pos1() { this.setCurrentIndex(0) },
-        upOne(repeated) {
-//            repeatKey(repeated, () => {
-                this.index++
-                // const index = this.getCurrentIndex(0)
-                // const nextIndex = index > 0 ? index - 1 : index
-                // this.setCurrentIndex(nextIndex, index)
-  //          })
+        upOne() { this.setCurrentIndex(this.index - 1) },
+        downOne() { this.setCurrentIndex(this.index + 1) },
+        pageDown() {
+            this.setCurrentIndex(this.index < this.items.length - this.itemsPerPage + 1 ? this.index + this.itemsPerPage - 1: this.items.length - 1)
         },
-        downOne(repeated) {
-            //repeatKey(repeated, () => {
-                // const index = this.getCurrentIndex(0)
-                // const nextIndex = index < this.items.length - 1 ? index + 1 : index
-                // this.setCurrentIndex(nextIndex, index)
-                this.index--
-            // })
+        pageUp() { this.setCurrentIndex(this.index > this.itemsPerPage - 1 ? this.index - this.itemsPerPage + 1: 0) },
+        setCurrentIndex(index) {
+            if (index < 0)
+                index = 0
+            else if (index >= this.items.length)
+                index = this.items.length - 1
+            this.index = index;
+            this.scrollIntoView()
         },
-        getCurrentIndex(defaultValue) { 
-            const index = this.items.findIndex(n => n.isCurrent) 
-            if (index != -1 || defaultValue == null)
-                return index
-            else
-                return defaultValue
-        },
-        setCurrentIndex(index, lastIndex) {
-            //if (lastIndex == null) 
-                //lastIndex = this.getCurrentIndex(0)
-            if (!this.lastIndex)
-                this.lastIndex = this.getCurrentIndex(0)
-            this.items[this.lastIndex].isCurrent = false
-            this.items[index].isCurrent = true
-            this.lastIndex = index
-            this.scrollIntoView(index)
-        },
-        scrollIntoView(index) {
-            if (index < this.position)
-                this.position = index
-            // if (index > this.position + this._itemsCapacity - 1)
-            //     this.position = index
-            //     this.itemsChanged(this.itemsCountAbsolute, this._itemsCapacity, index - this._itemsCapacity + 1)
-
+        scrollIntoView() {
+            if (this.index < this.position)
+                this.position = this.index
+            if (this.index > this.position + this.itemsPerPage - 1)
+                this.position = this.index - this.itemsPerPage + 1
         }
     },
     created: function () {
