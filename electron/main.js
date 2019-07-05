@@ -13,6 +13,7 @@ const createWindow = function() {
     bounds.webPreferences = { nodeIntegration: true }    
     bounds.icon = 'kirk2.png'
     bounds.webPreferences = {
+        preload: path.join(__dirname, 'preload.js'),
         nodeIntegration: true,
     }        
     

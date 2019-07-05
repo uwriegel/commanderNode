@@ -7,12 +7,13 @@
 
 <script>
 
+// TODO: Test production build
 export default {
     name: "connection-test",
     methods: {
         async onClick() {
-            const extfs = window.require('extension-fs')
-            const result = await extfs.getFiles(`c:\windows\system32`)
+            const extfs = window.require(extFs)
+            const result = await extfs.getFiles(`c:\\windows\\system32`)
             console.log(result)
         }
     }
