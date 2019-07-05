@@ -3,7 +3,9 @@ const url = require("url")
 const path = require("path")
 const settings = require('electron-settings')
 const app = electron.app
+const protocol = electron.protocol
 const BrowserWindow = electron.BrowserWindow
+const fs = require("fs")
 
 const createWindow = function() {    
     const bounds = settings.get("window-bounds", { 
@@ -14,7 +16,7 @@ const createWindow = function() {
     bounds.icon = 'kirk2.png'
     bounds.webPreferences = {
         preload: path.join(__dirname, 'preload.js'),
-        nodeIntegration: true,
+        nodeIntegration: true
     }        
     
     win = new BrowserWindow(bounds)   
@@ -25,17 +27,32 @@ const createWindow = function() {
     electron.ipcMain.on("fullscreen",  (evt, arg) => win.setFullScreen(!win.isFullScreen()))
     // Undocument this to get the default menu with developer tools
     win.setMenu(null)
+
+    protocol.registerBufferProtocol('vue', (request, callback) => {
+        var file = decodeURIComponent(request.url.substr(6))
+        if (file.toLowerCase().endsWith(".html")) 
+            fs.readFile(file, (_, data) => {
+                callback({mimeType: 'text/html', data: data})
+            })
+        else if (file.toLowerCase().endsWith(".js")) 
+            fs.readFile(file, (_, data) => {
+                callback({mimeType: 'application/javascript', data: data})
+            })
+        else if (file.toLowerCase().endsWith(".css")) 
+            fs.readFile(file, (_, data) => {
+                callback({mimeType: 'text/css', data: data})
+            })
+    }, (error) => {
+        if (error) console.error('Failed to register protocol', error)
+    })
+ 
+
     if (process.env.NODE_ENV === 'DEV') {
         require('vue-devtools').install()        
         win.loadURL('http://localhost:8080/')
     }
-    else {
-        win.loadURL(url.format({
-            pathname: path.join(__dirname, `/../renderer/index.html`),
-            protocol: "file:",
-            slashes: true
-        }));
-    }
+    else 
+        win.loadURL('vue://' + path.join(__dirname, `/../renderer/index.html`))
 
     win.on('close', () => {
         if (!win.isMaximized()) {

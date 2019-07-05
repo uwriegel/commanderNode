@@ -24,6 +24,8 @@ npm run build
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### Create setups:
+Warning: After building setup, delete ```node_modules``` and run ```npm i``` again!
+
 run 
 ```
 npm run build
