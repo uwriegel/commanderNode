@@ -1,7 +1,7 @@
 <template>
     <div class="root">
         <h3>Folder Test</h3>
-        <folder class="folder"></folder>
+        <folder class="folder" id="test"></folder>
         <footer>Status</footer>
     </div>
 </template>
