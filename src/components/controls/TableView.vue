@@ -1,6 +1,6 @@
 <template>
-    <div class="root" ref="list" @keydown="onKeyDown" @mousewheel="onMouseWheel">
-        <table ref="table" tabindex="1" @mousedown="onMouseDown">
+    <div class="root" tabindex="1" ref="list" @keydown="onKeyDown" @mousewheel="onMouseWheel">
+        <table ref="table" @mousedown="onMouseDown">
             <columns ref="column" :columns='columns' @on-columns-widths-changed='onColumnsWidthChanged'></columns>
             <tbody>
                 <slot v-for="item in displayItems" :item="item"></slot>
@@ -8,7 +8,7 @@
         </table>    
         <div class=scrollbar-container>
             <scrollbar :totalCount="totalCount" :itemsPerPage="itemsPerPage" :parentHeight="height" 
-                v-bind:style="{height: height+'px'}" v-model="position" @scrolled="scrolled">
+                v-bind:style="{height: height+'px'}" v-model="position">
             </scrollbar>
         </div>    
     </div>
@@ -120,7 +120,6 @@ export default {
             }
             this.position = newPos
         },
-        scrolled: function () { this.$refs.table.focus() },
         setPosition() {
             this.displayItems = this.items.slice(this.startIndex, this.startIndex + this.itemsPerPage + 1)
         },
@@ -166,12 +165,12 @@ export default {
     flex-grow: 1;    
     position: relative;
     overflow: hidden;
+    outline-width: 0px;
 }
 table {
     position: absolute;
     width: 100%;
     box-sizing: border-box;
-    outline-width: 0px;
     table-layout: fixed;
     border-spacing: 0px;
 }
@@ -195,7 +194,7 @@ tr.isCurrent {
     outline-style: solid;
     outline-offset: -1px;
 }
-table:focus tr.isCurrent {
+.root:focus tr.isCurrent {
     outline-color: red;
     outline-width: 1px;
     outline-style: solid;

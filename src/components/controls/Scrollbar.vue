@@ -95,7 +95,6 @@ export default {
                 this.setPosition(Math.floor(factor * maxPosition))
             }
             const onup = evt => {
-                this.$emit('scrolled')
                 window.removeEventListener('mousemove', onmove)
                 window.removeEventListener('mouseup', onup)
             }
@@ -105,7 +104,6 @@ export default {
         mouseup: function (evt) {
             clearTimeout(this.timer)
             clearInterval(this.interval)
-            this.$emit('scrolled')
         },
         mouseleave: function (evt) {
             clearTimeout(this.timer)
