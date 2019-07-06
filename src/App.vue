@@ -4,8 +4,9 @@
         <div class="main">
             <!-- <column-test></column-test> -->
             <!-- <scrollbar-test></scrollbar-test> -->
-            <table-view-test></table-view-test>
+            <!-- <table-view-test></table-view-test> -->
             <!-- <connection-test></connection-test> -->
+            <folder-test></folder-test>
         </div>
     </div>
 </template>
@@ -19,6 +20,7 @@ import ColumnTest from './components/test/ColumnTest'
 import ScrollbarTest from './components/test/ScrollbarTest'
 import TableViewTest from './components/test/TableViewTest'
 import ConnectionTest from './components/test/ConnectionTest'
+import FolderTest from './components/test/FolderTest'
 
 import { makeKey } from './components/menu/accelerators'
 const electron = window.require('electron')
@@ -34,7 +36,8 @@ export default {
         ColumnTest,
         ScrollbarTest,
         TableViewTest,
-        ConnectionTest
+        ConnectionTest,
+        FolderTest
     },
     data: function () {
         return {
