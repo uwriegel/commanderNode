@@ -4,8 +4,8 @@
         <div class="main">
             <!-- <column-test></column-test> -->
             <!-- <scrollbar-test></scrollbar-test> -->
-            <!-- <table-view-test></table-view-test> -->
-            <connection-test></connection-test>
+            <table-view-test></table-view-test>
+            <!-- <connection-test></connection-test> -->
         </div>
     </div>
 </template>

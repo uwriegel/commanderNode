@@ -3,12 +3,14 @@
         <h1>Table View Test</h1>
         <div class="container">
             <table-view ref="table" :columns='columns' :items='items' :itemHeight='16'>
-                <tr slot-scope="row" :class="{ 'isCurrent': row.item.index == $refs.table.index }">
-                    <td>{{row.item.name}}</td>
-                    <td>{{row.item.extension}}</td>
-                    <td>{{row.item.date}}</td>
-                    <td>{{row.item.description}}</td>
-                </tr>
+                <template v-slot=row >
+                    <tr :class="{ 'isCurrent': row.item.index == $refs.table.index }">
+                        <td>{{row.item.name}}</td>
+                        <td>{{row.item.extension}}</td>
+                        <td>{{row.item.date}}</td>
+                        <td>{{row.item.description}}</td>
+                    </tr>
+                </template>
             </table-view>
         </div>
         <div class="input">
