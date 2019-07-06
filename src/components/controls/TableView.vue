@@ -1,6 +1,6 @@
 <template>
     <div class="root" tabindex="1" ref="list" @keydown="onKeyDown" @mousewheel="onMouseWheel">
-        <table ref="table" @mousedown="onMouseDown">
+        <table ref="table" @mousedown="onMouseDown" :class="{ 'scrollbar': items.length > itemsPerPage }">
             <columns ref="column" :columns='columns' @on-columns-widths-changed='onColumnsWidthChanged'></columns>
             <tbody>
                 <slot v-for="item in displayItems" :item="item"></slot>
@@ -174,19 +174,21 @@ table {
     table-layout: fixed;
     border-spacing: 0px;
 }
-
 td {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     user-select: none;
+    transition: padding-right .4s;
 }    
+.scrollbar td:last-child {
+    padding-right: 16px;
+}
 .scrollbar-container {
     top: 16px;
     position: absolute;
     right: 0px;
     width: 0px;
-    background-color: red;
 }
 tr.isCurrent {
     outline-color: lightgray;
