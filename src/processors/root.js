@@ -24,6 +24,7 @@ export function getRootProcessor() {
 
     async function getItems() {
         const items = (await extFs.getDrives()).filter(n => n.isMounted)
+        console.log(items)
 //        if (result.length > 0) {
             // if (recentPath) {
             //     const recentItem = result.find(n => n.name == recentPath)
@@ -41,7 +42,7 @@ export function getRootProcessor() {
             index == 0 
                 ? (a, b) => a.name.localeCompare(b.name) :
             index == 1 
-                ? (a, b) => a.name.localeCompare(b.description)
+                ? (a, b) => a.description.localeCompare(b.description)
                 : (a, b) => a.size - b.size
                 
         return items.sort((a, b) => (descending ? -1 : 1) * sort(a, b))
