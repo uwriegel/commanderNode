@@ -19,8 +19,7 @@ export default {
          * @param {number} columnsType
          * @param {number} width
          */
-        'columns',
-        'columnsWidths'
+        'columns'
     ],
     watch: {
         columns: {
@@ -34,7 +33,7 @@ export default {
             }
         }
     },
-    data: function () {
+    data() {
         return {
             draggingReady: false
         }

@@ -12,7 +12,7 @@ import { getAccelerators, parseAccelerators } from './accelerators'
 
 export default {
     name: 'sub-menu',
-    data: function () {
+    data() {
         return {
             subMenuState: {
                 selectedIndex: -1
@@ -90,9 +90,7 @@ export default {
     },
     mounted: function () {
         this.accelerators = getAccelerators(this.items)
-    },
-    accelerators: {},
-    acceleratorHits: null
+    }
 }
 </script>
 

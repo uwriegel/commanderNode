@@ -28,7 +28,7 @@ export default {
         TableView,
         Drive
     },
-    data: function () {
+    data() {
         return {
             columns: [],
             items: []
@@ -57,7 +57,7 @@ export default {
         // TODO: Selections
         // TODO: Refresh
         // TODO: Hidden items
-        
+
         changePath: async function (path) {
             this.processor = this.processor.getProcessor(path)
             this.columns = this.processor.getColumns(this.columns)

@@ -18,7 +18,7 @@ export default {
     props: [
         'items'
     ],
-    data: function () {
+    data() {
         return {
             menuState: {
                 selectedIndex: -1,
@@ -95,8 +95,7 @@ export default {
             }
         }, true)
         this.accelerators = getAccelerators(this.items)
-    },
-    accelerators: {}
+    }
 }
 </script>
 

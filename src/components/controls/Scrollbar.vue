@@ -26,7 +26,7 @@ export default {
         'itemsPerPage',
         'parentHeight'
     ],
-    data: function() {
+    data() {
         return {
             position: 0
         }
@@ -114,8 +114,10 @@ export default {
             this.$emit('input', this.position)
         }
     },
-    timer: 0,
-    interval: 0
+    created() {
+        this.timer = 0
+        this.interval = 0
+    }
 }
 </script>
 

@@ -16,7 +16,7 @@ export default {
         MenuItem,
         SubMenu
     },
-    data: function () {
+    data() {
         return { 
             keyDown: null
         }
@@ -96,7 +96,7 @@ export default {
             }
             return !this.menuState.isKeyboardActivated && result
         }
-    },
+    }
 }
 </script>
 

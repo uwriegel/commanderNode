@@ -1,4 +1,3 @@
-
 export function getAccelerators(items) {
     const getAccelerator = function (item, index) {
         const pos = item.indexOf('_')

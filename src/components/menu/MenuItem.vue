@@ -70,8 +70,7 @@ export default {
             }
             return this.parts
         }
-    },
-    parts: null
+    }
 }
 </script>
 

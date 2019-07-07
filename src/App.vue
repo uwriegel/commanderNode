@@ -39,7 +39,7 @@ export default {
         ConnectionTest,
         FolderTest
     },
-    data: function () {
+    data() {
         return {
             menuItems: [
                 {

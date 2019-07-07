@@ -30,7 +30,7 @@ export default {
         'itemHeight',
         'items'
     ],
-    data: function () {
+    data() {
         return {
             position: 0,
             height: 0,
@@ -159,8 +159,7 @@ export default {
     mounted: function () {
         this.columnHeight = this.$refs.column.$el.clientHeight
         this.onResize()
-    },
-    columnHeight: 0
+    }
 }
 </script>
 
