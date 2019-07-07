@@ -1,6 +1,4 @@
-const name = "root"
-
-export function getRootProcessor() {
+export function getDirectoryProcessor() {
     function checkPath(path) { return path == name }
 
     function getColumns(columns) {
@@ -51,7 +49,7 @@ export function getRootProcessor() {
     function onAction(item) {
         return {
             done: false,
-            newProcessor: null, // TODO
+            newProcessor: ,
             path: item.name
         }
     }        

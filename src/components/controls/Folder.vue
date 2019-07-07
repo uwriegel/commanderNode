@@ -2,7 +2,7 @@
     <div class="root">
         <h1>Der Folder</h1>
         <table-view ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18'
-                @on-column-click='onSort'>
+                @on-column-click='onSort' @on-action='onAction'>
             <template v-slot=row >
                     <tr :class="{ 'isCurrent': row.item.index == $refs.table.index }">
                         <td class="icon-name">
@@ -58,13 +58,20 @@ export default {
         // TODO: Refresh
         // TODO: Hidden items
 
-        changePath: async function (path) {
+        async changePath(path) {
             this.processor = this.processor.getProcessor(path)
             this.columns = this.processor.getColumns(this.columns)
             this.items = await this.processor.getItems(path)
         },
         onSort(index, descending) {
             this.items = this.processor.sort(this.items, index, descending)
+        },
+        onAction(item) {
+            const result = this.processor.onAction(item)
+            if (!result.done) {
+                if (result.newProcessor)
+                    this.processor = newProcessor
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 <template>
     <div class="root" tabindex="1" ref="list" @keydown="onKeyDown" @mousewheel="onMouseWheel">
-        <table ref="table" @mousedown="onMouseDown" :class="{ 'scrollbar': items.length > itemsPerPage }">
+        <table ref="table" @mousedown="onMouseDown" @dblclick='onDblClick' 
+                :class="{ 'scrollbar': items.length > itemsPerPage }">
             <columns ref="column" :columns='columns' 
                 @on-columns-widths-changed='onColumnsWidthChanged' @on-column-click='onColumnClick'></columns>
             <tbody>
@@ -62,18 +63,21 @@ export default {
         }
     },
     methods: {
-        focus () { this.$refs.table.focus() },
+        focus() { this.$refs.table.focus() },
         onColumnsWidthChanged: function(widths) {
             console.log("new columnsWidths", widths)
         },
-        onResize: function () {
+        onResize() {
             if (this.$refs.list)
                 this.height = this.$refs.list.clientHeight - this.columnHeight
             this.itemsPerPage = Math.floor(this.height / this.itemHeight)
             this.setPosition()
         },
-        onKeyDown: function (evt) {
+        onKeyDown(evt) {
             switch (evt.which) {
+                case 13: // return
+                    this.$emit('on-action', this.items[this.startIndex + this.position])
+                    break
                 case 33:
                     this.pageUp()
                     break
@@ -99,7 +103,7 @@ export default {
             }
             evt.preventDefault() // prevent the default action (scroll / move caret)
         },
-        onMouseDown: function (evt) {
+        onMouseDown(evt) {
             const tr = evt.target.closest("tbody tr")
             if (tr) {
                 const currentIndex = 
@@ -110,7 +114,7 @@ export default {
                     this.setCurrentIndex(currentIndex)
             }
         },
-        onMouseWheel: function(evt) {
+        onMouseWheel(evt) {
             var delta = evt.deltaY / Math.abs(evt.deltaY) * 3
             let newPos = this.position + delta
             if (newPos < 0)
@@ -120,6 +124,9 @@ export default {
                 console.log(newPos)
             }
             this.position = newPos
+        },
+        onDblClick() {
+            this.$emit('on-action', this.items[this.startIndex + this.position])
         },
         setPosition() {
             this.displayItems = this.items.slice(this.startIndex, this.startIndex + this.itemsPerPage + 1)
@@ -150,13 +157,13 @@ export default {
             this.$emit('on-column-click', index, descending)
         }
     },
-    created: function () {
+    created() {
         window.addEventListener("resize", this.onResize)
     },
-    destroyed: function () {
+    destroyed() {
         window.removeEventListener("resize", this.onResize)
     },
-    mounted: function () {
+    mounted() {
         this.columnHeight = this.$refs.column.$el.clientHeight
         this.onResize()
     }
