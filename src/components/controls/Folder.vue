@@ -1,10 +1,13 @@
 <template>
     <div class="root">
         <h1>Der Folder</h1>
-        <table-view ref="table" :columns='tableViewColumns' :items='items' :itemHeight='16'>
+        <table-view ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18'>
             <template v-slot=row >
                     <tr :class="{ 'isCurrent': row.item.index == $refs.table.index }">
-                        <td>{{ row.item.name }}</td>
+                        <td class="icon-name">
+                            <drive class=icon></drive>
+                            {{ row.item.name }}
+                        </td>
                         <td>{{ row.item.description }}</td>
                         <td>{{ row.item.size | size }}</td>
                     </tr>
@@ -16,11 +19,13 @@
 <script>
 import { getDefaultProcessor } from '../../processors/processor'
 import TableView from './TableView'
+import Drive from '../../icons/Drive'
 
 export default {
     name: "folder",
     components: {
-        TableView
+        TableView,
+        Drive
     },
     data: function () {
         return {
@@ -40,8 +45,11 @@ export default {
         tableViewColumns() { return this.columns.values }
     },
     methods: {
-        // TODO: Icon
         // TODO: Sorting
+        // TODO: Change path
+        // TODO: directory items
+        // TODO: directory input
+        // TODO: restrict window
         changePath: async function (path) {
             this.processor = this.processor.getProcessor(path)
             this.columns = this.processor.getColumns(this.columns)
@@ -55,5 +63,12 @@ export default {
 .root {
     display: flex;
     flex-direction: column;
+}
+.icon-name {
+    display: flex;
+}
+.icon {
+    margin-right: 3px;
+    fill: var(--icon-color);
 }
 </style>
