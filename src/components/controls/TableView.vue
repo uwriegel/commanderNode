@@ -1,7 +1,8 @@
 <template>
     <div class="root" tabindex="1" ref="list" @keydown="onKeyDown" @mousewheel="onMouseWheel">
         <table ref="table" @mousedown="onMouseDown" :class="{ 'scrollbar': items.length > itemsPerPage }">
-            <columns ref="column" :columns='columns' @on-columns-widths-changed='onColumnsWidthChanged'></columns>
+            <columns ref="column" :columns='columns' 
+                @on-columns-widths-changed='onColumnsWidthChanged' @on-column-click='onColumnClick'></columns>
             <tbody>
                 <slot v-for="item in displayItems" :item="item"></slot>
             </tbody>
@@ -144,6 +145,9 @@ export default {
                 this.position = this.index
             if (this.index > this.position + this.itemsPerPage - 1)
                 this.position = this.index - this.itemsPerPage + 1
+        }, 
+        onColumnClick(index, descending) {
+            this.$emit('on-column-click', index, descending)
         }
     },
     created: function () {

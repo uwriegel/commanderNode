@@ -36,10 +36,21 @@ export function getRootProcessor() {
 //                result[0].isCurrent = true
         return items
     }
+    function sort(items, index, descending) {
+        const sort = 
+            index == 0 
+                ? (a, b) => a.name.localeCompare(b.name) :
+            index == 1 
+                ? (a, b) => a.name.localeCompare(b.description)
+                : (a, b) => a.size - b.size
+                
+        return items.sort((a, b) => (descending ? -1 : 1) * sort(a, b))
+    }
 
     return {
         checkPath,
         getColumns,
-        getItems
+        getItems,
+        sort
     }
 }

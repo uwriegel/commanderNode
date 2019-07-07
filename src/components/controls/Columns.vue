@@ -132,7 +132,8 @@ export default {
                     this.$set(column, 'sortDescending', true)
                 else
                     this.$set(column, 'sortAscending', true)
-                console.log(column)
+                const index = this.columns.findIndex(n => n == column)
+                this.$emit('on-column-click', index, descending)
             }
         } 
     }
