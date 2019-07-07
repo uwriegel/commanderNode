@@ -2,21 +2,19 @@ const name = "root"
 
 export function getRootProcessor() {
     function checkPath(path) { return path == name }
+
     function getColumns(columns) {
         return columns && columns.type == name
             ? columns
             : {
                 type: name,
                 values: [{
-    //                    columnsType: ColumnsType.String,
                         isSortable: true,
                         name: "Name"
                     }, {
-    //                    columnsType: ColumnsType.String,
                         isSortable: true,
                         name: "Beschreibung"
                     }, {
-    //                    columnsType: ColumnsType.Size,
                         isSortable: true,
                         name: "Größe"
                     }
@@ -24,8 +22,24 @@ export function getRootProcessor() {
             }
     }
 
+    async function getItems() {
+        const items = (await extFs.getDrives()).filter(n => n.isMounted)
+//        if (result.length > 0) {
+            // if (recentPath) {
+            //     const recentItem = result.find(n => n.name == recentPath)
+            //     if (recentItem)
+            //         recentItem.isCurrent = true
+            //     else
+            //         result[0].isCurrent = true
+            // }
+            // else
+//                result[0].isCurrent = true
+        return items
+    }
+
     return {
         checkPath,
-        getColumns
+        getColumns,
+        getItems
     }
 }
