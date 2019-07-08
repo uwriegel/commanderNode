@@ -26,8 +26,8 @@ export function getDirectoryProcessor() {
             }
     }
 
-    async function getItems() {
-        const items = (await extFs.getDrives()).filter(n => n.isMounted)
+    async function getItems(path) {
+        const items = (await extFs.getFiles(path))
         console.log(items)
 //        if (result.length > 0) {
             // if (recentPath) {
@@ -61,6 +61,7 @@ export function getDirectoryProcessor() {
     }        
 
     return {
+        name: "directory",
         checkPath,
         getColumns,
         getItems,

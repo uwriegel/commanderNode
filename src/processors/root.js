@@ -58,6 +58,7 @@ export function getRootProcessor() {
     }        
 
     return {
+        name,
         checkPath,
         getColumns,
         getItems,

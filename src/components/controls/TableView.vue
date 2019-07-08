@@ -115,15 +115,17 @@ export default {
             }
         },
         onMouseWheel(evt) {
-            var delta = evt.deltaY / Math.abs(evt.deltaY) * 3
-            let newPos = this.position + delta
-            if (newPos < 0)
-                newPos = 0
-            if (newPos > this.items.length - this.itemsPerPage) {
-                newPos = this.items.length - this.itemsPerPage
-                console.log(newPos)
+            if (this.items.length > this.itemsPerPage) {
+                var delta = evt.deltaY / Math.abs(evt.deltaY) * 3
+                let newPos = this.position + delta
+                if (newPos < 0)
+                    newPos = 0
+                if (newPos > this.items.length - this.itemsPerPage) {
+                    newPos = this.items.length - this.itemsPerPage
+                    console.log(newPos)
+                }
+                this.position = newPos
             }
-            this.position = newPos
         },
         onDblClick() {
             this.$emit('on-action', this.items[this.startIndex + this.position])

@@ -3,16 +3,25 @@
         <h1>Der Folder</h1>
         <table-view ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18'
                 @on-column-click='onSort' @on-action='onAction' >
-            <template v-slot=row >
-                    <tr :class="{ 'isCurrent': row.item.index == $refs.table.index }">
-                        <td class="icon-name">
-                            <drive class=icon></drive>
-                            {{ row.item.name }}
-                        </td>
-                        <td>{{ row.item.description }}</td>
-                        <td>{{ row.item.size | size }}</td>
-                    </tr>
-                </template>
+            <template v-slot=row>
+                <tr v-if='processor.name == "directory"' :class="{ 'isCurrent': row.item.index == $refs.table.index }">
+                    <td class="icon-name">
+                        <drive class=icon></drive>
+                        {{ row.item.name }}
+                    </td>
+                    <td>{{ row.item.extension }}</td>
+                    <td>{{ row.item.size | size }}</td>
+                    <td>{{ row.item.size | size }}</td>
+                </tr>
+                <tr v-if='processor.name == "root"' :class="{ 'isCurrent': row.item.index == $refs.table.index }">
+                    <td class="icon-name">
+                        <drive class=icon></drive>
+                        {{ row.item.name }}
+                    </td>
+                    <td>{{ row.item.description }}</td>
+                    <td>{{ row.item.size | size }}</td>
+                </tr>
+            </template>
         </table-view>
     </div>
 </template>
@@ -31,23 +40,25 @@ export default {
     data() {
         return {
             columns: [],
-            items: []
+            items: [],
+            processor: getDefaultProcessor()
         }
     },
     props: [
         "id"
     ],
     created: function() {
-        this.processor = getDefaultProcessor()
         const path = localStorage[`${this.id}-path`] || "root"
-        this.changePath(path)
+        this.changePath(path, true)
     },
     computed: {
         tableViewColumns() { return this.columns.values }
     },
     methods: {
-        // TODO: Change path
-        // TODO: directory items
+        // TODO: directory items: extension, date-pipe, size right-aligned
+        // TODO: Differ between folder and file, sort order, parent ..
+        // TODO: sort by column
+        // TODO: File icons
         // TODO: save latest path
         // TODO: @on-columns-widths-changed
         // TODO: directory input
@@ -59,9 +70,11 @@ export default {
         // TODO: Hidden items
 
         focus() { this.$refs.table.focus() },
-        async changePath(path) {
-            this.processor = this.processor.getProcessor(path)
-            this.columns = this.processor.getColumns(this.columns)
+        async changePath(path, checkProcessor) {
+            if (checkProcessor) {
+                this.processor = this.processor.getProcessor(path)
+                this.columns = this.processor.getColumns(this.columns)
+            }
             this.items = await this.processor.getItems(path)
         },
         onSort(index, descending) {
@@ -75,6 +88,7 @@ export default {
                     this.processor = result.newProcessor
                     this.columns = this.processor.getColumns(this.columns)
                 }
+                this.changePath(result.path)
             }
         }
     }
@@ -87,10 +101,11 @@ export default {
     flex-direction: column;
 }
 .icon-name {
-    display: flex;
+    display: block;
 }
 .icon {
-    margin-right: 3px;
+    margin-right: 1px;
     fill: var(--icon-color);
+    vertical-align: bottom;
 }
 </style>

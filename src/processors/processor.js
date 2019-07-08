@@ -8,6 +8,9 @@ export function createProcessor(path) {
 export function getDefaultProcessor() {
     function getProcessor(path) { return createProcessor(path) }
     
-    return { getProcessor }
+    return { 
+        name: "default",
+        getProcessor 
+    }
 }
 
