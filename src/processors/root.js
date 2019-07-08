@@ -25,7 +25,6 @@ export function getRootProcessor() {
 
     async function getItems() {
         const items = (await extFs.getDrives()).filter(n => n.isMounted)
-        console.log(items)
 //        if (result.length > 0) {
             // if (recentPath) {
             //     const recentItem = result.find(n => n.name == recentPath)

@@ -122,7 +122,6 @@ export default {
                     newPos = 0
                 if (newPos > this.items.length - this.itemsPerPage) {
                     newPos = this.items.length - this.itemsPerPage
-                    console.log(newPos)
                 }
                 this.position = newPos
             }

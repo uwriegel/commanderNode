@@ -4,22 +4,31 @@
         <table-view ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18'
                 @on-column-click='onSort' @on-action='onAction' >
             <template v-slot=row>
-                <tr v-if='processor.name == "directory"' :class="{ 'isCurrent': row.item.index == $refs.table.index }">
+                <tr v-if='processor.name == "directory" && row.item.isDirectory ' 
+                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden }">
                     <td class="icon-name">
                         <drive class=icon></drive>
                         {{ row.item.name }}
-                    </td>
-                    <td>{{ row.item.extension }}</td>
-                    <td>{{ row.item.size | size }}</td>
-                    <td>{{ row.item.size | size }}</td>
+                    </td>  
                 </tr>
-                <tr v-if='processor.name == "root"' :class="{ 'isCurrent': row.item.index == $refs.table.index }">
+                <tr v-if='processor.name == "directory" && !row.item.isDirectory ' 
+                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden }">
+                    <td class="icon-name">
+                        <drive class=icon></drive>
+                        {{ row.item.name | nameOnly }}
+                    </td>
+                    <td>{{ row.item.name | extension }}</td>
+                    <td>{{ row.item.time | dateTime }}</td>
+                    <td class="size">{{ row.item.size | size }}</td>
+                </tr>
+                <tr v-if='processor.name == "root"' 
+                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden }">
                     <td class="icon-name">
                         <drive class=icon></drive>
                         {{ row.item.name }}
                     </td>
                     <td>{{ row.item.description }}</td>
-                    <td>{{ row.item.size | size }}</td>
+                    <td class="size">{{ row.item.size | size }}</td>
                 </tr>
             </template>
         </table-view>
@@ -55,10 +64,9 @@ export default {
         tableViewColumns() { return this.columns.values }
     },
     methods: {
-        // TODO: directory items: extension, date-pipe, size right-aligned
-        // TODO: Differ between folder and file, sort order, parent ..
         // TODO: sort by column
         // TODO: File icons
+        // TODO: onAction: change path
         // TODO: save latest path
         // TODO: @on-columns-widths-changed
         // TODO: directory input
@@ -107,5 +115,12 @@ export default {
     margin-right: 1px;
     fill: var(--icon-color);
     vertical-align: bottom;
+}
+.size {
+    text-align: right;
+    margin-right: 2px;
+}
+tr.isHidden {
+    opacity: 0.5;
 }
 </style>

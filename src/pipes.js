@@ -1,3 +1,14 @@
+const dateFormat = Intl.DateTimeFormat("de-DE", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+})
+
+const timeFormat = Intl.DateTimeFormat("de-DE", {
+    hour: "2-digit",
+    minute: "2-digit"
+})
+
 export function getSize(value) {
     if (!value)
         return ''
@@ -15,4 +26,27 @@ export function getSize(value) {
         strNumber = strfirst + strNumber
     }
     return strNumber
+}
+
+export function getNameOnly(value) {
+    if (!value)
+        return ''
+
+    const pos = value.lastIndexOf('.')
+    return value.substring(0, pos)
+}
+
+export function getExtension(value) {
+    if (!value)
+        return ''
+
+    const pos = value.lastIndexOf('.')
+    return value.substring(pos + 1)
+}
+
+export function getDateTime(date) {
+    if (!date)
+        return ''
+
+    return dateFormat.format(date) + " " + timeFormat.format(date)  
 }

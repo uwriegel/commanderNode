@@ -99,7 +99,6 @@ export default {
                 }
 
                 const onup = evt => {
-                    console.log("Abbb")
                     const getWidths = () => {
                         const ths = Array.from(this.$refs.tr.children)
                         return ths.map(th => {

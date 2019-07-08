@@ -27,7 +27,13 @@ export function getDirectoryProcessor() {
     }
 
     async function getItems(path) {
-        const items = (await extFs.getFiles(path))
+        const values = (await extFs.getFiles(path))
+        let dirs = values.filter(n => n.isDirectory)
+        let files = values.filter(n => !n.isDirectory)
+        if (dirs.length == 0 || dirs[0].name != "..")
+            dirs = [ {name: "..", isDirectory: true, isRoot: true  }].concat(dirs)
+        const items = dirs.concat(files)
+
         console.log(items)
 //        if (result.length > 0) {
             // if (recentPath) {
