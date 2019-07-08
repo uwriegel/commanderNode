@@ -63,7 +63,7 @@ export default {
         }
     },
     methods: {
-        focus() { this.$refs.table.focus() },
+        focus() { this.$refs.list.focus() },
         onColumnsWidthChanged: function(widths) {
             console.log("new columnsWidths", widths)
         },

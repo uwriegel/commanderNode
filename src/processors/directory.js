@@ -11,10 +11,16 @@ export function getDirectoryProcessor() {
                         name: "Name"
                     }, {
                         isSortable: true,
-                        name: "Beschreibung"
+                        name: "Erw."
+                    }, {
+                        isSortable: true,
+                        name: "Datum"
                     }, {
                         isSortable: true,
                         name: "Größe"
+                    }, {
+                        isSortable: true,
+                        name: "Version"
                     }
                 ]
             }
@@ -49,7 +55,7 @@ export function getDirectoryProcessor() {
     function onAction(item) {
         return {
             done: false,
-            newProcessor: ,
+            newProcessor: null,
             path: item.name
         }
     }        

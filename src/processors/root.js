@@ -1,3 +1,4 @@
+import { getDirectoryProcessor } from './directory'
 const name = "root"
 
 export function getRootProcessor() {
@@ -51,7 +52,7 @@ export function getRootProcessor() {
     function onAction(item) {
         return {
             done: false,
-            newProcessor: null, // TODO
+            newProcessor: getDirectoryProcessor(), 
             path: item.name
         }
     }        

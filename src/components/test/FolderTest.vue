@@ -1,7 +1,7 @@
 <template>
     <div class="root">
         <h3>Folder Test</h3>
-        <folder class="folder" id="test"></folder>
+        <folder ref="folder" class="folder" id="test"></folder>
         <footer>Status</footer>
     </div>
 </template>
@@ -12,7 +12,8 @@ export default {
     name: "folder-test",
     components: {
         Folder
-    }
+    },
+    mounted() { this.$refs.folder.focus() }
 }
 </script>
 
