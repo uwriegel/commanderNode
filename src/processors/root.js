@@ -2,6 +2,9 @@ import { getDirectoryProcessor } from './directory'
 const name = "root"
 
 export function getRootProcessor() {
+    let sortIndex = null
+    let sortDescending = false
+    
     function checkPath(path) { return path == name }
 
     function getColumns(columns) {
@@ -35,18 +38,27 @@ export function getRootProcessor() {
             // }
             // else
 //                result[0].isCurrent = true
-        return items
+        return refresh(items)
     }
     function sort(items, index, descending) {
-        const sort = 
-            index == 0 
-                ? (a, b) => a.name.localeCompare(b.name) :
-            index == 1 
-                ? (a, b) => a.description.localeCompare(b.description)
-                : (a, b) => a.size - b.size
-                
-        return items.sort((a, b) => (descending ? -1 : 1) * sort(a, b))
+        sortIndex = index
+        sortDescending = descending
+        return refresh(items)
     }
+    function refresh(items) {
+        if (sortIndex != null) {
+            const sort = 
+            sortIndex == 0 
+                    ? (a, b) => a.name.localeCompare(b.name) :
+                    sortIndex == 1 
+                    ? (a, b) => a.description.localeCompare(b.description)
+                    : (a, b) => a.size - b.size
+                    
+            return items.sort((a, b) => (sortDescending ? -1 : 1) * sort(a, b))
+        }
+        else 
+            return items
+    }    
 
     function onAction(item) {
         return {
@@ -62,6 +74,7 @@ export function getRootProcessor() {
         getColumns,
         getItems,
         sort,
+        refresh,
         onAction
     }
 }

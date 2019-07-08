@@ -1,4 +1,9 @@
+import { getNameOnly, getExtension } from '../pipes'
+
 export function getDirectoryProcessor() {
+    let sortIndex = null
+    let sortDescending = false
+
     function checkPath(path) { return path == name }
 
     function getColumns(columns) {
@@ -28,8 +33,24 @@ export function getDirectoryProcessor() {
 
     async function getItems(path) {
         const values = (await extFs.getFiles(path))
+        return refresh(values)
+    }
+    function refresh(values) {
         let dirs = values.filter(n => n.isDirectory)
         let files = values.filter(n => !n.isDirectory)
+        if (sortIndex != null) {
+            const sort = 
+                sortIndex == 0 
+                ? (a, b) => getNameOnly(a.name).localeCompare(getNameOnly(b.name)) :
+                sortIndex == 1 
+                ? (a, b) => getExtension(a.name).localeCompare(getExtension(b.name)) :
+                sortIndex == 2
+                ? (a, b) => a.time - b.time 
+                : (a, b) => a.size - b.size
+    
+            files = files.sort((a, b) => (sortDescending ? -1 : 1) * sort(a, b))
+        }
+        
         if (dirs.length == 0 || dirs[0].name != "..")
             dirs = [ {name: "..", isDirectory: true, isRoot: true  }].concat(dirs)
         const items = dirs.concat(files)
@@ -48,14 +69,9 @@ export function getDirectoryProcessor() {
         return items
     }
     function sort(items, index, descending) {
-        const sort = 
-            index == 0 
-                ? (a, b) => a.name.localeCompare(b.name) :
-            index == 1 
-                ? (a, b) => a.description.localeCompare(b.description)
-                : (a, b) => a.size - b.size
-                
-        return items.sort((a, b) => (descending ? -1 : 1) * sort(a, b))
+        sortIndex = index
+        sortDescending = descending
+        return refresh(items)
     }
 
     function onAction(item) {
@@ -72,6 +88,7 @@ export function getDirectoryProcessor() {
         getColumns,
         getItems,
         sort,
+        refresh,
         onAction
     }
 }

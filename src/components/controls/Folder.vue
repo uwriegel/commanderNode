@@ -64,7 +64,7 @@ export default {
         tableViewColumns() { return this.columns.values }
     },
     methods: {
-        // TODO: sort by column
+        // TODO: onAction: actual position (drives)
         // TODO: File icons
         // TODO: onAction: change path
         // TODO: save latest path
