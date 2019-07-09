@@ -24,7 +24,6 @@
 import TableView from '../controls/TableView'
 
 export default {
-    name: 'table-view-test',
     components: {
         TableView
     },

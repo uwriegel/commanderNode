@@ -21,7 +21,6 @@ import Scrollbar from "./../controls/Scrollbar"
 const itemHeight = 14
 
 export default {
-    name: "scrollbar-test",
     components: {
         Scrollbar
     },

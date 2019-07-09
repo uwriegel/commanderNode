@@ -7,14 +7,14 @@
                 <tr v-if='processor.name == "directory" && row.item.isDirectory ' 
                         :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden }">
                     <td class="icon-name">
-                        <drive class=icon></drive>
+                        <folder-icon class=icon></folder-icon>
                         {{ row.item.name }}
                     </td>  
                 </tr>
                 <tr v-if='processor.name == "directory" && !row.item.isDirectory ' 
                         :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden }">
                     <td class="icon-name">
-                        <drive class=icon></drive>
+                        <img :src='row.item.name | iconUrl(processor.path)' alt="">
                         {{ row.item.name | nameOnly }}
                     </td>
                     <td>{{ row.item.name | extension }}</td>
@@ -24,7 +24,7 @@
                 <tr v-if='processor.name == "root"' 
                         :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden }">
                     <td class="icon-name">
-                        <drive class=icon></drive>
+                        <drive-icon class=icon></drive-icon>
                         {{ row.item.name }}
                     </td>
                     <td>{{ row.item.description }}</td>
@@ -38,19 +38,21 @@
 <script>
 import { getDefaultProcessor } from '../../processors/processor'
 import TableView from './TableView'
-import Drive from '../../icons/Drive'
+import DriveIcon from '../../icons/DriveIcon'
+import FolderIcon from '../../icons/FolderIcon'
 
 export default {
-    name: "folder",
     components: {
         TableView,
-        Drive
+        DriveIcon,
+        FolderIcon
     },
     data() {
         return {
             columns: [],
             items: [],
-            processor: getDefaultProcessor()
+            processor: getDefaultProcessor(),
+            path: "Der Pfad"
         }
     },
     props: [
@@ -64,7 +66,6 @@ export default {
         tableViewColumns() { return this.columns.values }
     },
     methods: {
-        // TODO: onAction: actual position (drives)
         // TODO: File icons
         // TODO: onAction: change path
         // TODO: save latest path

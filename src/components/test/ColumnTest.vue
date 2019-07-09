@@ -28,7 +28,6 @@
 import Columns from '../controls/Columns'
 
 export default {
-    name: 'column-test',
     components: {
         Columns        
     },

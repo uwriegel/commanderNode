@@ -50,3 +50,8 @@ export function getDateTime(date) {
 
     return dateFormat.format(date) + " " + timeFormat.format(date)  
 }
+
+export function getIconUrl(value, path) {
+    console.log(value, path)
+    return "hallo"
+}

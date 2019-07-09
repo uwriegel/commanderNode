@@ -19,7 +19,6 @@
 const scrollerHeight = 15
 
 export default {
-    name: "scrollbar",
     props: [
         'value',
         'totalCount',

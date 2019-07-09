@@ -9,7 +9,6 @@
 <script>
 import Folder from '../controls/Folder'
 export default {
-    name: "folder-test",
     components: {
         Folder
     },

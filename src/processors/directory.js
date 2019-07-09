@@ -84,6 +84,7 @@ export function getDirectoryProcessor() {
 
     return {
         name: "directory",
+        get path() { return "Das isser" },
         checkPath,
         getColumns,
         getItems,

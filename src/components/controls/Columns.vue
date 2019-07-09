@@ -11,7 +11,6 @@
 
 <script>
 export default {
-    name: 'columns',
     props: [
         /***
          * @param {string} name

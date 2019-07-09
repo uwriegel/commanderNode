@@ -5,9 +5,7 @@
 </template>
 
 <script>
-export default {
-    name: 'drive'
-}
+export default { }
 </script>
 
 <style scoped>

@@ -6,6 +6,7 @@ const app = electron.app
 const protocol = electron.protocol
 const BrowserWindow = electron.BrowserWindow
 const fs = require("fs")
+const extFs = require('extension-fs')
 
 const createWindow = function() {    
     const bounds = settings.get("window-bounds", { 
@@ -42,6 +43,15 @@ const createWindow = function() {
             fs.readFile(file, (_, data) => {
                 callback({mimeType: 'text/css', data: data})
             })
+    }, (error) => {
+        if (error) console.error('Failed to register protocol', error)
+    })
+
+    protocol.registerBufferProtocol('icon', async (request, callback) => {
+        const url = request.url
+        var ext = url.substr(7)
+        var icon = await extFs.getIcon(ext)
+        callback({mimeType: 'img/png', data: icon})
     }, (error) => {
         if (error) console.error('Failed to register protocol', error)
     })

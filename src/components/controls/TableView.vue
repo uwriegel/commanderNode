@@ -18,10 +18,9 @@
 
 <script>
 import Columns from './Columns'
-import Scrollbar from "./Scrollbar"
+import Scrollbar from './Scrollbar'
 
 export default {
-    name: 'table-view',
     components: {
         Columns,
         Scrollbar
@@ -127,7 +126,7 @@ export default {
             }
         },
         onDblClick() {
-            this.$emit('on-action', this.items[this.startIndex + this.position])
+            this.$emit('on-action', this.items[this.index])
         },
         setPosition() {
             this.displayItems = this.items.slice(this.startIndex, this.startIndex + this.itemsPerPage + 1)

@@ -8,7 +8,6 @@
 <script>
 
 export default {
-    name: "connection-test",
     methods: {
         async onClick() {
             const result = await extFs.getFiles(`c:\\windows\\system32`)
