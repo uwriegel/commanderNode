@@ -1,4 +1,6 @@
 import { getNameOnly, getExtension } from '../pipes'
+import { createProcessor } from './processor'
+import { name as rootName } from './root'
 
 export function getDirectoryProcessor() {
     let privates = {
@@ -79,12 +81,31 @@ export function getDirectoryProcessor() {
     }
 
     function onAction(item) {
-        return {
-            done: false,
-            newProcessor: null,
-            path: item.name
+        if (item.isDirectory) {
+            const path = combinePath(privates.path, item.name)
+            return path
+                ? {
+                    done: false,
+                    newProcessor: null,
+                    path: path
+                }
+                : {
+                    done: false,
+                    newProcessor: createProcessor(rootName),
+                    path: rootName
+                }
         }
     }        
+
+    function combinePath(path1, path2) {
+        if (path2 == "..") {
+            const pos = path1.lastIndexOf('\\')
+            if (path1[pos - 1] == ':')
+                return null
+            return pos != -1 ? path1.substr(0, pos) : null
+        }
+        return path1.endsWith('\\') ? path1 + path2 : path1 + '\\' + path2
+    }
 
     return {
         name: "directory",

@@ -1,5 +1,5 @@
 import { getDirectoryProcessor } from './directory'
-const name = "root"
+export const name = "root"
 
 export function getRootProcessor() {
     let sortIndex = null
