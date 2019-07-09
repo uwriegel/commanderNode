@@ -52,6 +52,9 @@ export function getDateTime(date) {
 }
 
 export function getIconUrl(value, path) {
-    console.log(value, path)
-    return "hallo"
+    if (value.toLowerCase().endsWith(".exe")) 
+        return "icon://" + path + '/' + value 
+
+    const pos = value.lastIndexOf('.')
+    return pos != -1 ? "icon://" + value.substring(pos + 1) : ""
 }

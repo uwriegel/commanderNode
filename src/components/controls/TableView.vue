@@ -75,7 +75,7 @@ export default {
         onKeyDown(evt) {
             switch (evt.which) {
                 case 13: // return
-                    this.$emit('on-action', this.items[this.startIndex + this.position])
+                    this.onDblClick()
                     break
                 case 33:
                     this.pageUp()
@@ -192,7 +192,7 @@ td {
     transition: padding-right .4s;
 }    
 .scrollbar td:last-child {
-    padding-right: 16px;
+    padding-right: 19px;
 }
 .scrollbar-container {
     top: 16px;

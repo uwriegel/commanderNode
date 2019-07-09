@@ -1,8 +1,11 @@
 import { getNameOnly, getExtension } from '../pipes'
 
 export function getDirectoryProcessor() {
-    let sortIndex = null
-    let sortDescending = false
+    let privates = {
+        sortIndex: null,
+        sortDescending: false,
+        path: ""
+    }
 
     function checkPath(path) { return path == name }
 
@@ -33,22 +36,23 @@ export function getDirectoryProcessor() {
 
     async function getItems(path) {
         const values = (await extFs.getFiles(path))
+        privates.path = path
         return refresh(values)
     }
     function refresh(values) {
         let dirs = values.filter(n => n.isDirectory)
         let files = values.filter(n => !n.isDirectory)
-        if (sortIndex != null) {
+        if (privates.sortIndex != null) {
             const sort = 
-                sortIndex == 0 
+            privates.sortIndex == 0 
                 ? (a, b) => getNameOnly(a.name).localeCompare(getNameOnly(b.name)) :
-                sortIndex == 1 
+                privates.sortIndex == 1 
                 ? (a, b) => getExtension(a.name).localeCompare(getExtension(b.name)) :
-                sortIndex == 2
+                privates.sortIndex == 2
                 ? (a, b) => a.time - b.time 
                 : (a, b) => a.size - b.size
     
-            files = files.sort((a, b) => (sortDescending ? -1 : 1) * sort(a, b))
+            files = files.sort((a, b) => (privates.sortDescending ? -1 : 1) * sort(a, b))
         }
         
         if (dirs.length == 0 || dirs[0].name != "..")
@@ -69,8 +73,8 @@ export function getDirectoryProcessor() {
         return items
     }
     function sort(items, index, descending) {
-        sortIndex = index
-        sortDescending = descending
+        privates.sortIndex = index
+        privates.sortDescending = descending
         return refresh(items)
     }
 
@@ -84,7 +88,7 @@ export function getDirectoryProcessor() {
 
     return {
         name: "directory",
-        get path() { return "Das isser" },
+        get path() { return privates.path },
         checkPath,
         getColumns,
         getItems,

@@ -20,6 +20,7 @@
                     <td>{{ row.item.name | extension }}</td>
                     <td>{{ row.item.time | dateTime }}</td>
                     <td class="size">{{ row.item.size | size }}</td>
+                    <td></td>
                 </tr>
                 <tr v-if='processor.name == "root"' 
                         :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden }">
@@ -66,7 +67,6 @@ export default {
         tableViewColumns() { return this.columns.values }
     },
     methods: {
-        // TODO: File icons
         // TODO: onAction: change path
         // TODO: save latest path
         // TODO: @on-columns-widths-changed
@@ -119,9 +119,11 @@ export default {
 }
 .size {
     text-align: right;
-    margin-right: 2px;
 }
 tr.isHidden {
     opacity: 0.5;
+}
+img {
+    vertical-align: bottom;
 }
 </style>
