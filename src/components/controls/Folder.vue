@@ -65,14 +65,14 @@ export default {
     ],
     created: function() {
         const path = localStorage[`${this.id}-path`] || "root"
-        this.changePath(path, true)
+        this.changePath(path, null, true)
     },
     computed: {
         tableViewColumns() { return this.columns.values }
     },
     methods: {
-        // TODO: save latest path
         // TODO: @on-columns-widths-changed
+        // TODO: Double click in column => onAction
         // TODO: directory input
         // TODO: restrict window
         // TODO: versions
@@ -82,12 +82,19 @@ export default {
         // TODO: Hidden items
 
         focus() { this.$refs.table.focus() },
-        async changePath(path, checkProcessor) {
+        async changePath(path, lastPath, checkProcessor) {
             if (checkProcessor) {
                 this.processor = this.processor.getProcessor(path)
                 this.columns = this.processor.getColumns(this.columns)
             }
             this.items = await this.processor.getItems(path)
+            console.log(lastPath)
+            if (lastPath) {
+                const newPos = this.items.findIndex(n => n.name == lastPath)
+                if (newPos != -1) {
+                    setTimeout(() => this.$refs.table.setCurrentIndex(newPos))
+                }
+            }
         },
         onSort(index, descending) {
             this.items = this.processor.sort(this.items, index, descending)
@@ -100,7 +107,7 @@ export default {
                     this.processor = result.newProcessor
                     this.columns = this.processor.getColumns(this.columns)
                 }
-                this.changePath(result.path)
+                this.changePath(result.path, result.lastPath)
             }
         }
     }

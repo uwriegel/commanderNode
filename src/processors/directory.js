@@ -59,20 +59,7 @@ export function getDirectoryProcessor() {
         
         if (dirs.length == 0 || dirs[0].name != "..")
             dirs = [ {name: "..", isDirectory: true, isRoot: true  }].concat(dirs)
-        const items = dirs.concat(files)
-
-        console.log(items)
-//        if (result.length > 0) {
-            // if (recentPath) {
-            //     const recentItem = result.find(n => n.name == recentPath)
-            //     if (recentItem)
-            //         recentItem.isCurrent = true
-            //     else
-            //         result[0].isCurrent = true
-            // }
-            // else
-//                result[0].isCurrent = true
-        return items
+        return dirs.concat(files)
     }
     function sort(items, index, descending) {
         privates.sortIndex = index
@@ -87,21 +74,28 @@ export function getDirectoryProcessor() {
                 ? {
                     done: false,
                     newProcessor: null,
-                    path: path
+                    path: path,
+                    lastPath: getDirectoryName(privates.path)
                 }
                 : {
                     done: false,
                     newProcessor: createProcessor(rootName),
-                    path: rootName
+                    path: rootName,
+                    lastPath: getDirectoryName(privates.path)
                 }
         }
     }        
 
+    function getDirectoryName(path) {
+        const pos = path.lastIndexOf('\\', path.length - 2)
+        return pos != -1 ? path.substr(pos + 1) : path
+    }
+
     function combinePath(path1, path2) {
         if (path2 == "..") {
-            const pos = path1.lastIndexOf('\\')
+            let pos = path1.lastIndexOf('\\', path1.length - 2)
             if (path1[pos - 1] == ':')
-                return null
+                pos += 1
             return pos != -1 ? path1.substr(0, pos) : null
         }
         return path1.endsWith('\\') ? path1 + path2 : path1 + '\\' + path2
