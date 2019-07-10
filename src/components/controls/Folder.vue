@@ -24,7 +24,7 @@
                     <td>{{ row.item.name | extension }}</td>
                     <td>{{ row.item.time | dateTime }}</td>
                     <td class="size">{{ row.item.size | size }}</td>
-                    <td></td>
+                    <td>{{ row.item.version }}</td>
                 </tr>
                 <tr v-if='processor.name == "root"' 
                         :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden }">

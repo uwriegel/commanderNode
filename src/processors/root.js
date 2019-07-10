@@ -33,6 +33,11 @@ export function getRootProcessor() {
 
     async function getItems() {
         const items = (await extFs.getDrives()).filter(n => n.isMounted)
+        items.forEach(n => {
+            n.isSelected = false
+            n.isExif = false
+            n.version = ""
+        })
         return refresh(items)
     }
     function sort(items, index, descending) {

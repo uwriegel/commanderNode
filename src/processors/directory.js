@@ -42,6 +42,11 @@ export function getDirectoryProcessor() {
 
     async function getItems(path) {
         const values = (await extFs.getFiles(path))
+        values.forEach(n => {
+            n.isSelected = false
+            n.isExif = false
+            n.version = ""
+        })
         privates.path = path
         return refresh(values)
     }
