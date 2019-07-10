@@ -1,7 +1,6 @@
 <template>
     <div class="root" v-stream:keydown='keyDown$'> 
         <input ref="input" v-selectall @keydown='onInputKeyDown' v-model.lazy="path">
-        <h1>{{random$}}</h1>
         <table-view ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18'
                 @on-column-click='onSort' @on-columns-widths-changed='onColumnsWidthChanged' @on-action='onAction' >
             <template v-slot=row>
@@ -74,12 +73,6 @@ export default {
         }
     },
     domStreams: ["keyDown$"],
-    subscriptions() {
-        const random$ = this.keyDown$.pipe(map(n => n.event.key))
-        return {
-            random$
-        }
-    },
     created() {
         const path = localStorage[`${this.id}-path`] || "root"
         this.changePath(path, null, true)
@@ -93,7 +86,8 @@ export default {
         tableViewColumns() { return this.columns.values }
     },
     methods: {
-        // TODO: restrict window
+        // TODO: restrict window: multiple observables
+        // TODO: restrict window: State transition
         // TODO: versions
         // TODO: exifs
         // TODO: Selections
