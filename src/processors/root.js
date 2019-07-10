@@ -1,4 +1,5 @@
 import { getDirectoryProcessor } from './directory'
+import { createProcessor } from './processor'
 export const name = "root"
 
 export function getRootProcessor() {
@@ -6,6 +7,10 @@ export function getRootProcessor() {
     let sortDescending = false
     
     function checkPath(path) { return path == name }
+
+    function getProcessor(path) { 
+        return path == name ? null : createProcessor(path)
+    }
 
     function getColumns(columns) {
         return columns && columns.type == name
@@ -61,6 +66,7 @@ export function getRootProcessor() {
     return {
         name,
         path: name,
+        getProcessor,
         checkPath,
         getColumns,
         getItems,

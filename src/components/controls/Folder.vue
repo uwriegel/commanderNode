@@ -1,6 +1,6 @@
 <template>
     <div class="root" @keydown='onKeyDown'> 
-        <input ref="input" @keydown='onInputKeyDown' v-model.lazy="path">
+        <input ref="input" v-selectall @keydown='onInputKeyDown' v-model.lazy="path">
         <table-view ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18'
                 @on-column-click='onSort' @on-columns-widths-changed='onColumnsWidthChanged' @on-action='onAction' >
             <template v-slot=row>
@@ -66,7 +66,7 @@ export default {
     watch: {
         path(newVal, oldVal) {
             if (this.processor.path != newVal)
-                console.log("Geändert", newVal)
+                this.changePath(newVal, null, true)
         }
     },
     created: function() {
@@ -77,8 +77,7 @@ export default {
         tableViewColumns() { return this.columns.values }
     },
     methods: {
-        // TODO: directory input change path
-        // TODO: directory input: selectAll directive
+        // TODO: save path when changing path
         // TODO: restrict window
         // TODO: versions
         // TODO: exifs
@@ -105,11 +104,11 @@ export default {
                 this.changeProcessor(this.processor.getProcessor(path))
             this.items = await this.processor.getItems(path)
             this.path = path
+            localStorage[`${this.id}-path`] = path
             if (lastPath) {
                 const newPos = this.items.findIndex(n => n.name == lastPath)
-                if (newPos != -1) {
+                if (newPos != -1) 
                     setTimeout(() => this.$refs.table.setCurrentIndex(newPos))
-                }
             }
         },
         onSort(index, descending) {
@@ -138,15 +137,16 @@ export default {
         },        
         getStorageColumnsWidthName() { return this.id + '-' + this.processor.name + '-columnsWidths'},
         changeProcessor(processor) {
-            this.processor = processor
-            const columns = this.processor.getColumns(this.columns)
-            console.log(columns)
-            const value = localStorage[this.getStorageColumnsWidthName()]
-            if (value) {
-                const widths = JSON.parse(value)
-                columns.values.forEach((n, i) => n.width = widths[i])
+            if (processor) {
+                this.processor = processor
+                const columns = this.processor.getColumns(this.columns)
+                const value = localStorage[this.getStorageColumnsWidthName()]
+                if (value) {
+                    const widths = JSON.parse(value)
+                    columns.values.forEach((n, i) => n.width = widths[i])
+                }
+                this.columns = columns
             }
-            this.columns = columns
         }
     }
 }

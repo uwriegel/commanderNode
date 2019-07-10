@@ -9,6 +9,10 @@ export function getDirectoryProcessor() {
         path: ""
     }
 
+    function getProcessor(path) { 
+        return path != rootName ? null : createProcessor(rootName)
+    }
+
     function checkPath(path) { return path == name }
 
     function getColumns(columns) {
@@ -104,6 +108,7 @@ export function getDirectoryProcessor() {
     return {
         name: "directory",
         get path() { return privates.path },
+        getProcessor,
         checkPath,
         getColumns,
         getItems,
