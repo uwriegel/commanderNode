@@ -37,7 +37,9 @@
                 </tr>
             </template>
         </table-view>
-        <input class="restrictor" disabled v-show="restrictValue.length" :value="restrictValue">
+        <transition name="slide">
+            <input class="restrictor" disabled v-show="restrictValue.length" :value="restrictValue">
+        </transition>
     </div>
 </template>
 
@@ -46,7 +48,7 @@ import { getDefaultProcessor } from '../../processors/processor'
 import TableView from './TableView'
 import DriveIcon from '../../icons/DriveIcon'
 import FolderIcon from '../../icons/FolderIcon'
-import { Observable, map, pipe } from "rxjs/operators"
+import { Observable, map, pipe, filter } from "rxjs/operators"
 
 export default {
     components: {
@@ -78,16 +80,18 @@ export default {
         this.changePath(path, null, true)
     },
     mounted() {
-        this.$subscribeTo(this.keyDown$.pipe(map(n => n.event.key)), evt => {
-            this.restrictValue += evt
-        })
+        const inputChars$ = this.keyDown$.pipe(filter(n => !n.event.altKey && !n.event.ctrlKey && !n.event.shiftKey && n.event.key.length > 0 && n.event.key.length < 2))
+        const backSpaces$ = this.keyDown$.pipe(filter(n => n.event.which == 8))
+        const escapes$ = this.keyDown$.pipe(filter(n => n.event.which == 27))
+
+        this.$subscribeTo(inputChars$, evt => this.restrictTo(evt.event))
+        this.$subscribeTo(backSpaces$, evt => this.restrictBack())
+        this.$subscribeTo(escapes$, evt => this.restrictClose())
     },
     computed: {
         tableViewColumns() { return this.columns.values }
     },
     methods: {
-        // TODO: restrict window: multiple observables
-        // TODO: restrict window: State transition
         // TODO: versions
         // TODO: exifs
         // TODO: Selections
@@ -109,6 +113,7 @@ export default {
             localStorage[this.getStorageColumnsWidthName()] = JSON.stringify(widths)
         },
         async changePath(path, lastPath, checkProcessor) {
+            this.restrictClose(true)
             if (checkProcessor) 
                 this.changeProcessor(this.processor.getProcessor(path))
             this.items = await this.processor.getItems(path)
@@ -156,6 +161,28 @@ export default {
                 }
                 this.columns = columns
             }
+        },
+        restrictTo(evt) {
+            const items = this.items.filter(n => n.name.toLowerCase().startsWith(this.restrictValue + evt.key))
+            if (items.length > 0) {
+                if (!this.originalItems)
+                    this.originalItems = this.items
+                this.restrictValue += evt.key      
+                this.items = items      
+            }
+        },
+        restrictClose(leaveItems) {
+            this.restrictValue = ""
+            if (this.originalItems && !leaveItems)
+                this.items = this.originalItems
+            this.originalItems = null
+        },
+        restrictBack() {
+            if (this.restrictValue.length > 0) {
+                this.restrictValue = this.restrictValue.substr(0, this.restrictValue.length - 1);
+                if (this.restrictValue.length == 0)
+                    this.restrictClose()
+            }
         }
     }
 }
@@ -199,6 +226,7 @@ img {
 .restrictor {
     width: 70%;
     bottom: 10px;
+    height: 18px;
     position: absolute;
     left: 5px;
     box-sizing: border-box;
@@ -210,5 +238,13 @@ img {
     color: rgba(0, 0, 0, 0.75);
     background-color: white;
     box-shadow: 3px 5px 12px 3px rgba(136, 136, 136, 0.55);    
+}
+.slide-enter-active, .slide-leave-active {
+    transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease;
+}
+.slide-enter, .slide-leave-to {
+    opacity: 0;
+    width: 0%;
+    height: 0px;
 }
 </style>
