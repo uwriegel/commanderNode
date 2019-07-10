@@ -60,6 +60,7 @@ export function getRootProcessor() {
 
     return {
         name,
+        path: name,
         checkPath,
         getColumns,
         getItems,

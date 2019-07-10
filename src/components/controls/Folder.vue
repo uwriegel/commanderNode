@@ -1,6 +1,6 @@
 <template>
-    <div class="root"> 
-        <h1>Der Folder</h1>
+    <div class="root" @keydown='onKeyDown'> 
+        <input ref="input" @keydown='onInputKeyDown' v-model.lazy="path">
         <table-view ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18'
                 @on-column-click='onSort' @on-columns-widths-changed='onColumnsWidthChanged' @on-action='onAction' >
             <template v-slot=row>
@@ -57,12 +57,18 @@ export default {
             columns: [],
             items: [],
             processor: getDefaultProcessor(),
-            path: "Der Pfad"
+            path: ""
         }
     },
     props: [
         "id"
     ],
+    watch: {
+        path(newVal, oldVal) {
+            if (this.processor.path != newVal)
+                console.log("Geändert", newVal)
+        }
+    },
     created: function() {
         const path = localStorage[`${this.id}-path`] || "root"
         this.changePath(path, null, true)
@@ -71,7 +77,8 @@ export default {
         tableViewColumns() { return this.columns.values }
     },
     methods: {
-        // TODO: directory input
+        // TODO: directory input change path
+        // TODO: directory input: selectAll directive
         // TODO: restrict window
         // TODO: versions
         // TODO: exifs
@@ -80,6 +87,16 @@ export default {
         // TODO: Hidden items
 
         focus() { this.$refs.table.focus() },
+        onInputKeyDown(evt) {
+            switch (evt.which) {
+                case 9: // TAB
+                    this.focus()
+                    break
+                default:
+                    return // exit this handler for other keys
+            }
+            evt.preventDefault() // prevent the default action (scroll / move caret)
+        },
         onColumnsWidthChanged: function(widths) {
             localStorage[this.getStorageColumnsWidthName()] = JSON.stringify(widths)
         },
@@ -87,6 +104,7 @@ export default {
             if (checkProcessor) 
                 this.changeProcessor(this.processor.getProcessor(path))
             this.items = await this.processor.getItems(path)
+            this.path = path
             if (lastPath) {
                 const newPos = this.items.findIndex(n => n.name == lastPath)
                 if (newPos != -1) {
@@ -108,6 +126,16 @@ export default {
                 this.changePath(result.path, result.lastPath)
             }
         },
+        onKeyDown(evt) {
+            switch (evt.which) {
+                case 9: // TAB
+                    if (evt.shiftKey) {
+                        this.$refs.input.focus()
+                        evt.preventDefault() // prevent the default action (scroll / move caret)
+                    }
+                    return
+            }
+        },        
         getStorageColumnsWidthName() { return this.id + '-' + this.processor.name + '-columnsWidths'},
         changeProcessor(processor) {
             this.processor = processor
@@ -128,6 +156,15 @@ export default {
 .root {
     display: flex;
     flex-direction: column;
+}
+input {
+    font-size: 100%;
+    box-sizing: border-box;
+    margin-left: 3px;
+    margin-right: 3px;
+    border-style: none;
+    width: calc(100% - 6px);
+    outline-width: 0px;
 }
 .icon-name {
     display: block;

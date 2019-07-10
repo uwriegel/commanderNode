@@ -73,7 +73,7 @@ export default {
                 }
             }
 
-            if (evt.which == 18 && !evt.repeat) { // Alt 
+            if (evt.which == 18 && !evt.repeat && evt.code == "AltLeft") { // Alt 
                 if (this.menuState.accelerated) {
                     this.closeMenu()
                     return
