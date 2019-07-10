@@ -64,7 +64,7 @@ export default {
     methods: {
         focus() { this.$refs.list.focus() },
         onColumnsWidthChanged: function(widths) {
-            console.log("new columnsWidths", widths)
+            this.$emit('on-columns-widths-changed', widths)
         },
         onResize() {
             if (this.$refs.list)

@@ -1,7 +1,7 @@
 <template>
     <thead>
         <tr ref='tr' :class="{'pointer-ew': draggingReady }">
-            <th v-for="column in columns" :key="column.name" @mousemove='onMouseMove' @mousedown='onMouseDown' @click='onClick(column)'
+            <th v-for="column in columns" :key="column.name" @mousemove='onMouseMove' @mousedown='onMouseDown' @click='onClick(column)' @dblclick.stop='() => {}'
                 :class="{'is-sortable': column.isSortable, 'sort-ascending': column.sortAscending, 'sort-descending': column.sortDescending}">
                 {{column.name}}
             </th>

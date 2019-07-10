@@ -2,7 +2,7 @@
     <div class="root"> 
         <h1>Der Folder</h1>
         <table-view ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18'
-                @on-column-click='onSort' @on-action='onAction' >
+                @on-column-click='onSort' @on-columns-widths-changed='onColumnsWidthChanged' @on-action='onAction' >
             <template v-slot=row>
                 <tr v-if='processor.name == "directory" && row.item.isDirectory ' 
                         :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden }">
@@ -71,8 +71,6 @@ export default {
         tableViewColumns() { return this.columns.values }
     },
     methods: {
-        // TODO: @on-columns-widths-changed
-        // TODO: Double click in column => onAction
         // TODO: directory input
         // TODO: restrict window
         // TODO: versions
@@ -82,13 +80,13 @@ export default {
         // TODO: Hidden items
 
         focus() { this.$refs.table.focus() },
+        onColumnsWidthChanged: function(widths) {
+            localStorage[this.getStorageColumnsWidthName()] = JSON.stringify(widths)
+        },
         async changePath(path, lastPath, checkProcessor) {
-            if (checkProcessor) {
-                this.processor = this.processor.getProcessor(path)
-                this.columns = this.processor.getColumns(this.columns)
-            }
+            if (checkProcessor) 
+                this.changeProcessor(this.processor.getProcessor(path))
             this.items = await this.processor.getItems(path)
-            console.log(lastPath)
             if (lastPath) {
                 const newPos = this.items.findIndex(n => n.name == lastPath)
                 if (newPos != -1) {
@@ -97,18 +95,30 @@ export default {
             }
         },
         onSort(index, descending) {
+            const selected = this.items[this.$refs.table.index]
             this.items = this.processor.sort(this.items, index, descending)
+            const newPos = this.items.findIndex(n => n == selected)
+            setTimeout(() => this.$refs.table.setCurrentIndex(newPos))
         },
         onAction(item) {
             const result = this.processor.onAction(item)
             if (!result.done) {
                 if (result.newProcessor)
-                {
-                    this.processor = result.newProcessor
-                    this.columns = this.processor.getColumns(this.columns)
-                }
+                    this.changeProcessor(result.newProcessor)
                 this.changePath(result.path, result.lastPath)
             }
+        },
+        getStorageColumnsWidthName() { return this.id + '-' + this.processor.name + '-columnsWidths'},
+        changeProcessor(processor) {
+            this.processor = processor
+            const columns = this.processor.getColumns(this.columns)
+            console.log(columns)
+            const value = localStorage[this.getStorageColumnsWidthName()]
+            if (value) {
+                const widths = JSON.parse(value)
+                columns.values.forEach((n, i) => n.width = widths[i])
+            }
+            this.columns = columns
         }
     }
 }
