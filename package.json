@@ -34,7 +34,9 @@
     "cross-env": "^5.2.0",
     "electron-settings": "^3.2.0",
     "extension-fs": "^1.0.5",
-    "vue": "^2.6.10"
+    "rxjs": "^6.5.2",
+    "vue": "^2.6.10",
+    "vue-rx": "^6.2.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.8.0",

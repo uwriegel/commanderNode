@@ -1,6 +1,7 @@
 <template>
-    <div class="root" @keydown='onKeyDown'> 
+    <div class="root" v-stream:keydown='keyDown$'> 
         <input ref="input" v-selectall @keydown='onInputKeyDown' v-model.lazy="path">
+        <h1>{{random$}}</h1>
         <table-view ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18'
                 @on-column-click='onSort' @on-columns-widths-changed='onColumnsWidthChanged' @on-action='onAction' >
             <template v-slot=row>
@@ -37,6 +38,7 @@
                 </tr>
             </template>
         </table-view>
+        <input class="restrictor" disabled v-show="restrictValue.length" :value="restrictValue">
     </div>
 </template>
 
@@ -45,6 +47,7 @@ import { getDefaultProcessor } from '../../processors/processor'
 import TableView from './TableView'
 import DriveIcon from '../../icons/DriveIcon'
 import FolderIcon from '../../icons/FolderIcon'
+import { Observable, map, pipe } from "rxjs/operators"
 
 export default {
     components: {
@@ -57,7 +60,8 @@ export default {
             columns: [],
             items: [],
             processor: getDefaultProcessor(),
-            path: ""
+            path: "",
+            restrictValue: ""
         }
     },
     props: [
@@ -69,15 +73,26 @@ export default {
                 this.changePath(newVal, null, true)
         }
     },
-    created: function() {
+    domStreams: ["keyDown$"],
+    subscriptions() {
+        const random$ = this.keyDown$.pipe(map(n => n.event.key))
+        return {
+            random$
+        }
+    },
+    created() {
         const path = localStorage[`${this.id}-path`] || "root"
         this.changePath(path, null, true)
+    },
+    mounted() {
+        this.$subscribeTo(this.keyDown$.pipe(map(n => n.event.key)), evt => {
+            this.restrictValue += evt
+        })
     },
     computed: {
         tableViewColumns() { return this.columns.values }
     },
     methods: {
-        // TODO: save path when changing path
         // TODO: restrict window
         // TODO: versions
         // TODO: exifs
@@ -156,6 +171,7 @@ export default {
 .root {
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 input {
     font-size: 100%;
@@ -185,5 +201,20 @@ td {
 }
 img {
     vertical-align: bottom;
+}
+.restrictor {
+    width: 70%;
+    bottom: 10px;
+    position: absolute;
+    left: 5px;
+    box-sizing: border-box;
+    border-width: 1px;
+    border-radius: 5px;
+    padding: 1px 3px;
+    border-style: solid;
+    border-color: gray;
+    color: rgba(0, 0, 0, 0.75);
+    background-color: white;
+    box-shadow: 3px 5px 12px 3px rgba(136, 136, 136, 0.55);    
 }
 </style>
