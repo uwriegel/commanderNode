@@ -81,7 +81,7 @@ export default {
     domStreams: ["keyDown$"],
     created() {
         const path = localStorage[`${this.id}-path`] || "root"
-        this.changePath(this.path, null, true)
+        this.changePath(path, null, true)
     },
     mounted() {
         const shiftTabs$ = this.keyDown$.pipe(filter(n => n.event.which == 9 && n.event.shiftKey))
@@ -105,9 +105,6 @@ export default {
         ...mapState(['showHidden'])
     },
     methods: {
-        // TODO: Initial path is empty in input
-        // TODO: path is not saved any more
-
         focus() { this.$refs.table.focus() },
         onInputKeyDown(evt) {
             switch (evt.which) {
@@ -191,6 +188,14 @@ export default {
             const pluses$ = this.keyDown$.pipe(filter(n => n.event.which == 107))
             const minuses$ = this.keyDown$.pipe(filter(n => n.event.which == 109))
 
+            const toggleSelection = () => {
+                const item = this.items[this.$refs.table.index]
+                console.log("Toggel", item)
+
+                if (item.isSelected != undefined)
+                    item.isSelected = !item.isSelected
+            }
+
             this.$subscribeTo(inserts$, () => {
                 toggleSelection()
                 if (this.$refs.table.index < this.items.length - 1) 
@@ -212,12 +217,6 @@ export default {
                 if (n.isSelected != undefined)
                     n.isSelected = i >= this.$refs.table.index
             }))
-            
-            function toggleSelection() {
-                const item = this.items[this.$refs.table.index]
-                if (item.isSelected != undefined)
-                    item.isSelected = !item.isSelected
-            }
         }
     }
 }
@@ -252,6 +251,9 @@ input {
 .size {
     text-align: right;
     padding-right:10px;
+}
+tr {
+    transition: background-color 0.3s;
 }
 tr.isHidden {
     opacity: 0.5;
