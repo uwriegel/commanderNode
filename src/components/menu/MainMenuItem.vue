@@ -28,8 +28,8 @@ export default {
         'subItems'
     ],
     methods: {
-        onMenuItem: function (param) {
-            this.$emit('on-menu-item-clicked', param)
+        onMenuItem: function (param, item) {
+            this.$emit('on-menu-item-clicked', param, item)
         },
         onMenuClose: function () {
             this.$emit('on-closing')

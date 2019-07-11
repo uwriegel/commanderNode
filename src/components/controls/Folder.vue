@@ -49,6 +49,7 @@ import TableView from './TableView'
 import DriveIcon from '../../icons/DriveIcon'
 import FolderIcon from '../../icons/FolderIcon'
 import { Observable, map, pipe, filter } from "rxjs/operators"
+import { mapState } from 'vuex'
 
 export default {
     components: {
@@ -72,12 +73,15 @@ export default {
         path(newVal, oldVal) {
             if (this.processor.path != newVal)
                 this.changePath(newVal, null, true)
+        },
+        showHidden(newVal, oldVal) {
+            this.changePath(this.path)
         }
     },
     domStreams: ["keyDown$"],
     created() {
         const path = localStorage[`${this.id}-path`] || "root"
-        this.changePath(path, null, true)
+        this.changePath(this.path, null, true)
     },
     mounted() {
         const shiftTabs$ = this.keyDown$.pipe(filter(n => n.event.which == 9 && n.event.shiftKey))
@@ -94,10 +98,16 @@ export default {
         this.initializeSelection()        
     },
     computed: {
-        tableViewColumns() { return this.columns.values }
+        tableViewColumns() { 
+            return this.columns.values 
+        },
+        // mix this into the outer object with the object spread operator
+        ...mapState(['showHidden'])
     },
     methods: {
-        // TODO: Hidden items VueEx?
+        // Ctrl+H: not functioning
+        // Initial path is empty in input
+        // path is not saved any more
 
         focus() { this.$refs.table.focus() },
         onInputKeyDown(evt) {
@@ -117,7 +127,7 @@ export default {
             this.restrictClose(true)
             if (checkProcessor) 
                 this.changeProcessor(this.processor.getProcessor(path))
-            this.items = await this.processor.getItems(path)
+            this.items = await this.processor.getItems(path, this.showHidden)
             this.path = path
             localStorage[`${this.id}-path`] = path
             if (lastPath) {
@@ -128,7 +138,7 @@ export default {
         },
         onSort(index, descending) {
             const selected = this.items[this.$refs.table.index]
-            this.items = this.processor.sort(this.items, index, descending)
+            this.items = this.processor.sort(this.items, index, descending, this.showHidden)
             const newPos = this.items.findIndex(n => n == selected)
             setTimeout(() => this.$refs.table.setCurrentIndex(newPos))
         },

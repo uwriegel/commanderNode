@@ -40,7 +40,7 @@ export function getDirectoryProcessor() {
             }
     }
 
-    async function getItems(path) {
+    async function getItems(path, showHidden) {
         const values = (await extFs.getFiles(path))
         values.forEach(n => {
             if (n.name != "..")
@@ -50,9 +50,11 @@ export function getDirectoryProcessor() {
         })
 
         privates.path = path
-        return refresh(values, true)
+        return refresh(values, showHidden, true)
     }
-    function refresh(values, withExtendedInfos) {
+    function refresh(values, showHidden, withExtendedInfos) {
+        if (!showHidden)
+            values = values.filter(n => !n.isHidden)
         let dirs = values.filter(n => n.isDirectory)
         let files = values.filter(n => !n.isDirectory)
 
@@ -118,10 +120,10 @@ export function getDirectoryProcessor() {
         }
     }
 
-    function sort(items, index, descending) {
+    function sort(items, index, descending, showHidden) {
         privates.sortIndex = index
         privates.sortDescending = descending
-        return refresh(items)
+        return refresh(items, showHidden)
     }
 
     function onAction(item) {

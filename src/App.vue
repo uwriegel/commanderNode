@@ -110,6 +110,8 @@ export default {
                     name: "_Ansicht",
                     subItems: [{ 
                             name: "_Versteckte Dateien",
+                            action: "showHidden",
+                            checkSelected: () => this.$store.state.showHidden,
                             accelerator: { name: "Strg+H"}
                         }, { 
                             name: "_Aktualisieren",
@@ -161,7 +163,7 @@ export default {
                 evt.stopPropagation()
             }
         },
-        onMenuItem: function (action) {
+        onMenuItem: function (action, menuItem) {
             switch (action) {
                 case "rename":
                     setTimeout(() => {
@@ -182,6 +184,10 @@ export default {
                     break
                 case "devtools":
                     electron.ipcRenderer.send("openDevTools")
+                    break
+                case "showHidden":
+                    this.$store.commit('setShowHidden', !this.$store.state.showHidden)
+                    menuItem.isSelected = this.$store.state.showHidden
                     break
             }
         }

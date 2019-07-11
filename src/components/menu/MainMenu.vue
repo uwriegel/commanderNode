@@ -50,8 +50,8 @@ export default {
                 }
             }
         },
-        onMenuItem: function (param) {
-            this.$emit('on-menu-item-clicked', param)
+        onMenuItem: function (param, item) {
+            this.$emit('on-menu-item-clicked', param, item)
         },
         closeMenu: function () {
             this.stopKeyboardActivated()
