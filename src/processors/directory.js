@@ -47,6 +47,7 @@ export function getDirectoryProcessor() {
             n.isExifDate = false
             n.version = ""
         })
+
         privates.path = path
         return refresh(values, true)
     }
@@ -59,14 +60,27 @@ export function getDirectoryProcessor() {
         if (privates.sortIndex != null) {
             const sort = 
             privates.sortIndex == 0 
-                ? (a, b) => getNameOnly(a.name).localeCompare(getNameOnly(b.name)) :
-                privates.sortIndex == 1 
-                ? (a, b) => getExtension(a.name).localeCompare(getExtension(b.name)) :
-                privates.sortIndex == 2
-                ? (a, b) => a.time - b.time 
-                : (a, b) => a.size - b.size
+            ? (a, b) => getNameOnly(a.name).localeCompare(getNameOnly(b.name)) :
+            privates.sortIndex == 1 
+            ? (a, b) => getExtension(a.name).localeCompare(getExtension(b.name)) :
+            privates.sortIndex == 2
+            ? (a, b) => a.time - b.time :
+            privates.sortIndex == 3      
+            ? (a, b) => a.size - b.size    
+            : (a, b) => sortVersion(a, b)
     
             files = files.sort((a, b) => (privates.sortDescending ? -1 : 1) * sort(a, b))
+
+            function sortVersion(a, b) {
+                return !a.version && !b.version ? 1
+                       : a.version && !b.version ? 1
+                       : !a.version && b.version ? -1
+                       : a.version.major != b.version.major ? a.version.major - b.version.major
+                       : a.version.minor != b.version.minor ? a.version.minor - b.version.minor
+                       : a.version.build != b.version.build ? a.version.build - b.version.build
+                       : a.version.patch != b.version.patch ? a.version.patch - b.version.patch 
+                       : 0
+            }            
         }
         
         if (dirs.length == 0 || dirs[0].name != "..")

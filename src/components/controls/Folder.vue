@@ -5,7 +5,7 @@
                 @on-column-click='onSort' @on-columns-widths-changed='onColumnsWidthChanged' @on-action='onAction' >
             <template v-slot=row>
                 <tr v-if='processor.name == "directory" && row.item.isDirectory ' 
-                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden }">
+                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
                     <td class="icon-name">
                         <folder-icon class=icon></folder-icon>
                         {{ row.item.name }}
@@ -92,8 +92,6 @@ export default {
         tableViewColumns() { return this.columns.values }
     },
     methods: {
-        // TODO: Sort by version
-        // TODO: sort scending descending: currentElement jumps from top to left
         // TODO: Selections
         // TODO: Refresh VueEx?
         // TODO: Hidden items
@@ -216,10 +214,14 @@ input {
 }
 .size {
     text-align: right;
-    padding-right: 3px;
+    padding-right:10px;
 }
 tr.isHidden {
     opacity: 0.5;
+}
+tr.isSelected {
+    color: white;
+    background-color: blue;
 }
 td {
     min-height: 16px;
