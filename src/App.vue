@@ -112,7 +112,11 @@ export default {
                             name: "_Versteckte Dateien",
                             action: "showHidden",
                             checkSelected: () => this.$store.state.showHidden,
-                            accelerator: { name: "Strg+H"}
+                            accelerator: { 
+                                name: "Strg+H",
+                                key: 72,
+                                ctrl: true
+                            }
                         }, { 
                             name: "_Aktualisieren",
                             accelerator: { name: "Strg+R"}
@@ -155,6 +159,7 @@ export default {
     },
     methods: {
         onKeyDown: function (evt) {
+            console.log(evt.which)
             const key = makeKey(evt.which, evt.altKey, evt.shiftKey, evt.ctrlKey)
             const action = this.acceleratorMap.get(key)
             if (action) {
@@ -187,7 +192,8 @@ export default {
                     break
                 case "showHidden":
                     this.$store.commit('setShowHidden', !this.$store.state.showHidden)
-                    menuItem.isSelected = this.$store.state.showHidden
+                    if (menuItem)
+                        menuItem.isSelected = this.$store.state.showHidden
                     break
             }
         }
@@ -198,7 +204,7 @@ export default {
             .filter(n => n.accelerator && n.action && n.accelerator.key)
             .map(n => { return { 
                 action: n.action, 
-                key: makeKey(n.accelerator.key, false, false, false)
+                key: makeKey(n.accelerator.key, n.accelerator.alt, n.accelerator.shift, n.accelerator.ctrl)
             }})
         accelerators.forEach(n => this.acceleratorMap.set(n.key, n.action))
 

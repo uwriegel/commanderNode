@@ -105,9 +105,8 @@ export default {
         ...mapState(['showHidden'])
     },
     methods: {
-        // Ctrl+H: not functioning
-        // Initial path is empty in input
-        // path is not saved any more
+        // TODO: Initial path is empty in input
+        // TODO: path is not saved any more
 
         focus() { this.$refs.table.focus() },
         onInputKeyDown(evt) {
