@@ -80,34 +80,24 @@ export default {
         this.changePath(path, null, true)
     },
     mounted() {
+        const shiftTabs$ = this.keyDown$.pipe(filter(n => n.event.which == 9 && n.event.shiftKey))
         const inputChars$ = this.keyDown$.pipe(filter(n => !n.event.altKey && !n.event.ctrlKey && !n.event.shiftKey && n.event.key.length > 0 && n.event.key.length < 2))
         const backSpaces$ = this.keyDown$.pipe(filter(n => n.event.which == 8))
         const escapes$ = this.keyDown$.pipe(filter(n => n.event.which == 27))
-        const shiftTabs$ = this.keyDown$.pipe(filter(n => n.event.which == 9 && n.event.shiftKey))
         const returns$ = this.keyDown$.pipe(filter(n => n.event.which == 13))
-        const spaces$ = this.keyDown$.pipe(filter(n => n.event.which == 32))
-        const ends$ = this.keyDown$.pipe(filter(n => n.event.which == 35 && n.event.shiftKey))
-        const homes$ = this.keyDown$.pipe(filter(n => n.event.which == 36 && n.event.shiftKey))
-        const inserts$ = this.keyDown$.pipe(filter(n => n.event.which == 45))
 
+        this.$subscribeTo(shiftTabs$, () => this.$refs.input.focus())
         this.$subscribeTo(inputChars$, evt => this.restrictTo(evt.event))
         this.$subscribeTo(backSpaces$, () => this.restrictBack())
         this.$subscribeTo(escapes$, () => this.restrictClose())
-        this.$subscribeTo(shiftTabs$, () => this.$refs.input.focus())
-        this.$subscribeTo(ends$, () => this.$refs.input.focus())
-        this.$subscribeTo(inserts$, () => {
-            this.toggleSelection()
-            if (this.$refs.table.index < this.items.length - 1) 
-                this.$refs.table.setCurrentIndex(this.$refs.table.index + 1)
-        })
+
+        this.initializeSelection()        
     },
     computed: {
         tableViewColumns() { return this.columns.values }
     },
     methods: {
-        // TODO: Selections
-        // TODO: Refresh VueEx?
-        // TODO: Hidden items
+        // TODO: Hidden items VueEx?
 
         focus() { this.$refs.table.focus() },
         onInputKeyDown(evt) {
@@ -185,10 +175,40 @@ export default {
                     this.restrictClose()
             }
         },
-        toggleSelection() {
-            const item = this.items[this.$refs.table.index]
-            if (item.isSelected != undefined)
-                item.isSelected = !item.isSelected
+        initializeSelection() {
+            const ends$ = this.keyDown$.pipe(filter(n => n.event.which == 35 && n.event.shiftKey))
+            const homes$ = this.keyDown$.pipe(filter(n => n.event.which == 36 && n.event.shiftKey))
+            const inserts$ = this.keyDown$.pipe(filter(n => n.event.which == 45))
+            const pluses$ = this.keyDown$.pipe(filter(n => n.event.which == 107))
+            const minuses$ = this.keyDown$.pipe(filter(n => n.event.which == 109))
+
+            this.$subscribeTo(inserts$, () => {
+                toggleSelection()
+                if (this.$refs.table.index < this.items.length - 1) 
+                    this.$refs.table.setCurrentIndex(this.$refs.table.index + 1)
+            })
+            this.$subscribeTo(pluses$, () => this.items.forEach(n => {
+                if (n.isSelected != undefined)
+                    n.isSelected = true
+            }))
+            this.$subscribeTo(minuses$, () => this.items.forEach(n => {
+                if (n.isSelected != undefined)
+                    n.isSelected = false
+            }))
+            this.$subscribeTo(homes$, () => this.items.forEach((n, i) => {
+                if (n.isSelected != undefined) 
+                    n.isSelected = i <= this.$refs.table.index
+            }))
+            this.$subscribeTo(ends$, () => this.items.forEach((n, i) => {
+                if (n.isSelected != undefined)
+                    n.isSelected = i >= this.$refs.table.index
+            }))
+            
+            function toggleSelection() {
+                const item = this.items[this.$refs.table.index]
+                if (item.isSelected != undefined)
+                    item.isSelected = !item.isSelected
+            }
         }
     }
 }
