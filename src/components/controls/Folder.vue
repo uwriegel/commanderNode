@@ -22,9 +22,9 @@
                         {{ row.item.name | nameOnly }}
                     </td>
                     <td>{{ row.item.name | extension }}</td>
-                    <td>{{ row.item.time | dateTime }}</td>
+                    <td :class="{ 'isExif': row.item.isExifDate }">{{ row.item.time | dateTime }}</td>
                     <td class="size">{{ row.item.size | size }}</td>
-                    <td>{{ row.item.version }}</td>
+                    <td>{{ row.item.version | version }}</td>
                 </tr>
                 <tr v-if='processor.name == "root"' 
                         :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden }">
@@ -92,10 +92,10 @@ export default {
         tableViewColumns() { return this.columns.values }
     },
     methods: {
-        // TODO: versions
-        // TODO: exifs
+        // TODO: Sort by version
+        // TODO: sort scending descending: currentElement jumps from top to left
         // TODO: Selections
-        // TODO: Refresh
+        // TODO: Refresh VueEx?
         // TODO: Hidden items
 
         focus() { this.$refs.table.focus() },
@@ -203,6 +203,9 @@ input {
     width: calc(100% - 6px);
     outline-width: 0px;
 }
+.isExif {
+    color: blue;
+}
 .icon-name {
     display: block;
 }
@@ -213,6 +216,7 @@ input {
 }
 .size {
     text-align: right;
+    padding-right: 3px;
 }
 tr.isHidden {
     opacity: 0.5;

@@ -58,3 +58,9 @@ export function getIconUrl(value, path) {
     const pos = value.lastIndexOf('.')
     return pos != -1 ? "icon://" + value.substring(pos + 1) : ""
 }
+
+export function getVersion(version) {
+    return version 
+        ? version.major + "."  + version.minor + "." + version.build + "." + version.patch
+        : ""
+}

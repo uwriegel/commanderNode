@@ -44,15 +44,18 @@ export function getDirectoryProcessor() {
         const values = (await extFs.getFiles(path))
         values.forEach(n => {
             n.isSelected = false
-            n.isExif = false
+            n.isExifDate = false
             n.version = ""
         })
         privates.path = path
-        return refresh(values)
+        return refresh(values, true)
     }
-    function refresh(values) {
+    function refresh(values, withExtendedInfos) {
         let dirs = values.filter(n => n.isDirectory)
         let files = values.filter(n => !n.isDirectory)
+
+        getExtendedInfos()
+
         if (privates.sortIndex != null) {
             const sort = 
             privates.sortIndex == 0 
@@ -68,8 +71,38 @@ export function getDirectoryProcessor() {
         
         if (dirs.length == 0 || dirs[0].name != "..")
             dirs = [ {name: "..", isDirectory: true, isRoot: true  }].concat(dirs)
+
         return dirs.concat(files)
+
+        async function getVersion(fileItem, file) {
+            const version = await extFs.getFileVersion(file) 
+            if (version.major != 0 || version.minor != 0 || version.build != 0 || version.patch != 0)
+                fileItem.version = version
+        }
+
+        async function getExif(fileItem, file) {
+            const exifDate = await extFs.getExifDate(file)
+            if (exifDate) {
+                fileItem.time = exifDate
+                fileItem.isExifDate = true
+            }
+        }
+
+        async function getExtendedInfos() {
+            for (let i = 0; i < files.length; i++) {        
+                const fileItem = files[i]
+                const file = privates.path + '\\' + fileItem.name
+                var checkName = fileItem.name.toLowerCase()
+                if (checkName.endsWith(".exe") || checkName.endsWith(".dll")) {
+                    await getVersion(fileItem, file)
+                }
+                else if (checkName.endsWith(".jpg")) {
+                    await getExif(fileItem, file)
+                }
+            }
+        }
     }
+
     function sort(items, index, descending) {
         privates.sortIndex = index
         privates.sortDescending = descending
