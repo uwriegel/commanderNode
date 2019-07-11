@@ -16,7 +16,7 @@
                     <td></td>
                 </tr>
                 <tr v-if='processor.name == "directory" && !row.item.isDirectory ' 
-                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden }">
+                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
                     <td class="icon-name">
                         <img :src='row.item.name | iconUrl(processor.path)' alt="">
                         {{ row.item.name | nameOnly }}
@@ -83,10 +83,23 @@ export default {
         const inputChars$ = this.keyDown$.pipe(filter(n => !n.event.altKey && !n.event.ctrlKey && !n.event.shiftKey && n.event.key.length > 0 && n.event.key.length < 2))
         const backSpaces$ = this.keyDown$.pipe(filter(n => n.event.which == 8))
         const escapes$ = this.keyDown$.pipe(filter(n => n.event.which == 27))
+        const shiftTabs$ = this.keyDown$.pipe(filter(n => n.event.which == 9 && n.event.shiftKey))
+        const returns$ = this.keyDown$.pipe(filter(n => n.event.which == 13))
+        const spaces$ = this.keyDown$.pipe(filter(n => n.event.which == 32))
+        const ends$ = this.keyDown$.pipe(filter(n => n.event.which == 35 && n.event.shiftKey))
+        const homes$ = this.keyDown$.pipe(filter(n => n.event.which == 36 && n.event.shiftKey))
+        const inserts$ = this.keyDown$.pipe(filter(n => n.event.which == 45))
 
         this.$subscribeTo(inputChars$, evt => this.restrictTo(evt.event))
-        this.$subscribeTo(backSpaces$, evt => this.restrictBack())
-        this.$subscribeTo(escapes$, evt => this.restrictClose())
+        this.$subscribeTo(backSpaces$, () => this.restrictBack())
+        this.$subscribeTo(escapes$, () => this.restrictClose())
+        this.$subscribeTo(shiftTabs$, () => this.$refs.input.focus())
+        this.$subscribeTo(ends$, () => this.$refs.input.focus())
+        this.$subscribeTo(inserts$, () => {
+            this.toggleSelection()
+            if (this.$refs.table.index < this.items.length - 1) 
+                this.$refs.table.setCurrentIndex(this.$refs.table.index + 1)
+        })
     },
     computed: {
         tableViewColumns() { return this.columns.values }
@@ -137,16 +150,6 @@ export default {
                 this.changePath(result.path, result.lastPath)
             }
         },
-        onKeyDown(evt) {
-            switch (evt.which) {
-                case 9: // TAB
-                    if (evt.shiftKey) {
-                        this.$refs.input.focus()
-                        evt.preventDefault() // prevent the default action (scroll / move caret)
-                    }
-                    return
-            }
-        },        
         getStorageColumnsWidthName() { return this.id + '-' + this.processor.name + '-columnsWidths'},
         changeProcessor(processor) {
             if (processor) {
@@ -181,6 +184,11 @@ export default {
                 if (this.restrictValue.length == 0)
                     this.restrictClose()
             }
+        },
+        toggleSelection() {
+            const item = this.items[this.$refs.table.index]
+            if (item.isSelected != undefined)
+                item.isSelected = !item.isSelected
         }
     }
 }
