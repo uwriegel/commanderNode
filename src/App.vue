@@ -236,7 +236,7 @@ export default {
     --scrollbar-grip-hover-color: #bbb;
     --scrollbar-grip-active-color: #999;
     
-    --grip-color: #eee;
+    --grip-color: #dcdcdc;
 
     --menu-background-color: #eee;
     --menu-hover-color: lightblue;

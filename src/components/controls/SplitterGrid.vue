@@ -1,18 +1,21 @@
 <template>
     <div ref="container" class="splitterGridContainer" :class='{ isVertical: isVertical}' >
         <slot name="first"></slot>
-        <div class="splitter" @mousedown="onSplitterMouseDown"></div>
-        <slot name="second"></slot>
+        <div class="splitter" v-if="!isSecondInvisible" @mousedown="onSplitterMouseDown"></div>
+        <slot name="second" v-if="!isSecondInvisible"></slot>
     </div>
 </template>
 
 <script>
 
-// TODO: switch off lower pane 
-// TODO: Animation for switch off lower pane 
+// TODO: Event: splitterSize changed
+// TODO: Remember splitter size (conserve component?)
+// TODO: Icon viewer with test list to display 3 images
 export default {
     props: [
-        "isVertical"
+        "isVertical",
+        "isFixed",
+        "isSecondInvisible"
     ],
     methods: {
         onSplitterMouseDown(evt) {
@@ -35,11 +38,16 @@ export default {
                 const newSize1 = size1 + delta
                 const newSize2 = size2 - delta
 
-                const procent1 = newSize1 / (newSize1 + newSize2 + 
-                    (this.isVertical ? splitter.offsetHeight : splitter.offsetWidth)) * 100
-                view1.style.flex = `0 0 ${procent1}%`
-                view2.style.flexGrow = `1`
-                // this.onRatioChanged.emit()
+                if (this.isFixed) {
+                    view1.style.flexGrow = `1`
+                    view2.style.flexGrow = '0'
+                    view2.style.height = `${newSize2}px`
+                } else {
+                    const procent1 = newSize1 / (newSize1 + newSize2 + 
+                        (this.isVertical ? splitter.offsetHeight : splitter.offsetWidth)) * 100
+                    view1.style.flex = `0 0 ${procent1}%`
+                    view2.style.flexGrow = `1`
+                }
 
                 evt.stopPropagation()
                 evt.preventDefault()

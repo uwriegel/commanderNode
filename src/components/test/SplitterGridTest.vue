@@ -1,20 +1,24 @@
 <template>
     <div class="root">
-        <splitter-grid :isVertical=true>
+        <splitter-grid :isVertical=true :isFixed=true :isSecondInvisible="isHidden">
             <template v-slot:first>
                 <splitter-grid>
                     <template v-slot:first>
-                        <!-- <div class="upper"></div> -->
-                        <folder class="folder" id="test1"></folder>
+                        <div class="left">
+                            <p>
+                                <button @click="onHide">Verbergen</button>
+                            </p>
+                        </div>
+                        <!-- <folder class="folder" id="test1"></folder> -->
                     </template>
                     <template v-slot:second>
-                        <!-- <div class="lower"></div> -->
-                        <folder class="folder" id="test2"></folder>
+                        <div class="right"></div>
+                        <!-- <folder class="folder" id="test2"></folder> -->
                     </template>
                 </splitter-grid>
             </template>
             <template v-slot:second>
-                <div class="left"></div>
+                <div class="lower"></div>
             </template>
         </splitter-grid>
     </div>
@@ -25,9 +29,19 @@ import SplitterGrid from '../controls/SplitterGrid'
 import Folder from '../controls/Folder'
 
 export default {
+    data() {
+        return {
+            isHidden: false
+        }
+    },
     components: {
         SplitterGrid,
         Folder
+    },
+    methods: {
+        onHide() {
+            this.isHidden = !this.isHidden
+        }
     }
 }
 </script>
