@@ -90,7 +90,10 @@ export default {
         const escapes$ = this.keyDown$.pipe(filter(n => n.event.which == 27))
         const returns$ = this.keyDown$.pipe(filter(n => n.event.which == 13))
 
-        this.$subscribeTo(shiftTabs$, () => this.$refs.input.focus())
+        this.$subscribeTo(shiftTabs$, n => {
+            this.$refs.input.focus()
+            n.event.preventDefault()
+        })
         this.$subscribeTo(inputChars$, evt => this.restrictTo(evt.event))
         this.$subscribeTo(backSpaces$, () => this.restrictBack())
         this.$subscribeTo(escapes$, () => this.restrictClose())

@@ -6,7 +6,8 @@
             <!-- <scrollbar-test></scrollbar-test> -->
             <!-- <table-view-test></table-view-test> -->
             <!-- <connection-test></connection-test> -->
-            <folder-test></folder-test>
+            <!-- <folder-test></folder-test> -->
+            <splitter-grid-test></splitter-grid-test>
         </div>
     </div>
 </template>
@@ -21,6 +22,7 @@ import ScrollbarTest from './components/test/ScrollbarTest'
 import TableViewTest from './components/test/TableViewTest'
 import ConnectionTest from './components/test/ConnectionTest'
 import FolderTest from './components/test/FolderTest'
+import SplitterGridTest from './components/test/SplitterGridTest'
 
 import { makeKey } from './components/menu/accelerators'
 const electron = window.require('electron')
@@ -37,7 +39,8 @@ export default {
         ScrollbarTest,
         TableViewTest,
         ConnectionTest,
-        FolderTest
+        FolderTest,
+        SplitterGridTest
     },
     data() {
         return {
@@ -233,6 +236,8 @@ export default {
     --scrollbar-grip-hover-color: #bbb;
     --scrollbar-grip-active-color: #999;
     
+    --grip-color: #eee;
+
     --menu-background-color: #eee;
     --menu-hover-color: lightblue;
     --menu-separator-color: #ddd;
