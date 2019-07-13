@@ -1,13 +1,13 @@
 <template>
-    <div class="commander">
+    <div class="commander" @keydown=onKeyDown>
         <splitter-grid :isVertical=true :isSecondInvisible="isHidden" @splitter-position-changed="viewerHeightChanged">
             <template v-slot:first>
                 <splitter-grid>
                     <template v-slot:first>
-                        <folder ref="leftFolder" class="folder" id="left"></folder>
+                        <folder ref="leftFolder" class="folder" id="left" @onFocusIn=onLeftFocus ></folder>
                     </template>
                     <template v-slot:second>
-                        <folder ref="rightFolder" class="folder" id="right"></folder>
+                        <folder ref="rightFolder" class="folder" id="right" @onFocusIn=onRightFocus></folder>
                     </template>
                 </splitter-grid>
             </template>
@@ -22,7 +22,6 @@
 import SplitterGrid from './controls/SplitterGrid'
 import Folder from './controls/Folder'
 
-// TODO: tab changes focus from left to right to left
 // TODO: Viewer connected to path
 // TODO: Viewer splitter changes: resize folders
 // TODO: Status displays actual selection or # selected items
@@ -30,7 +29,8 @@ import Folder from './controls/Folder'
 export default {
     data() {
         return {
-            isHidden: true
+            isHidden: true,
+            leftHasFocus: true
         }
     },
     components: {
@@ -43,7 +43,16 @@ export default {
     methods: {
         viewerHeightChanged() {
             console.log("new viewer height")
-        }
+        },
+        onKeyDown(evt) {
+            if (evt.which == 9 && !evt.shiftKey && evt.target.tagName != "INPUT") {
+                const folder = this.leftHasFocus ? this.$refs.rightFolder : this.$refs.leftFolder
+                folder.focus()
+                evt.preventDefault()
+            }
+        },
+        onLeftFocus() { this.leftHasFocus = true },
+        onRightFocus() { this.leftHasFocus = false }
     }
 }
 </script>

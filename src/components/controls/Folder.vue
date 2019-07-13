@@ -1,5 +1,5 @@
 <template>
-    <div tabindex="1" class="root" v-stream:keydown='keyDown$' @focus=focus> 
+    <div tabindex="1" class="root" v-stream:keydown='keyDown$' @focus=focus @focusin=onfocusIn> 
         <input ref="input" v-selectall @keydown='onInputKeyDown' :value="path">
         <table-view ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18'
                 @on-column-click='onSort' @on-columns-widths-changed='onColumnsWidthChanged' @on-action='onAction' >
@@ -95,11 +95,7 @@ export default {
             this.$refs.input.focus()
             n.event.preventDefault()
         })
-        this.$subscribeTo(inputChars$, evt => 
-        
-        {
-            console.log(evt.event.target)
-        this.restrictTo(evt.event)})
+        this.$subscribeTo(inputChars$, evt => this.restrictTo(evt.event))
         this.$subscribeTo(backSpaces$, () => this.restrictBack())
         this.$subscribeTo(escapes$, () => this.restrictClose())
 
@@ -114,6 +110,7 @@ export default {
     },
     methods: {
         focus() { this.$refs.table.focus() },
+        onfocusIn() { this.$emit("onFocusIn") },
         onInputKeyDown(evt) {
             switch (evt.which) {
                 case 9: // TAB
