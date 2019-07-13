@@ -1,6 +1,6 @@
 <template>
     <div class="root">
-        <splitter-grid :isVertical=true :isFixed=true :isSecondInvisible="isHidden">
+        <splitter-grid :isVertical=true :isSecondInvisible="isHidden" @splitter-position-changed="viewerHeightChanged">
             <template v-slot:first>
                 <splitter-grid>
                     <template v-slot:first>
@@ -41,6 +41,9 @@ export default {
     methods: {
         onHide() {
             this.isHidden = !this.isHidden
+        },
+        viewerHeightChanged() {
+            console.log("new viewer height")
         }
     }
 }

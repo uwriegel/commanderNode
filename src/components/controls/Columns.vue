@@ -10,6 +10,8 @@
 </template>
 
 <script>
+import Vue from 'vue'
+
 export default {
     props: [
         /***
@@ -25,7 +27,7 @@ export default {
             immediate: true,
             handler (newVal, oldVal) {
                 if (oldVal != newVal)
-                    setTimeout(() => {
+                    Vue.nextTick(() => {
                         const ths = Array.from(this.$refs.tr.children)
                         ths.forEach((th, i) => th.style.width = this.columns[i].width || (100 / this.columns.length) + '%')
                     })

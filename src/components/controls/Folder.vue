@@ -193,8 +193,6 @@ export default {
 
             const toggleSelection = () => {
                 const item = this.items[this.$refs.table.index]
-                console.log("Toggel", item)
-
                 if (item.isSelected != undefined)
                     item.isSelected = !item.isSelected
             }

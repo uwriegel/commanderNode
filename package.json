@@ -6,7 +6,7 @@
   "author": "Uwe Riegel",
   "description": "A Norton Commander like program to manage files and directories",
   "build": {
-    "appId": "de.hotmail.uriegel.commander-test",
+    "appId": "de.hotmail.uriegel.commander",
     "copyright": "Copyright © 2019 Uwe Riegel",
     "productName": "Commander Test",
     "electronVersion": "5.0.0",

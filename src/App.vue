@@ -2,12 +2,12 @@
     <div id="app">
         <main-menu :items="menuItems" @on-menu-item-clicked="onMenuItem" />
         <div class="main">
-            <!-- <column-test></column-test> -->
+            <column-test></column-test>
             <!-- <scrollbar-test></scrollbar-test> -->
             <!-- <table-view-test></table-view-test> -->
             <!-- <connection-test></connection-test> -->
             <!-- <folder-test></folder-test> -->
-            <splitter-grid-test></splitter-grid-test>
+            <!-- <splitter-grid-test></splitter-grid-test> -->
         </div>
     </div>
 </template>
@@ -162,7 +162,6 @@ export default {
     },
     methods: {
         onKeyDown: function (evt) {
-            console.log(evt.which)
             const key = makeKey(evt.which, evt.altKey, evt.shiftKey, evt.ctrlKey)
             const action = this.acceleratorMap.get(key)
             if (action) {
@@ -236,7 +235,8 @@ export default {
     --scrollbar-grip-hover-color: #bbb;
     --scrollbar-grip-active-color: #999;
     
-    --grip-color: #dcdcdc;
+    /* --grip-color: #dcdcdc; */
+    --grip-color: #eee;
 
     --menu-background-color: #eee;
     --menu-hover-color: lightblue;

@@ -7,16 +7,29 @@
 </template>
 
 <script>
+import Vue from 'vue'
 
-// TODO: Event: splitterSize changed
-// TODO: Remember splitter size (conserve component?)
 // TODO: Icon viewer with test list to display 3 images
 export default {
+    data() {
+        return {
+            height: null
+        }
+    },
     props: [
         "isVertical",
-        "isFixed",
         "isSecondInvisible"
     ],
+    watch: {
+        isSecondInvisible(newVal) {
+            if (!newVal && this.height) {
+                Vue.nextTick(() => {
+                    const view2 = this.$refs.container.children[2]
+                    view2.style.flex = `0 0 ${this.height}%`
+                })
+            }
+        }
+    },
     methods: {
         onSplitterMouseDown(evt) {
             if (evt.which != 1)
@@ -38,16 +51,15 @@ export default {
                 const newSize1 = size1 + delta
                 const newSize2 = size2 - delta
 
-                if (this.isFixed) {
-                    view1.style.flexGrow = `1`
-                    view2.style.flexGrow = '0'
-                    view2.style.height = `${newSize2}px`
-                } else {
-                    const procent1 = newSize1 / (newSize1 + newSize2 + 
-                        (this.isVertical ? splitter.offsetHeight : splitter.offsetWidth)) * 100
-                    view1.style.flex = `0 0 ${procent1}%`
-                    view2.style.flexGrow = `1`
-                }
+                const procent2 = newSize2 / (newSize2 + newSize1 + 
+                    (this.isVertical ? splitter.offsetHeight : splitter.offsetWidth)) * 100
+
+
+this.height = procent2
+
+                view1.style.flexGrow = `1`
+                view2.style.flex = `0 0 ${procent2}%`
+                this.$emit("splitter-position-changed")
 
                 evt.stopPropagation()
                 evt.preventDefault()
