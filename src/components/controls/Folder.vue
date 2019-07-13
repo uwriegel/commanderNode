@@ -1,5 +1,5 @@
 <template>
-    <div class="root" v-stream:keydown='keyDown$'> 
+    <div tabindex="1" class="root" v-stream:keydown='keyDown$' @focus=focus> 
         <input ref="input" v-selectall @keydown='onInputKeyDown' v-model.lazy="path">
         <table-view ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18'
                 @on-column-click='onSort' @on-columns-widths-changed='onColumnsWidthChanged' @on-action='onAction' >

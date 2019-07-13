@@ -8,7 +8,8 @@
             <!-- <connection-test></connection-test> -->
             <!-- <folder-test></folder-test> -->
             <!-- <splitter-grid-test></splitter-grid-test> -->
-            <viewer-test></viewer-test>
+            <!-- <viewer-test></viewer-test> -->
+            <commander></commander>
         </div>
     </div>
 </template>
@@ -16,15 +17,16 @@
 <script>
 import MainMenu from './components/menu/MainMenu.vue'
 import Scrollbar from './components/controls/Scrollbar'
+import Commander from './components/Commander'
 
 // Tests
-import ColumnTest from './components/test/ColumnTest'
-import ScrollbarTest from './components/test/ScrollbarTest'
-import TableViewTest from './components/test/TableViewTest'
-import ConnectionTest from './components/test/ConnectionTest'
-import FolderTest from './components/test/FolderTest'
-import SplitterGridTest from './components/test/SplitterGridTest'
-import ViewerTest from './components/test/ViewerTest'
+// import ColumnTest from './components/test/ColumnTest'
+// import ScrollbarTest from './components/test/ScrollbarTest'
+// import TableViewTest from './components/test/TableViewTest'
+// import ConnectionTest from './components/test/ConnectionTest'
+// import FolderTest from './components/test/FolderTest'
+// import SplitterGridTest from './components/test/SplitterGridTest'
+// import ViewerTest from './components/test/ViewerTest'
 
 import { makeKey } from './components/menu/accelerators'
 const electron = window.require('electron')
@@ -36,14 +38,15 @@ export default {
     components: {
         MainMenu,
         Scrollbar,
+        Commander
         // Tests:
-        ColumnTest,
-        ScrollbarTest,
-        TableViewTest,
-        ConnectionTest,
-        FolderTest,
-        SplitterGridTest,
-        ViewerTest
+        // ColumnTest,
+        // ScrollbarTest,
+        // TableViewTest,
+        // ConnectionTest,
+        // FolderTest,
+        // SplitterGridTest,
+        // ViewerTest
     },
     data() {
         return {
