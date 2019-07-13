@@ -23,12 +23,9 @@ import SplitterGrid from './controls/SplitterGrid'
 import Folder from './controls/Folder'
 
 // TODO: tab changes focus from left to right to left
-// TODO: Menu command set focus: focuses input, not folder
 // TODO: Viewer connected to path
 // TODO: Viewer splitter changes: resize folders
 // TODO: Status displays actual selection or # selected items
-// TODO: input in folder: mixes with restrictions!
-// TODO: input in folder: on change has to focus table
 // TODO: Change theme crashes controlling folders
 export default {
     data() {

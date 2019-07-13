@@ -1,6 +1,6 @@
 <template>
     <div tabindex="1" class="root" v-stream:keydown='keyDown$' @focus=focus> 
-        <input ref="input" v-selectall @keydown='onInputKeyDown' v-model.lazy="path">
+        <input ref="input" v-selectall @keydown='onInputKeyDown' :value="path">
         <table-view ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18'
                 @on-column-click='onSort' @on-columns-widths-changed='onColumnsWidthChanged' @on-action='onAction' >
             <template v-slot=row>
@@ -85,7 +85,8 @@ export default {
     },
     mounted() {
         const shiftTabs$ = this.keyDown$.pipe(filter(n => n.event.which == 9 && n.event.shiftKey))
-        const inputChars$ = this.keyDown$.pipe(filter(n => !n.event.altKey && !n.event.ctrlKey && !n.event.shiftKey && n.event.key.length > 0 && n.event.key.length < 2))
+        const inputChars$ = this.keyDown$.pipe(filter(n => !n.event.altKey && !n.event.ctrlKey && !n.event.shiftKey && n.event.key.length > 0 && n.event.key.length < 2 
+                                && n.event.target != this.$refs.input))
         const backSpaces$ = this.keyDown$.pipe(filter(n => n.event.which == 8))
         const escapes$ = this.keyDown$.pipe(filter(n => n.event.which == 27))
         const returns$ = this.keyDown$.pipe(filter(n => n.event.which == 13))
@@ -94,7 +95,11 @@ export default {
             this.$refs.input.focus()
             n.event.preventDefault()
         })
-        this.$subscribeTo(inputChars$, evt => this.restrictTo(evt.event))
+        this.$subscribeTo(inputChars$, evt => 
+        
+        {
+            console.log(evt.event.target)
+        this.restrictTo(evt.event)})
         this.$subscribeTo(backSpaces$, () => this.restrictBack())
         this.$subscribeTo(escapes$, () => this.restrictClose())
 
@@ -112,6 +117,10 @@ export default {
         onInputKeyDown(evt) {
             switch (evt.which) {
                 case 9: // TAB
+                    this.focus()
+                    break
+                case 13: // enter
+                    this.path = this.$refs.input.value
                     this.focus()
                     break
                 default:
