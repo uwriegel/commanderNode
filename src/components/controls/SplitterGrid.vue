@@ -9,7 +9,6 @@
 <script>
 import Vue from 'vue'
 
-// TODO: Icon viewer with test list to display 3 images
 export default {
     data() {
         return {

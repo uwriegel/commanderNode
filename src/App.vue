@@ -2,12 +2,13 @@
     <div id="app">
         <main-menu :items="menuItems" @on-menu-item-clicked="onMenuItem" />
         <div class="main">
-            <column-test></column-test>
+            <!-- <column-test></column-test> -->
             <!-- <scrollbar-test></scrollbar-test> -->
             <!-- <table-view-test></table-view-test> -->
             <!-- <connection-test></connection-test> -->
             <!-- <folder-test></folder-test> -->
             <!-- <splitter-grid-test></splitter-grid-test> -->
+            <viewer-test></viewer-test>
         </div>
     </div>
 </template>
@@ -23,6 +24,7 @@ import TableViewTest from './components/test/TableViewTest'
 import ConnectionTest from './components/test/ConnectionTest'
 import FolderTest from './components/test/FolderTest'
 import SplitterGridTest from './components/test/SplitterGridTest'
+import ViewerTest from './components/test/ViewerTest'
 
 import { makeKey } from './components/menu/accelerators'
 const electron = window.require('electron')
@@ -40,7 +42,8 @@ export default {
         TableViewTest,
         ConnectionTest,
         FolderTest,
-        SplitterGridTest
+        SplitterGridTest,
+        ViewerTest
     },
     data() {
         return {
