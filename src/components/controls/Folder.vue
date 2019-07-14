@@ -2,7 +2,8 @@
     <div tabindex="1" class="root" v-stream:keydown='keyDown$' @focus=focus @focusin=onfocusIn> 
         <input ref="input" v-selectall @keydown='onInputKeyDown' :value="path">
         <table-view ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18'
-                @on-column-click='onSort' @on-columns-widths-changed='onColumnsWidthChanged' @on-action='onAction' >
+                @column-click='onSort' @columns-widths-changed='onColumnsWidthChanged' 
+                @action='onAction' @selection-changed=onSelectionChanged>
             <template v-slot=row>
                 <tr v-if='processor.name == "directory" && row.item.isDirectory ' 
                         :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
@@ -44,7 +45,7 @@
 </template>
 
 <script>
-import { getDefaultProcessor } from '../../processors/processor'
+import { getDefaultProcessor, combinePath } from '../../processors/processor'
 import TableView from './TableView'
 import DriveIcon from '../../icons/DriveIcon'
 import FolderIcon from '../../icons/FolderIcon'
@@ -70,11 +71,11 @@ export default {
         "id"
     ],
     watch: {
-        path(newVal, oldVal) {
+        path(newVal) {
             if (this.processor.path != newVal)
                 this.changePath(newVal, null, true)
         },
-        showHidden(newVal, oldVal) {
+        showHidden() {
             this.changePath(this.path)
         }
     },
@@ -110,7 +111,7 @@ export default {
     },
     methods: {
         focus() { this.$refs.table.focus() },
-        onfocusIn() { this.$emit("onFocusIn") },
+        onfocusIn() { this.$emit("focus-in") },
         onInputKeyDown(evt) {
             switch (evt.which) {
                 case 9: // TAB
@@ -154,6 +155,12 @@ export default {
                     this.changeProcessor(result.newProcessor)
                 this.changePath(result.path, result.lastPath)
             }
+        },
+        onSelectionChanged(newIndex) { this.$emit('selection-changed', this.getSelectedItem(newIndex)) },
+        getSelectedItem(selectedIndex) { 
+            return this.$refs.table && this.path
+                ? this.processor.getItemWithPath(this.path, this.items[selectedIndex || this.$refs.table.index]) 
+                : ""
         },
         getStorageColumnsWidthName() { return this.id + '-' + this.processor.name + '-columnsWidths'},
         changeProcessor(processor) {

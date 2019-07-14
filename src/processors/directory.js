@@ -1,5 +1,5 @@
 import { getNameOnly, getExtension } from '../pipes'
-import { createProcessor } from './processor'
+import { createProcessor, combinePath } from './processor'
 import { name as rootName } from './root'
 
 export function getDirectoryProcessor() {
@@ -150,14 +150,8 @@ export function getDirectoryProcessor() {
         return pos != -1 ? path.substr(pos + 1) : path
     }
 
-    function combinePath(path1, path2) {
-        if (path2 == "..") {
-            let pos = path1.lastIndexOf('\\', path1.length - 2)
-            if (path1[pos - 1] == ':')
-                pos += 1
-            return pos != -1 ? path1.substr(0, pos) : null
-        }
-        return path1.endsWith('\\') ? path1 + path2 : path1 + '\\' + path2
+    function getItemWithPath(path, item) {
+        return combinePath(path, item.name)
     }
 
     return {
@@ -169,6 +163,7 @@ export function getDirectoryProcessor() {
         getItems,
         sort,
         refresh,
-        onAction
+        onAction,
+        getItemWithPath
     }
 }

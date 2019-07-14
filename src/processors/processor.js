@@ -17,3 +17,14 @@ export function getDefaultProcessor() {
     }
 }
 
+export function combinePath(path1, path2) {
+    if (path2 == "..") {
+        let pos = path1.lastIndexOf('\\', path1.length - 2)
+        if (path1[pos - 1] == ':')
+            pos += 1
+        return pos != -1 ? path1.substr(0, pos) : null
+    }
+    return path1.endsWith('\\') ? path1 + path2 : path1 + '\\' + path2
+}
+
+

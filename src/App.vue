@@ -133,7 +133,12 @@ export default {
                             name: "-"
                         }, { 
                             name: "_Vorschau",
-                            accelerator: { name: "F3"}
+                            action: "showViewer",
+                            checkSelected: () => this.$store.state.showViewer,
+                            accelerator: { 
+                                name: "F3",
+                                key: 114,
+                            }
                         }, { 
                             name: "-"
                         }, { 
@@ -202,6 +207,11 @@ export default {
                     this.$store.commit('setShowHidden', !this.$store.state.showHidden)
                     if (menuItem)
                         menuItem.isSelected = this.$store.state.showHidden
+                    break
+                case "showViewer":
+                    this.$store.commit('setShowViewer', !this.$store.state.showViewer)
+                    if (menuItem)
+                        menuItem.isSelected = this.$store.state.showViewer
                     break
             }
         }

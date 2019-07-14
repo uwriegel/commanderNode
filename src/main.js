@@ -20,10 +20,12 @@ Vue.directive('selectall', getSelectAll())
 
 const store = new Vuex.Store({
     state: {
-        showHidden: false
+        showHidden: false,
+        showViewer: false
     },
     mutations: {
-        setShowHidden(state, showHidden) { state.showHidden = showHidden }
+        setShowHidden(state, showHidden) { state.showHidden = showHidden },
+        setShowViewer(state, showViewer) { state.showViewer = showViewer }
     }
 })
 

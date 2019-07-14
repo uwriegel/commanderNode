@@ -66,7 +66,9 @@ export function getRootProcessor() {
             newProcessor: getDirectoryProcessor(), 
             path: item.name
         }
-    }        
+    }    
+    
+    function getItemWithPath(path, item) { return item.name }
 
     return {
         name,
@@ -77,6 +79,7 @@ export function getRootProcessor() {
         getItems,
         sort,
         refresh,
-        onAction
+        onAction,
+        getItemWithPath
     }
 }

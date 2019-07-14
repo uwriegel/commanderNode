@@ -43,7 +43,7 @@ export default {
     watch: {
         items: {
             immediate: true,
-            handler (newVal, oldVal) {
+            handler(newVal) {
                 if (this.items.length)
                     this.items[0].isCurrent = true
                 this.items.forEach((n, i) => n.index = i)                    
@@ -51,10 +51,14 @@ export default {
                 this.onResize()
             }
         },
-        position: function (newVal, oldVal) { 
+        position(newVal) { 
             this.startIndex = newVal 
             this.setPosition()
-        }
+        },
+        index: {
+            immediate: true,
+            handler(newVal) { this.$emit("selection-changed", newVal) }
+        },
     },
     computed: {
         totalCount () {
@@ -64,7 +68,7 @@ export default {
     methods: {
         focus() { this.$refs.list.focus() },
         onColumnsWidthChanged: function(widths) {
-            this.$emit('on-columns-widths-changed', widths)
+            this.$emit('columns-widths-changed', widths)
         },
         onResize() {
             if (this.$refs.list)
@@ -126,7 +130,7 @@ export default {
             }
         },
         onDblClick() {
-            this.$emit('on-action', this.items[this.index])
+            this.$emit('action', this.items[this.index])
         },
         setPosition() {
             this.displayItems = this.items.slice(this.startIndex, this.startIndex + this.itemsPerPage + 1)
@@ -154,7 +158,7 @@ export default {
                 this.position = this.index - this.itemsPerPage + 1
         }, 
         onColumnClick(index, descending) {
-            this.$emit('on-column-click', index, descending)
+            this.$emit('column-click', index, descending)
         }
     },
     created() {
