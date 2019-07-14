@@ -142,6 +142,7 @@ export default {
                     setTimeout(() => this.$refs.table.setCurrentIndex(newPos))
             }
         },
+        onResize() { this.$refs.table.onResize() },
         onSort(index, descending) {
             const selected = this.items[this.$refs.table.index]
             this.items = this.processor.sort(this.items, index, descending, this.showHidden)

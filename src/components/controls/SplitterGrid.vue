@@ -27,6 +27,7 @@ export default {
                     view2.style.flex = `0 0 ${this.height}%`
                 })
             }
+            Vue.nextTick(() => { this.$emit("splitter-position-changed") })
         }
     },
     methods: {
@@ -52,10 +53,7 @@ export default {
 
                 const procent2 = newSize2 / (newSize2 + newSize1 + 
                     (this.isVertical ? splitter.offsetHeight : splitter.offsetWidth)) * 100
-
-
-this.height = procent2
-
+                this.height = procent2
                 view1.style.flexGrow = `1`
                 view2.style.flex = `0 0 ${procent2}%`
                 this.$emit("splitter-position-changed")

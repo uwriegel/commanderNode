@@ -24,7 +24,6 @@ import Folder from './controls/Folder'
 import Viewer from './controls/Viewer'
 import { mapState } from 'vuex'
 
-// TODO: Viewer splitter changes: resize folders
 // TODO: Status displays actual selection or # selected items
 // TODO: Change theme crashes controlling folders
 // TODO: Refresh
@@ -52,7 +51,8 @@ export default {
     },
     methods: {
         viewerHeightChanged() {
-            console.log("new viewer height")
+            this.$refs.leftFolder.onResize()
+            this.$refs.rightFolder.onResize()
         },
         onKeyDown(evt) {
             if (evt.which == 9 && !evt.shiftKey && evt.target.tagName != "INPUT") {
