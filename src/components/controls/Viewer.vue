@@ -9,6 +9,7 @@ import Vue from 'vue'
 
 // TODO: Directory overview
 // TODO: source code view
+// TODO: Media player
 export default {
     props: [
         "src",

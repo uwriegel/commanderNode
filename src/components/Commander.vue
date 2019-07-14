@@ -15,6 +15,7 @@
                 <viewer class="viewer" :src=selectedItem></viewer>
             </template>
         </splitter-grid>
+        <div class="status">{{ status }}</div>
     </div>
 </template>
 
@@ -24,10 +25,11 @@ import Folder from './controls/Folder'
 import Viewer from './controls/Viewer'
 import { mapState } from 'vuex'
 
-// TODO: Status displays actual selection or # selected items
 // TODO: Refresh
 // TODO: Show Properties, onAction
 // TODO: Dialogs
+
+// TODO: Status displays alternativly# selected items
 export default {
     data() {
         return {
@@ -41,7 +43,9 @@ export default {
         Viewer
     },
     computed: {
-        // ...
+        status() {
+            return this.selectedItem
+        },
         // mix this into the outer object with the object spread operator
         ...mapState(['showViewer'])
     },
@@ -87,5 +91,10 @@ export default {
 }
 .viewer {
     flex-grow: 1;
+}
+.status {
+    padding: 2px 2px 1px 5px;
+    color: var(--selected-color);
+    background-color: var(--selected-background-color);
 }
 </style>
