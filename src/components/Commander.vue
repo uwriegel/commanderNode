@@ -27,6 +27,9 @@ import { mapState } from 'vuex'
 // TODO: Viewer splitter changes: resize folders
 // TODO: Status displays actual selection or # selected items
 // TODO: Change theme crashes controlling folders
+// TODO: Refresh
+// TODO: Show Properties, onAction
+// TODO: Dialogs
 export default {
     data() {
         return {
