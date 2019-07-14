@@ -112,6 +112,9 @@ export default {
     methods: {
         focus() { this.$refs.table.focus() },
         onfocusIn() { this.$emit("focus-in") },
+        refresh() {
+            this.changePath(this.path, this.path, false)
+        },
         onInputKeyDown(evt) {
             switch (evt.which) {
                 case 9: // TAB

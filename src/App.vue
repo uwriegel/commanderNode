@@ -9,7 +9,7 @@
             <!-- <folder-test></folder-test> -->
             <!-- <splitter-grid-test></splitter-grid-test> -->
             <!-- <viewer-test></viewer-test> -->
-            <commander></commander>
+            <commander ref="commander"></commander>
         </div>
     </div>
 </template>
@@ -128,7 +128,12 @@ export default {
                             }
                         }, { 
                             name: "_Aktualisieren",
-                            accelerator: { name: "Strg+R"}
+                            action: "refresh",
+                            accelerator: { 
+                                name: "Strg+R",
+                                key: 82,
+                                ctrl: true
+                            }
                         }, { 
                             name: "-"
                         }, { 
@@ -212,6 +217,9 @@ export default {
                     this.$store.commit('setShowViewer', !this.$store.state.showViewer)
                     if (menuItem)
                         menuItem.isSelected = this.$store.state.showViewer
+                    break
+                case "refresh":
+                    this.$refs.commander.refresh()
                     break
             }
         }

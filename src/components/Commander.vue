@@ -25,7 +25,6 @@ import Folder from './controls/Folder'
 import Viewer from './controls/Viewer'
 import { mapState } from 'vuex'
 
-// TODO: Refresh
 // TODO: Show Properties, onAction
 // TODO: Dialogs
 
@@ -53,14 +52,16 @@ export default {
         this.$refs.leftFolder.focus()
     },
     methods: {
+        refresh() {
+            this.getActiveFolder().refresh()
+        },
         viewerHeightChanged() {
             this.$refs.leftFolder.onResize()
             this.$refs.rightFolder.onResize()
         },
         onKeyDown(evt) {
             if (evt.which == 9 && !evt.shiftKey && evt.target.tagName != "INPUT") {
-                const folder = this.leftHasFocus ? this.$refs.rightFolder : this.$refs.leftFolder
-                folder.focus()
+                this.getInactiveFolder().focus()
                 evt.preventDefault()
             }
         },
@@ -75,6 +76,12 @@ export default {
         },
         onSelectionChanged(newItem) {
             this.selectedItem = newItem
+        },
+        getActiveFolder() {
+            return this.leftHasFocus ? this.$refs.leftFolder : this.$refs.rightFolder
+        },
+        getInactiveFolder() {
+            return this.leftHasFocus ? this.$refs.rightFolder : this.$refs.leftFolder
         }
     }
 }
@@ -94,6 +101,7 @@ export default {
 }
 .status {
     padding: 2px 2px 1px 5px;
+    height: 14px; 
     color: var(--selected-color);
     background-color: var(--selected-background-color);
 }
