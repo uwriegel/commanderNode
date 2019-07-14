@@ -250,6 +250,8 @@ export default {
     --scrollbar-grip-color: rgb(209, 209, 209);
     --scrollbar-grip-hover-color: #bbb;
     --scrollbar-grip-active-color: #999;
+
+    --tr-selected-color: red;
     
     /* --grip-color: #dcdcdc; */
     --grip-color: #eee;

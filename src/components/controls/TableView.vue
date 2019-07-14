@@ -211,7 +211,7 @@ tr.isCurrent {
     outline-offset: -1px;
 }
 .root:focus tr.isCurrent {
-    outline-color: red;
+    outline-color: var(--tr-selected-color);
     outline-width: 1px;
     outline-style: solid;
     outline-offset: -1px;
