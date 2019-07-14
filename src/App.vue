@@ -80,10 +80,20 @@ export default {
                             name: "-"
                         }, { 
                             name: "_Eigenschaften",
-                            accelerator: { name: "Alt+Enter"}
+                            action: "properties",
+                            accelerator: { 
+                                name: "Alt+Enter",
+                                key: 13,
+                                alt: true
+                            }
                         }, { 
                             name: "Öffnen _mit",
-                            accelerator: { name: "Strg+F4"}
+                            action: "openAs",
+                            accelerator: { 
+                                name: "Strg+Enter",
+                                key: 13,
+                                ctrl: true
+                            }
                         }, { 
                             name: "-"
                         }, { 
@@ -195,6 +205,12 @@ export default {
                         if (toFocus)
                             setTimeout(() => toFocus.focus())
                     })
+                    break
+                case 'properties':
+                    this.$refs.commander.properties()
+                    break
+                case 'openAs':
+                    this.$refs.commander.openAs()
                     break
                 case "close":
                     close()                     

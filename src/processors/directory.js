@@ -1,6 +1,7 @@
 import { getNameOnly, getExtension } from '../pipes'
 import { createProcessor, combinePath } from './processor'
 import { name as rootName } from './root'
+const electron = window.require('electron')
 
 export function getDirectoryProcessor() {
     let privates = {
@@ -127,8 +128,8 @@ export function getDirectoryProcessor() {
     }
 
     function onAction(item) {
+        const path = combinePath(privates.path, item.name)
         if (item.isDirectory) {
-            const path = combinePath(privates.path, item.name)
             return path
                 ? {
                     done: false,
@@ -142,6 +143,12 @@ export function getDirectoryProcessor() {
                     path: rootName,
                     lastPath: getDirectoryName(privates.path)
                 }
+        } 
+        else {
+            electron.ipcRenderer.send("open", path)
+            return {
+                done: true
+            }
         }
     }        
 

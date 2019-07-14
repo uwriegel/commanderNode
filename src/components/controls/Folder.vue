@@ -90,7 +90,6 @@ export default {
                                 && n.event.target != this.$refs.input))
         const backSpaces$ = this.keyDown$.pipe(filter(n => n.event.which == 8))
         const escapes$ = this.keyDown$.pipe(filter(n => n.event.which == 27))
-        const returns$ = this.keyDown$.pipe(filter(n => n.event.which == 13))
 
         this.$subscribeTo(shiftTabs$, n => {
             this.$refs.input.focus()

@@ -24,8 +24,8 @@ import SplitterGrid from './controls/SplitterGrid'
 import Folder from './controls/Folder'
 import Viewer from './controls/Viewer'
 import { mapState } from 'vuex'
+const electron = window.require('electron')
 
-// TODO: Show Properties, onAction
 // TODO: Dialogs
 
 // TODO: Status displays alternativly# selected items
@@ -55,6 +55,8 @@ export default {
         refresh() {
             this.getActiveFolder().refresh()
         },
+        properties() { electron.ipcRenderer.send("showInfo", this.selectedItem) },
+        openAs() { electron.ipcRenderer.send("openAs", this.selectedItem) },
         viewerHeightChanged() {
             this.$refs.leftFolder.onResize()
             this.$refs.rightFolder.onResize()
