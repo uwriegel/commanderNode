@@ -16,7 +16,7 @@
             </template>
         </splitter-grid>
         <div class="status">{{ status }}</div>
-        <main-dialog v-if="showViewer"></main-dialog>
+        <main-dialog ref="dialog"></main-dialog>
     </div>
 </template>
 
@@ -57,6 +57,9 @@ export default {
     methods: {
         refresh() {
             this.getActiveFolder().refresh()
+        },
+        rename() {
+            this.$refs.dialog.show()
         },
         properties() { electron.ipcRenderer.send("showInfo", this.selectedItem) },
         openAs() { electron.ipcRenderer.send("openAs", this.selectedItem) },

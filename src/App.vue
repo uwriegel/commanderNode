@@ -199,12 +199,7 @@ export default {
         onMenuItem: function (action, menuItem) {
             switch (action) {
                 case "rename":
-                    setTimeout(() => {
-                        const toFocus = document.activeElement
-                        alert(this.affe)
-                        if (toFocus)
-                            setTimeout(() => toFocus.focus())
-                    })
+                    this.$refs.commander.rename()
                     break
                 case 'properties':
                     this.$refs.commander.properties()

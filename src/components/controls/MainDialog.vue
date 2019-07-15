@@ -1,13 +1,12 @@
 <template>
-    <div class=dialogroot>
-        <transition name="fade" appear>
-            <div class=fader >
+    <div class=dialogroot :class="{ closed: dialogClosed }">
+        <transition name="fade">
+            <div class=fader v-if="isShowing">
             </div>
         </transition>                        
-        <transition name="fade2" appear>
-            <div class="affe">Affe</div>        
+        <transition name="fade2" v-on:after-leave="afterLeave">
+            <div class="affe" @click="onClose" v-if="isShowing">Affe</div>        
         </transition>                        
-        <!-- <div class="shader" v-if="isShowing"></div> -->
     </div>
 </template>
     
@@ -15,6 +14,24 @@
 
 <script>
 export default {
+    data() {
+        return {
+            isShowing: false,
+            dialogClosed: true
+        }
+    },
+    methods: {
+        show() {
+            this.isShowing = true
+            this.dialogClosed = false
+        },
+        onClose() {
+            this.isShowing = false
+        },
+        afterLeave() {
+            this.dialogClosed = true
+        }
+    }
 }
 </script>
 
@@ -31,7 +48,11 @@ export default {
     opacity: 1;
     background-color: rgba(0, 0, 0, 0.50);
 }
+.closed  {
+    display: none;
+}
 .affe {
+    position: absolute;
     background-color: red;
     padding: 30px;
 }
@@ -43,7 +64,7 @@ export default {
 }
 
 .fade2-enter-active, .fade2-leave-active {
-    transition: opacity 8s;
+    transition: opacity 0.8s;
 }
 .fade2-enter, .fade2-leave-to {
     opacity: 0;
