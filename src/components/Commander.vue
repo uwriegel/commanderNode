@@ -16,6 +16,7 @@
             </template>
         </splitter-grid>
         <div class="status">{{ status }}</div>
+        <main-dialog v-if="showViewer"></main-dialog>
     </div>
 </template>
 
@@ -23,6 +24,7 @@
 import SplitterGrid from './controls/SplitterGrid'
 import Folder from './controls/Folder'
 import Viewer from './controls/Viewer'
+import MainDialog from './controls/MainDialog'
 import { mapState } from 'vuex'
 const electron = window.require('electron')
 
@@ -39,7 +41,8 @@ export default {
     components: {
         SplitterGrid,
         Folder,
-        Viewer
+        Viewer,
+        MainDialog
     },
     computed: {
         status() {
@@ -94,6 +97,7 @@ export default {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    position: relative;
 }
 .folder {
     flex-grow: 1;
