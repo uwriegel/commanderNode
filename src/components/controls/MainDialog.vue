@@ -5,13 +5,13 @@
         </transition>                        
         <transition name="slide" v-on:after-leave="afterLeave">
             <div class="dialogContainer" v-if="isShowing">
-                <div class="dialog" @click="onClose">
+                <div class="dialog" @keydown="onKeydown">
                     <div class="text">Der Text der Dialogbox</div>
                     <div class="buttons">
-                        <div tabindex="1" class="dialogButton pointer-def">Ja</div>
-                        <div tabindex="1" class="dialogButton pointer-def">OK</div>
-                        <div tabindex="2" class="dialogButton pointer-def">Nein</div>
-                        <div tabindex="3" class="dialogButton pointer-def">Abbrechen</div>
+                        <div ref=btn1 tabindex="1" class="dialogButton pointer-def">Ja</div>
+                        <div ref=btn2 tabindex="1" class="dialogButton pointer-def">OK</div>
+                        <div ref=btn3 tabindex="2" class="dialogButton pointer-def">Nein</div>
+                        <div ref=btn4 tabindex="3" class="dialogButton pointer-def" @click="onClose">Abbrechen</div>
                     </div>                
                 </div>
             </div>
@@ -22,6 +22,12 @@
 </template>
 
 <script>
+import Vue from 'vue'
+// TODO: show return Promise, when awaited then focus last element
+// TODO: Return and space to click button
+// TODO: Control visibility of buttons
+// TODO: Dialog-Content, 
+
 export default {
     data() {
         return {
@@ -33,6 +39,36 @@ export default {
         show() {
             this.isShowing = true
             this.dialogClosed = false
+                Vue.nextTick(() => this.mounted())
+        },
+        mounted() {
+            // create focusables list
+            this.focusables = []
+            if (this.$refs.btn1)
+                this.focusables.push(this.$refs.btn1)
+            if (this.$refs.btn2)
+                this.focusables.push(this.$refs.btn2)
+            if (this.$refs.btn3)
+                this.focusables.push(this.$refs.btn3)
+            if (this.$refs.btn4)
+                this.focusables.push(this.$refs.btn4)
+            this.focusIndex = 0
+            this.focusables[this.focusIndex].focus()
+        },
+        onKeydown(evt) {
+            switch (evt.which) {
+                case 9: // tab
+                    this.focusIndex = evt.shiftKey ? this.focusIndex - 1 : this.focusIndex + 1
+                    if (this.focusIndex >= this.focusables.length)
+                        this.focusIndex = 0
+                    if (this.focusIndex < 0)
+                        this.focusIndex = this.focusables.length - 1
+                    this.focusables[this.focusIndex].focus()
+                break
+            }
+            console.log(evt)
+            evt.preventDefault()
+            evt.stopPropagation()
         },
         onClose() {
             this.isShowing = false
