@@ -4,8 +4,12 @@
             <div class=fader v-if="isShowing">
             </div>
         </transition>                        
-        <transition name="fade2" v-on:after-leave="afterLeave">
-            <div class="affe" @click="onClose" v-if="isShowing">Affe</div>        
+        <transition name="slide" v-on:after-leave="afterLeave">
+            <div class="dialogContainer" v-if="isShowing">
+                <div class="dialog" @click="onClose">
+
+                </div>
+            </div>
         </transition>                        
     </div>
 </template>
@@ -51,23 +55,44 @@ export default {
 .closed  {
     display: none;
 }
-.affe {
-    position: absolute;
-    background-color: red;
-    padding: 30px;
+
+.dialogContainer {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
 }
+.dialog {
+    padding: 30px;
+    border-radius: 5px;
+    background-color: white;
+    z-index: 10;
+    transform: translateX(0%);
+    box-shadow: 5px 4px 8px 2px rgba(0, 0, 0, 0.35), 0px 0px 20px 2px rgba(0, 0, 0, 0.25);
+}
+
 .fade-enter-active, .fade-leave-active {
-    transition: opacity 0.4s;
+    transition: opacity 0.3s;
 }
 .fade-enter, .fade-leave-to {
     opacity: 0;
 }
 
-.fade2-enter-active, .fade2-leave-active {
-    transition: opacity 0.8s;
+.slide-enter-active, .slide-leave-active {
+    transition: transform 0.3s, opacity 0.3s;
 }
-.fade2-enter, .fade2-leave-to {
+.slide-enter {
+    transform: translateX(-50%);
     opacity: 0;
 }
+
+ .slide-leave-to {
+    transform: translateX(50%);
+    opacity: 0;
+ }
 
 </style>
