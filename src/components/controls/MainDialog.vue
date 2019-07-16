@@ -1,13 +1,18 @@
 <template>
     <div class=dialogroot :class="{ closed: dialogClosed }">
         <transition name="fade">
-            <div class=fader v-if="isShowing">
-            </div>
+            <div class=fader v-if="isShowing"></div>
         </transition>                        
         <transition name="slide" v-on:after-leave="afterLeave">
             <div class="dialogContainer" v-if="isShowing">
                 <div class="dialog" @click="onClose">
-
+                    <div class="text">Der Text der Dialogbox</div>
+                    <div class="buttons">
+                        <div tabindex="1" class="dialogButton pointer-def">Ja</div>
+                        <div tabindex="1" class="dialogButton pointer-def">OK</div>
+                        <div tabindex="2" class="dialogButton pointer-def">Nein</div>
+                        <div tabindex="3" class="dialogButton pointer-def">Abbrechen</div>
+                    </div>                
                 </div>
             </div>
         </transition>                        
@@ -74,14 +79,52 @@ export default {
     transform: translateX(0%);
     box-shadow: 5px 4px 8px 2px rgba(0, 0, 0, 0.35), 0px 0px 20px 2px rgba(0, 0, 0, 0.25);
 }
+.buttons {
+    display: flex;
+    margin-top: 20px;
+}
 
+.dialogButton {
+    display: inline-block;
+    background-color: blue;
+    user-select: none;
+    color: white;
+    text-align: center;
+    width: 80px;
+    height: 20px;
+    line-height: 20px;
+    transition: background-color 0.3s, outline-color 400ms;
+    border-radius: 3px;
+    margin-left: 5px;
+}
+.dialogButton:first-child {
+    margin-left: auto;
+}
+
+.dialogButton:hover {
+    background-color: #7979ff;
+}
+.dialogButton.isDefaultButton{
+    outline-color: gray;
+    outline-width: 1px;
+    outline-style: solid;
+    outline-offset: 1px;
+}
+.dialogButton:active, .buttonActive {
+    background-color: #01018e;
+}
+.dialogButton:focus {
+    outline-color: blue;
+    outline-width: 1px;
+    outline-style: solid;
+    outline-offset: 1px;
+}
 .fade-enter-active, .fade-leave-active {
     transition: opacity 0.3s;
 }
 .fade-enter, .fade-leave-to {
     opacity: 0;
 }
-
 .slide-enter-active, .slide-leave-active {
     transition: transform 0.3s, opacity 0.3s;
 }
@@ -89,10 +132,9 @@ export default {
     transform: translateX(-50%);
     opacity: 0;
 }
-
- .slide-leave-to {
+.slide-leave-to {
     transform: translateX(50%);
     opacity: 0;
- }
+}
 
 </style>
