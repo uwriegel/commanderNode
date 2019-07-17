@@ -28,8 +28,6 @@ import MainDialog from './controls/MainDialog'
 import { mapState } from 'vuex'
 const electron = window.require('electron')
 
-// TODO: Dialogs
-
 // TODO: Status displays alternativly# selected items
 export default {
     data() {
@@ -58,8 +56,11 @@ export default {
         refresh() {
             this.getActiveFolder().refresh()
         },
-        rename() {
-            this.$refs.dialog.show()
+        async rename() {
+            // const result = await this.$refs.dialog.show({cancel : true})
+            const result = await this.$refs.dialog.show({ok: true, cancel : true})
+            console.log(result)
+            this.getActiveFolder().focus()
         },
         properties() { electron.ipcRenderer.send("showInfo", this.selectedItem) },
         openAs() { electron.ipcRenderer.send("openAs", this.selectedItem) },

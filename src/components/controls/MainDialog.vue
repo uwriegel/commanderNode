@@ -8,10 +8,14 @@
                 <div class="dialog" @keydown="onKeydown">
                     <div class="text">Der Text der Dialogbox</div>
                     <div class="buttons">
-                        <div ref=btn1 tabindex="1" class="dialogButton pointer-def">Ja</div>
-                        <div ref=btn2 tabindex="1" class="dialogButton pointer-def">OK</div>
-                        <div ref=btn3 tabindex="2" class="dialogButton pointer-def">Nein</div>
-                        <div ref=btn4 tabindex="3" class="dialogButton pointer-def" @click="onClose">Abbrechen</div>
+                        <div ref=btn1 tabindex="1" v-if="yes" class="dialogButton pointer-def"
+                            @keydown=keydownYes>Ja</div>
+                        <div ref=btn2 tabindex="1" v-if="ok" class="dialogButton pointer-def"
+                            @keydown=keydownOk>OK</div>
+                        <div ref=btn3 tabindex="2" v-if="no" class="dialogButton pointer-def"
+                            @keydown=keydownNo>Nein</div>
+                        <div ref=btn4 tabindex="3" v-if="cancel" class="dialogButton pointer-def" 
+                            @keydown=keydownCancel @click="onClose">Abbrechen</div>
                     </div>                
                 </div>
             </div>
@@ -23,23 +27,34 @@
 
 <script>
 import Vue from 'vue'
-// TODO: show return Promise, when awaited then focus last element
-// TODO: Return and space to click button
-// TODO: Control visibility of buttons
+import { Promise } from 'q';
 // TODO: Dialog-Content, 
+// TODO: Return to click default button
 
 export default {
     data() {
         return {
             isShowing: false,
-            dialogClosed: true
+            dialogClosed: true,
+            ok: false,
+            yes: false,
+            no: false,
+            cancel: false
         }
     },
     methods: {
-        show() {
-            this.isShowing = true
-            this.dialogClosed = false
+        show(config) {
+            return new Promise((res, rej) => {
+                this.ok = config.ok
+                this.no = config.no
+                this.yes = config.yes
+                this.cancel = config.cancel
+                this.resolve = res
+                this.reject = rej
+                this.isShowing = true
+                this.dialogClosed = false
                 Vue.nextTick(() => this.mounted())
+            })
         },
         mounted() {
             // create focusables list
@@ -64,17 +79,50 @@ export default {
                     if (this.focusIndex < 0)
                         this.focusIndex = this.focusables.length - 1
                     this.focusables[this.focusIndex].focus()
-                break
+                    break
+                case 27: // ESC
+                    if (this.cancel) {
+                        this.result = 0
+                        this.onClose()
+                    }
+                    break;
             }
             console.log(evt)
             evt.preventDefault()
             evt.stopPropagation()
+        },
+        keydownYes(evt) {
+            if (evt.which == 13 || evt.which == 32) {
+                this.result = 2
+                this.onClose()
+            }
+        },
+        keydownNo(evt) {
+            if (evt.which == 13 || evt.which == 32) {
+                this.result = 3
+                this.onClose()
+            }
+        },
+        keydownOk(evt) {
+            if (evt.which == 13 || evt.which == 32) {
+                this.result = 1
+                this.onClose()
+            }
+        },
+        keydownCancel(evt) {
+            if (evt.which == 13 || evt.which == 32) {
+                this.result = 0
+                this.onClose()
+            }
         },
         onClose() {
             this.isShowing = false
         },
         afterLeave() {
             this.dialogClosed = true
+            Vue.nextTick(() => this.resolve({
+                result: this.result
+            }))
         }
     }
 }
@@ -140,7 +188,7 @@ export default {
 .dialogButton:hover {
     background-color: #7979ff;
 }
-.dialogButton.isDefaultButton{
+.dialogButton.isDefaultButton {
     outline-color: gray;
     outline-width: 1px;
     outline-style: solid;
