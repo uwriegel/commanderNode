@@ -29,7 +29,6 @@
 import Vue from 'vue'
 import SimpleDialog from './SimpleDialog'
 
-// TODO: Dialog-Content, 
 // TODO: Return to click default button
 
 export default {
