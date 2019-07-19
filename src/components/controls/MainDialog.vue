@@ -6,7 +6,7 @@
         <transition name="slide" v-on:after-leave="afterLeave">
             <div class="dialogContainer" v-if="isShowing">
                 <div class="dialog" @keydown="onKeydown">
-                    <div class="text">Der Text der Dialogbox</div>
+                    <simple-dialog v-if="simpleDialog" :data="simpleDialog"></simple-dialog>
                     <div class="buttons">
                         <div ref=btn1 tabindex="1" v-if="yes" class="dialogButton pointer-def"
                             @keydown=keydownYes>Ja</div>
@@ -27,7 +27,8 @@
 
 <script>
 import Vue from 'vue'
-import { Promise } from 'q';
+import SimpleDialog from './SimpleDialog'
+
 // TODO: Dialog-Content, 
 // TODO: Return to click default button
 
@@ -39,8 +40,12 @@ export default {
             ok: false,
             yes: false,
             no: false,
-            cancel: false
+            cancel: false, 
+            simpleDialog: null
         }
+    },
+    components: {
+        SimpleDialog
     },
     methods: {
         show(config) {
@@ -49,6 +54,7 @@ export default {
                 this.no = config.no
                 this.yes = config.yes
                 this.cancel = config.cancel
+                this.simpleDialog = config.simpleDialog
                 this.resolve = res
                 this.reject = rej
                 this.isShowing = true

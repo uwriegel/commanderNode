@@ -58,7 +58,13 @@ export default {
         },
         async rename() {
             // const result = await this.$refs.dialog.show({cancel : true})
-            const result = await this.$refs.dialog.show({ok: true, cancel : true})
+            const result = await this.$refs.dialog.show({
+                ok: true, 
+                cancel : true,
+                simpleDialog: {
+                    text: "Dialogbox-Text"
+                }
+            })
             console.log(result)
             this.getActiveFolder().focus()
         },
