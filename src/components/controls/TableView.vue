@@ -101,6 +101,9 @@ export default {
                 case 40:
                     this.downOne()
                     break
+                case 46: // Delete
+                    this.$emit("delete")
+                    break;
                 default:
                     return // exit this handler for other keys
             }

@@ -4,10 +4,10 @@
             <template v-slot:first>
                 <splitter-grid>
                     <template v-slot:first>
-                        <folder ref="leftFolder" class="folder" id="left" @focus-in=onLeftFocus @selection-changed=onSelectionChanged></folder>
+                        <folder ref="leftFolder" @delete='onLeftDelete' class="folder" id="left" @focus-in=onLeftFocus @selection-changed=onSelectionChanged></folder>
                     </template>
                     <template v-slot:second>
-                        <folder ref="rightFolder" class="folder" id="right" @focus-in=onRightFocus @selection-changed=onSelectionChanged></folder>
+                        <folder ref="rightFolder" @delete='onRightDelete' class="folder" id="right" @focus-in=onRightFocus @selection-changed=onSelectionChanged></folder>
                     </template>
                 </splitter-grid>
             </template>
@@ -56,18 +56,7 @@ export default {
         refresh() {
             this.getActiveFolder().refresh()
         },
-        async rename() {
-            // const result = await this.$refs.dialog.show({cancel : true})
-            const result = await this.$refs.dialog.show({
-                ok: true, 
-                cancel : true,
-                simpleDialog: {
-                    text: "Dialogbox-Text"
-                }
-            })
-            console.log(result)
-            this.getActiveFolder().focus()
-        },
+        async rename() { },
         properties() { electron.ipcRenderer.send("showInfo", this.selectedItem) },
         openAs() { electron.ipcRenderer.send("openAs", this.selectedItem) },
         viewerHeightChanged() {
@@ -91,6 +80,27 @@ export default {
         },
         onSelectionChanged(newItem) {
             this.selectedItem = newItem
+        },
+        onLeftDelete() {
+            this.deleteItems(this.$refs.leftFolder)
+        },
+        onRightDelete() {
+            this.deleteItems(this.$refs.rightFolder)
+        },
+        async deleteItems(folder) {
+            if (!folder)
+                folder = this.getActiveFolder()
+            if (folder.canDeleteItems()) {
+                const result = await this.$refs.dialog.show({
+                    ok: true, 
+                    cancel : true,
+                    simpleDialog: {
+                        text: "Möchtest Du die selektierten Einträge löschen?"
+                    }
+                })
+                console.log(result)
+                this.getActiveFolder().focus()
+            }
         },
         getActiveFolder() {
             return this.leftHasFocus ? this.$refs.leftFolder : this.$refs.rightFolder

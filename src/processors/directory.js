@@ -161,6 +161,8 @@ export function getDirectoryProcessor() {
         return combinePath(path, item.name)
     }
 
+    function canDelete() { return true }
+
     return {
         name: "directory",
         get path() { return privates.path },
@@ -171,6 +173,7 @@ export function getDirectoryProcessor() {
         sort,
         refresh,
         onAction,
-        getItemWithPath
+        getItemWithPath,
+        canDelete
     }
 }

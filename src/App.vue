@@ -70,7 +70,8 @@ export default {
                             accelerator: { name: "F6"}
                         }, { 
                             name: "_Löschen",
-                            accelerator: { name: "Entf"}
+                            accelerator: { name: "Entf"},
+                            action: "delete"
                         }, { 
                             name: "-"
                         }, { 
@@ -209,6 +210,9 @@ export default {
                     break
                 case "close":
                     close()                     
+                    break
+                case "delete":
+                    this.$refs.commander.deleteItems()
                     break
                 case "theme":
                     changeTheme()

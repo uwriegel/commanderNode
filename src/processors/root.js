@@ -70,6 +70,8 @@ export function getRootProcessor() {
     
     function getItemWithPath(path, item) { return item.name }
 
+    function canDelete() { return false }
+
     return {
         name,
         path: name,
@@ -80,6 +82,7 @@ export function getRootProcessor() {
         sort,
         refresh,
         onAction,
-        getItemWithPath
+        getItemWithPath,
+        canDelete
     }
 }

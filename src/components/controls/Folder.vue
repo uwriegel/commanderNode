@@ -3,7 +3,7 @@
         <input ref="input" v-selectall @keydown='onInputKeyDown' :value="path">
         <table-view ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18'
                 @column-click='onSort' @columns-widths-changed='onColumnsWidthChanged' 
-                @action='onAction' @selection-changed=onSelectionChanged>
+                @action='onAction' @selection-changed=onSelectionChanged @delete='onDelete'>
             <template v-slot=row>
                 <tr v-if='processor.name == "directory" && row.item.isDirectory ' 
                         :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
@@ -128,8 +128,11 @@ export default {
             }
             evt.preventDefault() // prevent the default action (scroll / move caret)
         },
-        onColumnsWidthChanged: function(widths) {
+        onColumnsWidthChanged(widths) {
             localStorage[this.getStorageColumnsWidthName()] = JSON.stringify(widths)
+        },
+        onDelete() {
+            this.$emit("delete")
         },
         async changePath(path, lastPath, checkProcessor) {
             this.restrictClose(true)
@@ -165,6 +168,7 @@ export default {
                 ? this.processor.getItemWithPath(this.path, this.items[selectedIndex || this.$refs.table.index]) 
                 : ""
         },
+        canDeleteItems() { return this.processor.canDelete() },
         getStorageColumnsWidthName() { return this.id + '-' + this.processor.name + '-columnsWidths'},
         changeProcessor(processor) {
             if (processor) {
