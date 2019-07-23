@@ -168,6 +168,10 @@ export default {
                 ? this.processor.getItemWithPath(this.path, this.items[selectedIndex || this.$refs.table.index]) 
                 : ""
         },
+        getSelectedItems() {
+            const items = this.items.filter(n => n.isSelected)
+            return items.length > 0? items : [ this.items[this.$refs.table.index] ]
+        },
         canDeleteItems() { return this.processor.canDelete() },
         getStorageColumnsWidthName() { return this.id + '-' + this.processor.name + '-columnsWidths'},
         changeProcessor(processor) {

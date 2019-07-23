@@ -91,12 +91,25 @@ export default {
             if (!folder)
                 folder = this.getActiveFolder()
             if (folder.canDeleteItems()) {
+                const selectedItems = folder.getSelectedItems()
+                const  dirs = selectedItems.filter( n => n.isDirectory).length
+                const  files = selectedItems.filter( n => !n.isDirectory).length
+                const text = 
+                    files && dirs
+                    ? "Möchtest Du die selektierten Einträge löschen?"
+                    : (files
+                    ? (files > 1
+                        ? "Möchtest Du die selektierten Dateien löschen?"
+                        : `Möchtest Du die selektierte Datei '${selectedItems[0].name}' löschen?`)
+                    : (dirs > 1
+                        ? "Möchtest Du die selektierten Verzeichnisse löschen?"
+                        : `Möchtest Du das selektierte Verzeichnis '${selectedItems[0].name}' löschen?`)
+                    )
+                    
                 const result = await this.$refs.dialog.show({
                     ok: true, 
                     cancel : true,
-                    simpleDialog: {
-                        text: "Möchtest Du die selektierten Einträge löschen?"
-                    }
+                    simpleDialog: { text }
                 })
                 console.log(result)
                 this.getActiveFolder().focus()
