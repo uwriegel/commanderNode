@@ -7,6 +7,7 @@ const protocol = electron.protocol
 const BrowserWindow = electron.BrowserWindow
 const fs = require("fs")
 const extFs = require('extension-fs')
+const ipc = require('./ipc')
 
 const createWindow = function() {    
     const bounds = settings.get("window-bounds", { 
@@ -29,6 +30,22 @@ const createWindow = function() {
     electron.ipcMain.on("showInfo",  (evt, arg) => extFs.showInfo(arg))
     electron.ipcMain.on("open",  (evt, arg) => extFs.open(arg))
     electron.ipcMain.on("openAs",  (evt, arg) => extFs.openAs(arg))
+    ipc.subscribe(win.webContents, async (method, arg) => {
+        switch (method) {
+            // case "createDirectory":
+            //     await createDirectory(arg)
+            //     return ""
+            // case "rename":
+            //     const param = JSON.parse(arg)
+            //     await rename(param.path, param.name, param.newName)
+            //     return ""
+            case "deleteFiles":
+                const files = JSON.parse(arg)
+                await extFs.deleteFiles(files)
+                return ""
+        }
+    })
+
     // Undocument this to get the default menu with developer tools
     win.setMenu(null)
 

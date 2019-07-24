@@ -1,6 +1,7 @@
 import { getNameOnly, getExtension } from '../pipes'
 import { createProcessor, combinePath } from './processor'
 import { name as rootName } from './root'
+import { sendToMain } from '../Connection'
 const electron = window.require('electron')
 
 export function getDirectoryProcessor() {
@@ -163,6 +164,11 @@ export function getDirectoryProcessor() {
 
     function canDelete() { return true }
 
+    async function deleteFiles(itemsToDelete) {
+        const files =  itemsToDelete.map(n => privates.path + '\\' + n.name)
+        await sendToMain("deleteFiles", JSON.stringify(files))
+    }
+
     return {
         name: "directory",
         get path() { return privates.path },
@@ -174,6 +180,7 @@ export function getDirectoryProcessor() {
         refresh,
         onAction,
         getItemWithPath,
-        canDelete
+        canDelete,
+        deleteFiles
     }
 }

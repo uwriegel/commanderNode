@@ -208,6 +208,9 @@ export default {
                     this.restrictClose()
             }
         },
+        deleteFiles(itemsToDelete) {
+            return this.processor.deleteFiles(itemsToDelete)
+        },
         initializeSelection() {
             const ends$ = this.keyDown$.pipe(filter(n => n.event.which == 35 && n.event.shiftKey))
             const homes$ = this.keyDown$.pipe(filter(n => n.event.which == 36 && n.event.shiftKey))

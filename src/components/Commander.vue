@@ -111,8 +111,11 @@ export default {
                     cancel : true,
                     simpleDialog: { text }
                 })
-                console.log(result)
                 this.getActiveFolder().focus()
+                if (result.result == 1) {
+                    await folder.deleteFiles(selectedItems)
+                    folder.refresh()
+                }
             }
         },
         getActiveFolder() {
