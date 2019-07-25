@@ -6,7 +6,7 @@
         <transition name="slide" v-on:after-leave="afterLeave">
             <div class="dialogContainer" v-if="isShowing">
                 <div class="dialog" @keydown="onKeydown">
-                    <simple-dialog v-if="simpleDialog" :data="simpleDialog"></simple-dialog>
+                    <simple-dialog ref="simpleDialog" v-if="simpleDialog" :data="simpleDialog"></simple-dialog>
                     <div class="buttons">
                         <div ref=btn1 tabindex="1" v-if="yes" class="dialogButton pointer-def"
                             @keydown=keydownYes>Ja</div>
@@ -63,6 +63,7 @@ export default {
         },
         mounted() {
             // create focusables list
+
             this.focusables = []
             if (this.$refs.btn1)
                 this.focusables.push(this.$refs.btn1)
@@ -72,6 +73,9 @@ export default {
                 this.focusables.push(this.$refs.btn3)
             if (this.$refs.btn4)
                 this.focusables.push(this.$refs.btn4)
+            if (this.$refs.simpleDialog)
+                this.$refs.simpleDialog.getFocusables().forEach(n => this.focusables.push(n))
+
             this.focusIndex = 0
             this.focusables[this.focusIndex].focus()
         },

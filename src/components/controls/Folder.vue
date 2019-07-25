@@ -173,6 +173,7 @@ export default {
             return items.length > 0? items : [ this.items[this.$refs.table.index] ]
         },
         canDeleteItems() { return this.processor.canDelete() },
+        canCreateFolder() { return this.processor.canCreateFolder() },
         getStorageColumnsWidthName() { return this.id + '-' + this.processor.name + '-columnsWidths'},
         changeProcessor(processor) {
             if (processor) {

@@ -76,7 +76,11 @@ export default {
                             name: "-"
                         }, { 
                             name: "_Ordner anlegen",
-                            accelerator: { name: "F7"}
+                            accelerator: { 
+                                name: "F7",
+                                key: 118
+                            },
+                            action: "createFolder"
                         }, { 
                             name: "-"
                         }, { 
@@ -210,6 +214,9 @@ export default {
                     break
                 case "close":
                     close()                     
+                    break
+                case "createFolder":
+                    this.$refs.commander.createFolder()
                     break
                 case "delete":
                     this.$refs.commander.deleteItems()

@@ -70,6 +70,8 @@ export function getRootProcessor() {
     
     function getItemWithPath(path, item) { return item.name }
 
+    function canCreateFolder() { return false }
+    
     function canDelete() { return false }
 
     return {
@@ -83,6 +85,7 @@ export function getRootProcessor() {
         refresh,
         onAction,
         getItemWithPath,
+        canCreateFolder,
         canDelete
     }
 }

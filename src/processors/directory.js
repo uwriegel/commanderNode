@@ -162,6 +162,7 @@ export function getDirectoryProcessor() {
         return combinePath(path, item.name)
     }
 
+    function canCreateFolder() { return true }
     function canDelete() { return true }
 
     async function deleteFiles(itemsToDelete) {
@@ -180,6 +181,7 @@ export function getDirectoryProcessor() {
         refresh,
         onAction,
         getItemWithPath,
+        canCreateFolder,
         canDelete,
         deleteFiles
     }

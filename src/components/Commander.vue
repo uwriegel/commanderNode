@@ -81,6 +81,18 @@ export default {
         onSelectionChanged(newItem) {
             this.selectedItem = newItem
         },
+        async createFolder() {
+            const folder = this.getActiveFolder()
+            if (folder.canCreateFolder()) {
+                const selectedItem = folder.getSelectedItem().name
+                const result = await this.$refs.dialog.show({
+                    ok: true, 
+                    cancel : true,
+                    simpleDialog: { text: "Neuen Ordner anlegen", input: true }
+                })
+                this.getActiveFolder().focus()
+            }
+        },
         onLeftDelete() {
             this.deleteItems(this.$refs.leftFolder)
         },
