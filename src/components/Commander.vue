@@ -29,6 +29,7 @@ import { mapState } from 'vuex'
 const electron = window.require('electron')
 
 // TODO: Status displays alternativly# selected items
+// TODO: Detect dark theme: Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize
 export default {
     data() {
         return {

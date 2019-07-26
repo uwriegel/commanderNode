@@ -94,9 +94,10 @@ export default {
                         this.result = 0
                         this.onClose()
                     }
-                    break;
+                    break
+                default:
+                    return
             }
-            console.log(evt)
             evt.preventDefault()
             evt.stopPropagation()
         },
