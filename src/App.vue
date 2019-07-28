@@ -1,6 +1,8 @@
 <template>
     <div id="app">
-        <main-menu :items="menuItems" @on-menu-item-clicked="onMenuItem" />
+        <titlebar>
+            <main-menu :items="menuItems" @on-menu-item-clicked="onMenuItem" />
+        </titlebar>
         <div class="main">
             <!-- <column-test></!-->
             <!-- <scrollbar-test></scrollbar-test> -->
@@ -15,6 +17,7 @@
 </template>
 
 <script>
+import Titlebar from './components/controls/Titlebar'
 import MainMenu from './components/menu/MainMenu.vue'
 import Scrollbar from './components/controls/Scrollbar'
 import Commander from './components/Commander'
@@ -36,6 +39,7 @@ import { changeTheme } from './themes'
 export default {
     name: 'app',
     components: {
+        Titlebar,
         MainMenu,
         Scrollbar,
         Commander,
@@ -263,6 +267,7 @@ export default {
 
 <style>
 :root {
+    --title-background-color: #eee;
     --main-color: black;
     --main-background-color: white;
     
@@ -286,7 +291,6 @@ export default {
     /* --grip-color: #dcdcdc; */
     --grip-color: #eee;
 
-    --menu-background-color: #eee;
     --menu-hover-color: lightblue;
     --menu-separator-color: #ddd;
     --menu-border-color: lightgray;

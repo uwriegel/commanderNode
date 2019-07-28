@@ -100,6 +100,7 @@ export default {
         background-color: var(--main-background-color); 
         position: absolute;
         z-index: 10000;
+        top: 24px;
         border-color: var(--menu-border-color);
         border-style: solid;
         border-width: 1px;
