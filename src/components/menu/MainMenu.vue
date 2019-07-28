@@ -107,6 +107,10 @@ export default {
         padding: 0;
         margin: 0;
         background-color: var(--menu-background-color);
+        -webkit-app-region: drag;
+    }
+    ul > li {
+        -webkit-app-region: no-drag;
     }
 </style>
 

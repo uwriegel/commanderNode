@@ -2,7 +2,7 @@
     <div id="app">
         <main-menu :items="menuItems" @on-menu-item-clicked="onMenuItem" />
         <div class="main">
-            <!-- <column-test></column-test> -->
+            <!-- <column-test></!-->
             <!-- <scrollbar-test></scrollbar-test> -->
             <!-- <table-view-test></table-view-test> -->
             <!-- <connection-test></connection-test> -->
@@ -20,7 +20,7 @@ import Scrollbar from './components/controls/Scrollbar'
 import Commander from './components/Commander'
 
 // Tests
-// import ColumnTest from './components/test/ColumnTest'
+import ColumnTest from './components/test/ColumnTest'
 // import ScrollbarTest from './components/test/ScrollbarTest'
 // import TableViewTest from './components/test/TableViewTest'
 // import ConnectionTest from './components/test/ConnectionTest'
@@ -38,9 +38,9 @@ export default {
     components: {
         MainMenu,
         Scrollbar,
-        Commander
+        Commander,
         // Tests:
-        // ColumnTest,
+        ColumnTest
         // ScrollbarTest,
         // TableViewTest,
         // ConnectionTest,
