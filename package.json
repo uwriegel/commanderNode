@@ -37,7 +37,8 @@
     "rxjs": "^6.5.2",
     "vue": "^2.6.10",
     "vue-rx": "^6.2.0",
-    "vuex": "^3.1.1"
+    "vuex": "^3.1.1",
+    "windows-theme-changes": "^1.0.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.9.2",

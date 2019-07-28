@@ -9,6 +9,15 @@ const fs = require("fs")
 const extFs = require('extension-fs')
 const ipc = require('./ipc')
 
+// console.log("Starting")
+
+// const addon = require('windows-theme-changes')
+
+// addon.register(light => console.log("Änderung: Hell?", light))
+// const isLightMode = addon.isLightMode()
+// console.log("Hell?", isLightMode)
+// setTimeout(() => addon.unregister(), 10000)
+
 const createWindow = function() {    
     const bounds = settings.get("window-bounds", { 
         width: 800,
