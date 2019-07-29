@@ -41,6 +41,13 @@ const createWindow = function() {
     electron.ipcMain.on("showInfo",  (evt, arg) => extFs.showInfo(arg))
     electron.ipcMain.on("open",  (evt, arg) => extFs.open(arg))
     electron.ipcMain.on("openAs",  (evt, arg) => extFs.openAs(arg))
+    electron.ipcMain.on("minimize",  (evt, arg) => win.minimize())
+    electron.ipcMain.on("maximize",  (evt, arg) => {
+        if (win.isMaximized())
+            win.restore()
+        else
+            win.maximize()  
+    })
     ipc.subscribe(win.webContents, async (method, arg) => {
         switch (method) {
             // case "createDirectory":

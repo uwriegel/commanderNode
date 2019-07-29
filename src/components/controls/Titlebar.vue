@@ -6,17 +6,29 @@
             <div class="dragregion">
                 <span>Commander</span>
             </div>
-            <div class="button"><span class="dash">&#x2012;</span></div>
-            <div class="button"><span>&#9744;</span></div>
-            <div class="button close"><span>&#10005;</span></div>
+            <div class="button" @click="onMinimize"><span class="dash">&#x2012;</span></div>
+            <div class="button" @click="onMaximize"><span>&#9744;</span></div>
+            <div class="button close" @click="onClose"><span>&#10005;</span></div>
         </div>
     </div>
 </template>
 
 <script>
+const electron = window.require('electron')
+
 export default {
-    // TODO: Minimize, maximize, close
     // TODO: detect windows theme changes
+    methods: {
+        onClose() {
+            close()
+        },
+        onMinimize() {
+            electron.ipcRenderer.send("minimize")
+        },
+        onMaximize() {
+            electron.ipcRenderer.send("maximize")
+        }
+    }
 }
 </script>
 
@@ -56,6 +68,7 @@ export default {
     .button>span {
         flex-grow: 1;   
         margin-top: -3px;
+        user-select: none;
     }
     .button:hover {
         background-color: lightgray;
