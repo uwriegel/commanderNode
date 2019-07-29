@@ -102,7 +102,7 @@ export default {
 
 <style scoped>
     li {
-        cursor: default;
+        cursor: pointer;
         display: block;
         float: left;
         position: relative;
