@@ -260,6 +260,8 @@ export default {
 input {
     font-size: 100%;
     box-sizing: border-box;
+    background-color: var(--main-background-color);
+    color: var(--main-color);
     margin-left: 3px;
     margin-right: 3px;
     border-style: none;

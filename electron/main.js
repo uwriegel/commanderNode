@@ -9,14 +9,10 @@ const fs = require("fs")
 const extFs = require('extension-fs')
 const ipc = require('./ipc')
 
-// console.log("Starting")
-
-// const addon = require('windows-theme-changes')
-
-// addon.register(light => console.log("Änderung: Hell?", light))
-// const isLightMode = addon.isLightMode()
-// console.log("Hell?", isLightMode)
-// setTimeout(() => addon.unregister(), 10000)
+let themeCallback 
+const themeChanges = require('windows-theme-changes') 
+themeChanges.register(light => themeCallback(light)) 
+const isLightMode = themeChanges.isLightMode() 
 
 const createWindow = function() {    
     const bounds = settings.get("window-bounds", { 
@@ -26,7 +22,8 @@ const createWindow = function() {
     bounds.webPreferences = { nodeIntegration: true }    
     bounds.icon = 'kirk2.png'
     bounds.frame = false
-    bounds.backgroundColor = "#111"
+    bounds.show = false 
+    bounds.backgroundColor = isLightMode ? "#fff" : "#1e1e1e" 
     bounds.webPreferences = {
         preload: path.join(__dirname, 'preload.js'),
         nodeIntegration: true
@@ -64,6 +61,18 @@ const createWindow = function() {
         }
     })
 
+    function insertCss(light) {
+        const theme = require(light ? './themes/light' : './themes/dark')
+        win.webContents.insertCSS(theme.getCss()) 
+    }
+
+    win.once('ready-to-show', () => { 
+        insertCss(isLightMode)
+        win.show() 
+    }) 
+
+    themeCallback = insertCss
+       
     // Undocument this to get the default menu with developer tools
     win.setMenu(null)
 
