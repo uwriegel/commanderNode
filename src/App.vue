@@ -34,8 +34,6 @@ import ColumnTest from './components/test/ColumnTest'
 import { makeKey } from './components/menu/accelerators'
 const electron = window.require('electron')
 
-import { changeTheme } from './themes'
-
 export default {
     name: 'app',
     components: {

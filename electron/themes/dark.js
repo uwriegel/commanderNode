@@ -30,5 +30,7 @@ exports.getCss = function () {
 "--menu-shadow-color: rgba(0, 0, 0, 0.21);" +
 
 "--icon-color: #999;" +
+
+"--dialog-background-color: rgb(30, 30, 30);" +
 "}" 
 }

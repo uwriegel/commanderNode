@@ -8,13 +8,17 @@
                 <div class="dialog" @keydown="onKeydown">
                     <simple-dialog ref="simpleDialog" v-if="simpleDialog" :data="simpleDialog"></simple-dialog>
                     <div class="buttons">
-                        <div ref=btn1 tabindex="1" v-if="yes" class="dialogButton pointer-def"
+                        <div ref=btn1 tabindex="1" v-if="yes" @focus="onFocus" @blur="onBlur" 
+                            class="dialogButton pointer-def" :class="{default: isButtonYesDefault}"
                             @keydown=keydownYes>Ja</div>
-                        <div ref=btn2 tabindex="1" v-if="ok" class="dialogButton pointer-def"
+                        <div ref=btn2 tabindex="1" v-if="ok" @focus="onFocus" @blur="onBlur" 
+                            class="dialogButton pointer-def" :class="{default: isButtonOkDefault}"
                             @keydown=keydownOk>OK</div>
-                        <div ref=btn3 tabindex="2" v-if="no" class="dialogButton pointer-def"
+                        <div ref=btn3 tabindex="2" v-if="no" @focus="onFocus" @blur="onBlur" 
+                            class="dialogButton pointer-def" :class="{default: isButtonNoDefault}"
                             @keydown=keydownNo>Nein</div>
-                        <div ref=btn4 tabindex="3" v-if="cancel" class="dialogButton pointer-def" 
+                        <div ref=btn4 tabindex="3" v-if="cancel" @focus="onFocus" @blur="onBlur" 
+                            class="dialogButton pointer-def" :class="{default: isButtonCancelDefault}" 
                             @keydown=keydownCancel @click="onClose">Abbrechen</div>
                     </div>                
                 </div>
@@ -30,6 +34,9 @@ import Vue from 'vue'
 import SimpleDialog from './SimpleDialog'
 
 // TODO: Return to click default button
+// TODO: SimpleDialog: Maxwidth
+// TODO: SimpleDialog: margin lr
+// TODO: SimpleDialog: outline input color dark
 
 export default {
     data() {
@@ -40,8 +47,24 @@ export default {
             yes: false,
             no: false,
             cancel: false, 
-            simpleDialog: null
+            defButton: "",
+            simpleDialog: null,
+            isButtonFocused: false
         }
+    },
+    computed: {
+        isButtonYesDefault() {
+            return this.defButton == "yes" && !this.isButtonFocused
+        },
+        isButtonNoDefault() {
+            return this.defButton == "no" && !this.isButtonFocused
+        },
+        isButtonOkDefault() {
+            return this.defButton == "ok" && !this.isButtonFocused
+        },
+        isButtonCancelDefault() {
+            return this.defButton == "cancel" && !this.isButtonFocused
+        } 
     },
     components: {
         SimpleDialog
@@ -51,6 +74,7 @@ export default {
             return new Promise((res, rej) => {
                 this.ok = config.ok
                 this.no = config.no
+                this.defButton = config.defButton
                 this.yes = config.yes
                 this.cancel = config.cancel
                 this.simpleDialog = config.simpleDialog
@@ -60,6 +84,12 @@ export default {
                 this.dialogClosed = false
                 Vue.nextTick(() => this.mounted())
             })
+        },
+        onFocus() {
+            this.isButtonFocused = true
+        },
+        onBlur() {
+            this.isButtonFocused = false
         },
         mounted() {
             // create focusables list
@@ -73,10 +103,14 @@ export default {
                 this.focusables.push(this.$refs.btn3)
             if (this.$refs.btn4)
                 this.focusables.push(this.$refs.btn4)
-            if (this.$refs.simpleDialog)
+            const buttonCount = this.focusables.length
+            if (this.$refs.simpleDialog) 
                 this.$refs.simpleDialog.getFocusables().forEach(n => this.focusables.push(n))
-
-            this.focusIndex = 0
+            
+            this.focusIndex = 
+                this.$refs.simpleDialog 
+                ? this.$refs.simpleDialog.getFocusIndex(buttonCount)
+                : 0
             this.focusables[this.focusIndex].focus()
         },
         onKeydown(evt) {
@@ -168,7 +202,7 @@ export default {
 .dialog {
     padding: 30px;
     border-radius: 5px;
-    background-color: white;
+    background-color: var(--dialog-background-color);
     z-index: 10;
     transform: translateX(0%);
     box-shadow: 5px 4px 8px 2px rgba(0, 0, 0, 0.35), 0px 0px 20px 2px rgba(0, 0, 0, 0.25);
@@ -181,6 +215,7 @@ export default {
 .dialogButton {
     display: inline-block;
     background-color: blue;
+    outline-color: var(--dialog-background-color);
     user-select: none;
     color: white;
     text-align: center;
@@ -206,6 +241,12 @@ export default {
 }
 .dialogButton:active, .buttonActive {
     background-color: #01018e;
+}
+.dialogButton.default {
+    outline-color: blue;
+    outline-width: 1px;
+    outline-style: solid;
+    outline-offset: 1px;
 }
 .dialogButton:focus {
     outline-color: blue;

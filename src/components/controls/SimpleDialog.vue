@@ -12,17 +12,20 @@ export default {
     props: [ "data" ],
     methods: {
         getFocusables() {
-
-            // TODO: initial focus
-            // TODO: Default Button
-            // TODO: keyboard input to input, if focused
             return this.$refs.input ? [ this.$refs.input ] : []
+        },
+        getFocusIndex(buttonCount) {
+            return this.$refs.input ? buttonCount : 0
         }
     }
 }   
 </script>
 
 <style scoped>
-
+input {
+    background-color: var(--main-background-color);
+    color: var(--main-color);
+    border-width: 1px;
+}
 </style>
 

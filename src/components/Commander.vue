@@ -89,6 +89,7 @@ export default {
                 const result = await this.$refs.dialog.show({
                     ok: true, 
                     cancel : true,
+                    defButton: "ok",
                     simpleDialog: { text: "Neuen Ordner anlegen", input: true }
                 })
                 this.getActiveFolder().focus()
@@ -121,7 +122,8 @@ export default {
                     
                 const result = await this.$refs.dialog.show({
                     ok: true, 
-                    cancel : true,
+                    cancel: true,
+                    defButton: "ok",
                     simpleDialog: { text }
                 })
                 this.getActiveFolder().focus()
