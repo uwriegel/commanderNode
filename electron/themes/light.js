@@ -32,5 +32,8 @@ exports.getCss = function () {
 "--icon-color: #999;" +
 
 "--dialog-background-color: white;" +
+"--dialog-fader-color: rgba(0, 0, 0, 0.50);" +
+"--dialog-input-border-color: #grey;" +
+"--dialog-input-outline-color: blue;" +
 "}" 
 }

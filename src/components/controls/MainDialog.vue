@@ -33,9 +33,6 @@
 import Vue from 'vue'
 import SimpleDialog from './SimpleDialog'
 
-// TODO: Return to click default button
-// TODO: SimpleDialog: Maxwidth
-// TODO: SimpleDialog: margin lr
 // TODO: SimpleDialog: outline input color dark
 
 export default {
@@ -92,8 +89,6 @@ export default {
             this.isButtonFocused = false
         },
         mounted() {
-            // create focusables list
-
             this.focusables = []
             if (this.$refs.btn1)
                 this.focusables.push(this.$refs.btn1)
@@ -122,6 +117,19 @@ export default {
                     if (this.focusIndex < 0)
                         this.focusIndex = this.focusables.length - 1
                     this.focusables[this.focusIndex].focus()
+                    break
+                case 13: // Return
+                    if (this.defButton && !this.isButtonFocused) {
+                        this.result = 
+                            this.defButton == "ok"
+                            ? 1
+                            : this.defButton == "yes"
+                            ? 2
+                            : this.defButton == "no"
+                            ? 3
+                            : 0
+                        this.onClose()    
+                    }
                     break
                 case 27: // ESC
                     if (this.cancel) {
@@ -183,7 +191,7 @@ export default {
     width: 100%;
     height: 100%;
     opacity: 1;
-    background-color: rgba(0, 0, 0, 0.50);
+    background-color: var(--dialog-fader-color);
 }
 .closed  {
     display: none;
@@ -200,9 +208,10 @@ export default {
     bottom: 0;
 }
 .dialog {
+    margin: 30px;
     padding: 30px;
     border-radius: 5px;
-    background-color: var(--dialog-background-color);
+    background-color: var(--main-background-color);
     z-index: 10;
     transform: translateX(0%);
     box-shadow: 5px 4px 8px 2px rgba(0, 0, 0, 0.35), 0px 0px 20px 2px rgba(0, 0, 0, 0.25);
@@ -215,7 +224,7 @@ export default {
 .dialogButton {
     display: inline-block;
     background-color: blue;
-    outline-color: var(--dialog-background-color);
+    outline-color: var(--main-background-color);
     user-select: none;
     color: white;
     text-align: center;
