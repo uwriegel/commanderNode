@@ -2,7 +2,7 @@
     <div class="container">
         <p>{{data.text}}</p>    
         <!-- <input appDefaultButton [defaultButton]="defaultButton" *ngIf="withInput" appSelectAll [selectNameOnly]="selectNameOnly"> -->
-        <input ref=input v-if="data.input">
+        <input ref=input v-if="data.input" v-model="data.inputText" v-selectall>
     </div>
 </template>
 
@@ -16,7 +16,8 @@ export default {
         },
         getFocusIndex(buttonCount) {
             return this.$refs.input ? buttonCount : 0
-        }
+        },
+        getInputText() { return this.data.inputText }
     }
 }   
 </script>

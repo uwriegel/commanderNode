@@ -275,6 +275,10 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
+    border-top: 1px solid transparent;
+}
+#app:focus-within {
+    border-top: 1px solid blue;
 }
 .main {
     flex-grow: 1;   

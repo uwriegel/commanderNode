@@ -33,8 +33,6 @@
 import Vue from 'vue'
 import SimpleDialog from './SimpleDialog'
 
-// TODO: SimpleDialog: outline input color dark
-
 export default {
     data() {
         return {
@@ -46,7 +44,8 @@ export default {
             cancel: false, 
             defButton: "",
             simpleDialog: null,
-            isButtonFocused: false
+            isButtonFocused: false,
+            inputText: ""
         }
     },
     computed: {
@@ -168,12 +167,14 @@ export default {
             }
         },
         onClose() {
+            this.inputText = this.$refs.simpleDialog ? this.$refs.simpleDialog.getInputText() : ""
             this.isShowing = false
         },
         afterLeave() {
             this.dialogClosed = true
             Vue.nextTick(() => this.resolve({
-                result: this.result
+                result: this.result,
+                inputText: this.inputText
             }))
         }
     }

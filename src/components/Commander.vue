@@ -29,7 +29,6 @@ import { mapState } from 'vuex'
 const electron = window.require('electron')
 
 // TODO: Status displays alternativly# selected items
-// TODO: Detect dark theme: Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize
 export default {
     data() {
         return {
@@ -85,14 +84,27 @@ export default {
         async createFolder() {
             const folder = this.getActiveFolder()
             if (folder.canCreateFolder()) {
-                const selectedItem = folder.getSelectedItem().name
+                const selectedItems = folder.getSelectedItems()
+                const proposalName = 
+                    selectedItems.length == 1 && selectedItems[0].isDirectory 
+                    ? selectedItems[0].name != ".." ? selectedItems[0].name : ""
+                    : ""
+
                 const result = await this.$refs.dialog.show({
                     ok: true, 
                     cancel : true,
                     defButton: "ok",
-                    simpleDialog: { text: "Neuen Ordner anlegen", input: true }
+                    simpleDialog: { 
+                        text: "Neuen Ordner anlegen", 
+                        input: true, 
+                        inputText: proposalName
+                    }
                 })
-                this.getActiveFolder().focus()
+                folder.focus()
+                if (result.result == 1) {
+                    await folder.createFolder(result.inputText)
+                    folder.refresh()                    
+                }
             }
         },
         onLeftDelete() {

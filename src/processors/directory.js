@@ -170,6 +170,10 @@ export function getDirectoryProcessor() {
         await sendToMain("deleteFiles", JSON.stringify(files))
     }
 
+    async function createFolder(folderName) {
+        await sendToMain("createDirectory", privates.path + '\\' + folderName)
+    }
+
     return {
         name: "directory",
         get path() { return privates.path },
@@ -183,6 +187,7 @@ export function getDirectoryProcessor() {
         getItemWithPath,
         canCreateFolder,
         canDelete,
-        deleteFiles
+        deleteFiles,
+        createFolder
     }
 }

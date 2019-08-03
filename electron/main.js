@@ -47,9 +47,9 @@ const createWindow = function() {
     })
     ipc.subscribe(win.webContents, async (method, arg) => {
         switch (method) {
-            // case "createDirectory":
-            //     await createDirectory(arg)
-            //     return ""
+            case "createDirectory":
+                await extFs.createDirectory(arg)
+                return ""
             // case "rename":
             //     const param = JSON.parse(arg)
             //     await rename(param.path, param.name, param.newName)
@@ -111,7 +111,6 @@ const createWindow = function() {
         if (error) console.error('Failed to register protocol', error)
     })
  
-
     if (process.env.NODE_ENV === 'DEV') {
         require('vue-devtools').install()        
         win.loadURL('http://localhost:8080/')
