@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import VueRx from 'vue-rx'
 import App from './App.vue'
 import { getSize, getNameOnly, getExtension, getDateTime, getIconUrl, getVersion } from './pipes'
-import { getSelectAll } from './directives'
+import { getSelectAll, getSelectNameOnly } from './directives'
 
 Vue.config.productionTip = false
 
@@ -17,6 +17,7 @@ Vue.use(VueRx)
 Vue.use(Vuex)
 
 Vue.directive('selectall', getSelectAll())
+Vue.directive('select-name-only', getSelectNameOnly())
 
 const store = new Vuex.Store({
     state: {

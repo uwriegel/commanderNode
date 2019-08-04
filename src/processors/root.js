@@ -71,8 +71,8 @@ export function getRootProcessor() {
     function getItemWithPath(path, item) { return item.name }
 
     function canCreateFolder() { return false }
-    
     function canDelete() { return false }
+    function canRename() { return false }
 
     return {
         name,
@@ -86,6 +86,7 @@ export function getRootProcessor() {
         onAction,
         getItemWithPath,
         canCreateFolder,
-        canDelete
+        canDelete,
+        canRename
     }
 }

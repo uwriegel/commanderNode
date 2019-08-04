@@ -56,7 +56,6 @@ export default {
         refresh() {
             this.getActiveFolder().refresh()
         },
-        async rename() { },
         properties() { electron.ipcRenderer.send("showInfo", this.selectedItem) },
         openAs() { electron.ipcRenderer.send("openAs", this.selectedItem) },
         viewerHeightChanged() {
@@ -106,6 +105,32 @@ export default {
                     folder.refresh()                    
                 }
             }
+        },
+        async rename() { 
+            const folder = this.getActiveFolder()
+            if (folder.canRename()) {
+                const selectedItems = folder.getSelectedItems()
+                if (selectedItems.length == 1 && selectedItems[0].name != "..") {
+                    const proposalName = selectedItems[0].name
+                    const result = await this.$refs.dialog.show({
+                        ok: true, 
+                        cancel : true,
+                        defButton: "ok",
+                        simpleDialog: { 
+                            text: `${(selectedItems[0].isDirectory ? "Verzeichnis" : "Datei")} umbenennen`, 
+                            input: true, 
+                            inputText: proposalName,
+                            selectOnlyNameInInput: true
+                        }
+                    })
+                    folder.focus()
+                    if (result.result == 1) {
+                        // TODO: Action!
+                        //await folder.createFolder(result.inputText)
+                        folder.refresh()                    
+                    }
+                }
+            }            
         },
         onLeftDelete() {
             this.deleteItems(this.$refs.leftFolder)

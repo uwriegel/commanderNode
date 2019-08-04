@@ -1,12 +1,12 @@
 <template>
     <div class="container">
         <p>{{data.text}}</p>    
-        <!-- <input appDefaultButton [defaultButton]="defaultButton" *ngIf="withInput" appSelectAll [selectNameOnly]="selectNameOnly"> -->
-        <input ref=input v-if="data.input" v-model="data.inputText" v-selectall>
+        <input ref=input v-if="data.input" v-model="data.inputText" v-selectall v-select-name-only="data.selectOnlyNameInInput">
     </div>
 </template>
 
 <script>
+// TODO: input width should grow like text
 
 export default {
     props: [ "data" ],

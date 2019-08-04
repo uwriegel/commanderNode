@@ -174,6 +174,7 @@ export default {
         },
         canDeleteItems() { return this.processor.canDelete() },
         canCreateFolder() { return this.processor.canCreateFolder() },
+        canRename() { return this.processor.canRename() },
         getStorageColumnsWidthName() { return this.id + '-' + this.processor.name + '-columnsWidths'},
         changeProcessor(processor) {
             if (processor) {

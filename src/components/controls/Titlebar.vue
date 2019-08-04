@@ -17,7 +17,6 @@
 const electron = window.require('electron')
 
 export default {
-    // TODO: detect windows theme changes
     methods: {
         onClose() {
             close()

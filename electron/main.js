@@ -1,5 +1,4 @@
 const electron = require('electron')
-const url = require("url")
 const path = require("path")
 const settings = require('electron-settings')
 const app = electron.app
@@ -21,6 +20,7 @@ const createWindow = function() {
     })
     bounds.webPreferences = { nodeIntegration: true }    
     bounds.icon = 'kirk2.png'
+    // Undocument this to get the default menu with developer tools
     bounds.frame = false
     bounds.show = false 
     bounds.backgroundColor = isLightMode ? "#fff" : "#1e1e1e" 
@@ -73,9 +73,6 @@ const createWindow = function() {
 
     themeCallback = insertCss
        
-    // Undocument this to get the default menu with developer tools
-    win.setMenu(null)
-
     protocol.registerBufferProtocol('vue', (request, callback) => {
         var file = decodeURIComponent(request.url.substr(6))
         if (file.toLowerCase().endsWith(".html")) 

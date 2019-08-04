@@ -164,6 +164,7 @@ export function getDirectoryProcessor() {
 
     function canCreateFolder() { return true }
     function canDelete() { return true }
+    function canRename() { return true }
 
     async function deleteFiles(itemsToDelete) {
         const files =  itemsToDelete.map(n => privates.path + '\\' + n.name)
@@ -188,6 +189,7 @@ export function getDirectoryProcessor() {
         canCreateFolder,
         canDelete,
         deleteFiles,
-        createFolder
+        createFolder,
+        canRename
     }
 }
