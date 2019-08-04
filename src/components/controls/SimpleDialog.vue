@@ -6,8 +6,6 @@
 </template>
 
 <script>
-// TODO: input width should grow like text
-
 export default {
     props: [ "data" ],
     methods: {

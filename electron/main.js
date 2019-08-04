@@ -50,10 +50,10 @@ const createWindow = function() {
             case "createDirectory":
                 await extFs.createDirectory(arg)
                 return ""
-            // case "rename":
-            //     const param = JSON.parse(arg)
-            //     await rename(param.path, param.name, param.newName)
-            //     return ""
+            case "rename":
+                const param = JSON.parse(arg)
+                await extFs.rename(param.path, param.name, param.newName)
+                return ""
             case "deleteFiles":
                 const files = JSON.parse(arg)
                 await extFs.deleteFiles(files)

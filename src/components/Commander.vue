@@ -125,8 +125,7 @@ export default {
                     })
                     folder.focus()
                     if (result.result == 1) {
-                        // TODO: Action!
-                        //await folder.createFolder(result.inputText)
+                        await folder.renameItem(proposalName, result.inputText)
                         folder.refresh()                    
                     }
                 }

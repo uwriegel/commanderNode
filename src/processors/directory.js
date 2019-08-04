@@ -175,6 +175,10 @@ export function getDirectoryProcessor() {
         await sendToMain("createDirectory", privates.path + '\\' + folderName)
     }
 
+    async function renameItem(name, newName) {
+        await sendToMain("rename", JSON.stringify({ path: privates.path, name, newName }))
+    }
+
     return {
         name: "directory",
         get path() { return privates.path },
@@ -188,8 +192,9 @@ export function getDirectoryProcessor() {
         getItemWithPath,
         canCreateFolder,
         canDelete,
+        canRename,
         deleteFiles,
         createFolder,
-        canRename
+        renameItem
     }
 }

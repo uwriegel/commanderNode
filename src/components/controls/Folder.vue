@@ -218,6 +218,9 @@ export default {
         createFolder(folderName) {
             return this.processor.createFolder(folderName)
         },
+        renameItem(name, newName) {
+            return this.processor.renameItem(name, newName)
+        },
         initializeSelection() {
             const ends$ = this.keyDown$.pipe(filter(n => n.event.which == 35 && n.event.shiftKey))
             const homes$ = this.keyDown$.pipe(filter(n => n.event.which == 36 && n.event.shiftKey))
