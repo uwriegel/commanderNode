@@ -207,6 +207,8 @@ export default {
                 this.restrictValue = this.restrictValue.substr(0, this.restrictValue.length - 1);
                 if (this.restrictValue.length == 0)
                     this.restrictClose()
+                else 
+                    this.items = this.originalItems.filter(n => n.name.toLowerCase().startsWith(this.restrictValue))
             }
         },
         deleteFiles(itemsToDelete) {
