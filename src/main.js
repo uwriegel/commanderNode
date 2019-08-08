@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import VueRx from 'vue-rx'
 import App from './App.vue'
+import MainMenu from 'vue-menubar'
 import { getSize, getNameOnly, getExtension, getDateTime, getIconUrl, getVersion } from './pipes'
 import { getSelectAll, getSelectNameOnly } from './directives'
 
@@ -15,6 +16,7 @@ Vue.filter('iconUrl', getIconUrl)
 Vue.filter('version', getVersion)
 Vue.use(VueRx)
 Vue.use(Vuex)
+Vue.use(MainMenu)
 
 Vue.directive('selectall', getSelectAll())
 Vue.directive('select-name-only', getSelectNameOnly())

@@ -2,7 +2,7 @@ exports.getCss = function () {
     return ":root {" +
 "--main-color: #cccccc;" +
 "--main-background-color: #1e1e1e;" +
-"--title-background-color: rgba(60, 60, 60, 0.6);" +
+"--title-background-color: #333333;" +
     
 "--selected-background-color: blue;" +
 "--selected-background-hover-color: #0063ff;" +
@@ -22,12 +22,16 @@ exports.getCss = function () {
 "--tr-selected-color: red;" +
 
 /* --grip-color: #dcdcdc; */
-"--grip-color: rgba(60, 60, 60, 0.6);" +
+"--grip-color: #333333;" +
 
-"--menu-hover-color: #6b6969;" +
-"--menu-separator-color: #ddd;" +
-"--menu-border-color: lightgray;" +
-"--menu-shadow-color: rgba(0, 0, 0, 0.21);" +
+"--vue-menu-color: #cccccc;" +
+"--vue-menu-background-color: #333333;" +
+"--vue-menu-hover-color: #6b6969;" +
+"--vue-menu-separator-color: #ddd;" +
+"--vue-menu-border-color: lightgray;" +
+"--vue-menu-shadow-color: rgba(0, 0, 0, 0.21);" +
+"--vue-menu-selected-background-color: blue;" +
+"--vue-menu-selected-color: white;" +
 
 "--icon-color: #999;" +
 

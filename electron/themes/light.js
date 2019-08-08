@@ -24,10 +24,14 @@ exports.getCss = function () {
 /* --grip-color: #dcdcdc; */
 "--grip-color: #eee;" +
 
-"--menu-hover-color: lightblue;" +
-"--menu-separator-color: #ddd;" +
-"--menu-border-color: lightgray;" +
-"--menu-shadow-color: rgba(0, 0, 0, 0.21);" +
+"--vue-menu-color: black;" +
+"--vue-menu-background-color: white;" +
+"--vue-menu-hover-color: lightblue;" +
+"--vue-menu-separator-color: #ddd;" +
+"--vue-menu-border-color: lightgray;" +
+"--vue-menu-shadow-color: rgba(0, 0, 0, 0.21);" +
+"--vue-menu-selected-background-color: blue;" +
+"--vue-menu-selected-color: white;" +
 
 "--icon-color: #999;" +
 

@@ -36,6 +36,7 @@
     "extension-fs": "^1.0.5",
     "rxjs": "^6.5.2",
     "vue": "^2.6.10",
+    "vue-menubar": "^1.1.1",
     "vue-rx": "^6.2.0",
     "vuex": "^3.1.1",
     "windows-theme-changes": "^1.0.2"

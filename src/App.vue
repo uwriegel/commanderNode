@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <titlebar>
-            <main-menu :items="menuItems" @on-menu-item-clicked="onMenuItem" />
+            <vue-menu-bar :items="menuItems" @on-menu-item-clicked="onMenuItem" />
         </titlebar>
         <div class="main">
             <!-- <column-test></!-->
@@ -17,8 +17,8 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import Titlebar from './components/controls/Titlebar'
-import MainMenu from './components/menu/MainMenu.vue'
 import Scrollbar from './components/controls/Scrollbar'
 import Commander from './components/Commander'
 
@@ -31,14 +31,12 @@ import Commander from './components/Commander'
 // import SplitterGridTest from './components/test/SplitterGridTest'
 // import ViewerTest from './components/test/ViewerTest'
 
-import { makeKey } from './components/menu/accelerators'
 const electron = window.require('electron')
 
 export default {
     name: 'app',
     components: {
         Titlebar,
-        MainMenu,
         Scrollbar,
         Commander,
         // Tests:
@@ -190,7 +188,7 @@ export default {
     },
     methods: {
         onKeyDown: function (evt) {
-            const key = makeKey(evt.which, evt.altKey, evt.shiftKey, evt.ctrlKey)
+            const key = Vue.menuMakeKey(evt.which, evt.altKey, evt.shiftKey, evt.ctrlKey)
             const action = this.acceleratorMap.get(key)
             if (action) {
                 this.onMenuItem(action)
@@ -249,7 +247,7 @@ export default {
             .filter(n => n.accelerator && n.action && n.accelerator.key)
             .map(n => { return { 
                 action: n.action, 
-                key: makeKey(n.accelerator.key, n.accelerator.alt, n.accelerator.shift, n.accelerator.ctrl)
+                key: Vue.menuMakeKey(n.accelerator.key, n.accelerator.alt, n.accelerator.shift, n.accelerator.ctrl)
             }})
         accelerators.forEach(n => this.acceleratorMap.set(n.key, n.action))
 
