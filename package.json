@@ -8,7 +8,7 @@
   "build": {
     "appId": "de.hotmail.uriegel.commander",
     "copyright": "Copyright © 2019 Uwe Riegel",
-    "productName": "Commander Test",
+    "productName": "Commander",
     "electronVersion": "5.0.0",
     "win": {
       "target": [
@@ -44,7 +44,7 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.9.2",
     "@vue/cli-service": "^3.9.2",
-    "electron": "^5.0.6",
+    "electron": "^6.0.1",
     "electron-builder": "^20.44.4",
     "vue-devtools": "^5.1.0",
     "vue-template-compiler": "^2.6.10"

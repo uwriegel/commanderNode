@@ -13,6 +13,10 @@ const themeChanges = require('windows-theme-changes')
 themeChanges.register(light => themeCallback(light)) 
 const isLightMode = themeChanges.isLightMode() 
 
+protocol.registerSchemesAsPrivileged([{
+         scheme: 'vue', privileges: {standard: true, secure: true }
+    }])
+
 const createWindow = function() {    
     const bounds = settings.get("window-bounds", { 
         width: 800,
@@ -72,9 +76,11 @@ const createWindow = function() {
     }) 
 
     themeCallback = insertCss
-       
+
     protocol.registerBufferProtocol('vue', (request, callback) => {
-        var file = decodeURIComponent(request.url.substr(6))
+        let file = decodeURIComponent(request.url.substr(6))
+        if (file[1] == '/')
+            file = file[0] + ':' + file.substr(1)
         if (file.toLowerCase().endsWith(".html")) 
             fs.readFile(file, (_, data) => {
                 callback({mimeType: 'text/html', data: data})
@@ -94,6 +100,10 @@ const createWindow = function() {
         else if (file.toLowerCase().endsWith(".pdf")) 
             fs.readFile(file, (_, data) => {
                 callback({mimeType: 'application/pdf', data: data})
+            })
+        else if (file.toLowerCase().endsWith(".png")) 
+            fs.readFile(file, (_, data) => {
+                callback({mimeType: 'img/png', data: data})
             })
     }, (error) => {
         if (error) console.error('Failed to register protocol', error)

@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <titlebar>
+        <titlebar :title="'Commander'" :ico="'kirk2.png'" >
             <vue-menu-bar :items="menuItems" @on-menu-item-clicked="onMenuItem" />
         </titlebar>
         <div class="main">

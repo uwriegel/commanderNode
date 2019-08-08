@@ -1,10 +1,10 @@
 <template>
     <div class="titlebar">
-        <img src="../../icons/kirk2.png">
+        <img v-bind:src="ico">
         <div class="bar">
             <slot></slot>
             <div class="dragregion">
-                <span>Commander</span>
+                <span>{{title}}</span>
             </div>
             <div class="button" @click="onMinimize"><span class="dash">&#x2012;</span></div>
             <div class="button" @click="onMaximize"><span>&#9744;</span></div>
@@ -17,6 +17,7 @@
 const electron = window.require('electron')
 
 export default {
+    props: [ 'title', 'ico' ],
     methods: {
         onClose() {
             close()
