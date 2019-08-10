@@ -2,13 +2,11 @@ exports.getCss = function () {
     return ":root {" +
 "--main-color: black;" +
 "--main-background-color: white;" +
-"--title-background-color: #eee;" +
 
-"--vue-electron-titlebar-color: blue;" +
-"--vue-electron-titlebar-background-color: orange;" +
-"--vue-electron-titlebar-height:60px;" +
-"--vue-electron-titlebar-button-hover-color: yellow;" +
-
+"--vue-electron-titlebar-color: var(--main-color);" +
+"--vue-electron-titlebar-background-color: #eee;" +
+"--vue-electron-titlebar-height: 30px;" +
+"--vue-electron-titlebar-button-hover-color: lightgray;" +
     
 "--selected-background-color: blue;" +
 "--selected-background-hover-color: #0063ff;" +
@@ -16,7 +14,7 @@ exports.getCss = function () {
 
 "--columns-separator-color: white;" +
 
-"--scrollbar-border-color: lightgray;" +
+"--scrollbar-border-color: var(--vue-electron-titlebar-button-hover-color);" +
 "--scrollbar-grip-color: rgb(209, 209, 209);" +
 "--scrollbar-button-active-color: #aaa;" +
 "--scrollbar-image-color: #666;" +
@@ -27,12 +25,11 @@ exports.getCss = function () {
 
 "--tr-selected-color: red;" +
 
-/* --grip-color: #dcdcdc; */
-"--grip-color: #eee;" +
+"--grip-color: var(--vue-electron-titlebar-background-color);" +
 
-"--vue-menu-color: black;" +
-"--vue-menu-background-color: white;" +
-"--vue-menu-hover-color: lightblue;" +
+"--vue-menu-color: var(--main-color);" +
+"--vue-menu-background-color: var(--main-background-color);" +
+"--vue-menu-hover-color: var(--vue-electron-titlebar-button-hover-color);" +
 "--vue-menu-separator-color: #ddd;" +
 "--vue-menu-border-color: lightgray;" +
 "--vue-menu-shadow-color: rgba(0, 0, 0, 0.21);" +
