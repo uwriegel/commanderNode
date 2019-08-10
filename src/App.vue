@@ -1,8 +1,8 @@
 <template>
     <div id="app">
-        <titlebar :title="'Commander'" :ico="'kirk2.png'" >
+        <vue-electron-titlebar :title="'Commander'" :ico="'kirk2.png'" >
             <vue-menu-bar :items="menuItems" @on-menu-item-clicked="onMenuItem" />
-        </titlebar>
+        </vue-electron-titlebar>
         <div class="main">
             <!-- <column-test></!-->
             <!-- <scrollbar-test></scrollbar-test> -->
@@ -18,7 +18,6 @@
 
 <script>
 import Vue from 'vue'
-import Titlebar from './components/controls/Titlebar'
 import Scrollbar from './components/controls/Scrollbar'
 import Commander from './components/Commander'
 
@@ -36,7 +35,6 @@ const electron = window.require('electron')
 export default {
     name: 'app',
     components: {
-        Titlebar,
         Scrollbar,
         Commander,
         // Tests:

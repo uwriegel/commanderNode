@@ -3,6 +3,12 @@ exports.getCss = function () {
 "--main-color: black;" +
 "--main-background-color: white;" +
 "--title-background-color: #eee;" +
+
+"--vue-electron-titlebar-color: blue;" +
+"--vue-electron-titlebar-background-color: orange;" +
+"--vue-electron-titlebar-height:60px;" +
+"--vue-electron-titlebar-button-hover-color: yellow;" +
+
     
 "--selected-background-color: blue;" +
 "--selected-background-hover-color: #0063ff;" +
