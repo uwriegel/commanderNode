@@ -165,6 +165,8 @@ export function getDirectoryProcessor() {
     function canCreateFolder() { return true }
     function canDelete() { return true }
     function canRename() { return true }
+    function canCopyItems() { return true }
+    function canMoveItems() { return true }
 
     async function deleteFiles(itemsToDelete) {
         const files =  itemsToDelete.map(n => privates.path + '\\' + n.name)
@@ -177,6 +179,10 @@ export function getDirectoryProcessor() {
 
     async function renameItem(name, newName) {
         await sendToMain("rename", JSON.stringify({ path: privates.path, name, newName }))
+    }
+
+    async function getConflictItems(targetPath, items) {
+        return extFs.getConflicts(privates.path, targetPath, items)
     }
 
     return {
@@ -195,6 +201,9 @@ export function getDirectoryProcessor() {
         canRename,
         deleteFiles,
         createFolder,
-        renameItem
+        renameItem,
+        canCopyItems,
+        canMoveItems,
+        getConflictItems
     }
 }

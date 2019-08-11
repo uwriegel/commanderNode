@@ -71,7 +71,6 @@ const createWindow = function() {
     }
 
     win.once('ready-to-show', () => { 
-        insertCss(isLightMode)
         win.show() 
     }) 
 
@@ -105,6 +104,10 @@ const createWindow = function() {
             fs.readFile(file, (_, data) => {
                 callback({mimeType: 'img/png', data: data})
             })
+        else if (file.toLowerCase().endsWith(".theme/")) {
+            const theme = require(isLightMode ? './themes/light' : './themes/dark')
+            callback({data: Buffer.from(theme.getCss())})
+        }
     }, (error) => {
         if (error) console.error('Failed to register protocol', error)
     })

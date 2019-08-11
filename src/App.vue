@@ -62,10 +62,18 @@ export default {
                             name: "-"
                         }, { 
                             name: "_Kopieren",
-                            accelerator: { name: "F5"}
+                            action: "copy",
+                            accelerator: { 
+                                name: "F5",
+                                key: 116
+                            }
                         }, { 
                             name: "_Verschieben",
-                            accelerator: { name: "F6"}
+                            action: "move",
+                            accelerator: { 
+                                name: "F6",
+                                key: 117
+                            }
                         }, { 
                             name: "_Löschen",
                             accelerator: { name: "Entf"},
@@ -210,6 +218,12 @@ export default {
                     break
                 case "createFolder":
                     this.$refs.commander.createFolder()
+                    break
+                case "copy":
+                    this.$refs.commander.copyItems(false)
+                    break
+                case "move":
+                    this.$refs.commander.copyItems(true)
                     break
                 case "delete":
                     this.$refs.commander.deleteItems()

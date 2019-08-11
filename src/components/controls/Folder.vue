@@ -174,7 +174,12 @@ export default {
         },
         canDeleteItems() { return this.processor.canDelete() },
         canCreateFolder() { return this.processor.canCreateFolder() },
+        canCopyItems() { return this.processor.canCopyItems() },
+        canMoveItems() { return this.processor.canMoveItems() },
         canRename() { return this.processor.canRename() },
+        async getConflictItems(targetPath, selectedItems) {
+            return this.processor.getConflictItems(targetPath, selectedItems.map(n => n.name))
+        },
         getStorageColumnsWidthName() { return this.id + '-' + this.processor.name + '-columnsWidths'},
         changeProcessor(processor) {
             if (processor) {

@@ -173,7 +173,6 @@ export default {
     mounted() {
         this.columnHeight = this.$refs.column.$el.clientHeight
         this.onResize()
-        setTimeout(() => this.onResize(), 50)
     }
 }
 </script>
