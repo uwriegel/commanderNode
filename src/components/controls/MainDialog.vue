@@ -5,7 +5,7 @@
         </transition>                        
         <transition name="slide" v-on:after-leave="afterLeave">
             <div class="dialogContainer" v-if="isShowing">
-                <div class="dialog" @keydown="onKeydown">
+                <div class="dialog" :class="{fullscreen: fullscreen}" @keydown="onKeydown">
                     <simple-dialog ref="simpleDialog" v-if="simpleDialog" :data="simpleDialog"></simple-dialog>
                     <div class="buttons">
                         <div ref=btn1 tabindex="1" v-if="yes" @focus="onFocus" @blur="onBlur" 
@@ -45,7 +45,8 @@ export default {
             defButton: "",
             simpleDialog: null,
             isButtonFocused: false,
-            inputText: ""
+            inputText: "",
+            fullscreen: false
         }
     },
     computed: {
@@ -67,6 +68,7 @@ export default {
     },
     methods: {
         show(config) {
+            this.$emit("state-changed", true)
             return new Promise((res, rej) => {
                 this.ok = config.ok
                 this.no = config.no
@@ -78,6 +80,7 @@ export default {
                 this.reject = rej
                 this.isShowing = true
                 this.dialogClosed = false
+                this.fullscreen = config.fullscreen
                 Vue.nextTick(() => this.mounted())
             })
         },
@@ -168,6 +171,7 @@ export default {
         },
         onClose() {
             this.inputText = this.$refs.simpleDialog ? this.$refs.simpleDialog.getInputText() : ""
+            this.$emit("state-changed", false)
             this.isShowing = false
         },
         afterLeave() {
@@ -209,13 +213,20 @@ export default {
     bottom: 0;
 }
 .dialog {
+    display: flex;
+    flex-direction: column;    
     margin: 30px;
+    box-sizing: border-box;
     padding: 30px;
     border-radius: 5px;
     background-color: var(--main-background-color);
     z-index: 10;
     transform: translateX(0%);
     box-shadow: 5px 4px 8px 2px rgba(0, 0, 0, 0.35), 0px 0px 20px 2px rgba(0, 0, 0, 0.25);
+}
+.fullscreen {
+    width: 100%;
+    height: 80%; 
 }
 .buttons {
     display: flex;

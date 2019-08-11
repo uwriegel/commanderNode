@@ -22,6 +22,7 @@ export default {
 
 <style scoped>
 .container {
+    flex-grow: 1;
     max-width: 400px;    
 }
 input {

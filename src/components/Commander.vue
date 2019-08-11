@@ -1,6 +1,7 @@
 <template>
     <div class="commander" @keydown=onKeyDown>
-        <splitter-grid :isVertical=true :isSecondInvisible="!showViewer" @splitter-position-changed="viewerHeightChanged">
+        <splitter-grid class="content" :class="{dialogOpen: dialogOpen}"
+            :isVertical=true :isSecondInvisible="!showViewer" @splitter-position-changed="viewerHeightChanged">
             <template v-slot:first>
                 <splitter-grid>
                     <template v-slot:first>
@@ -16,7 +17,7 @@
             </template>
         </splitter-grid>
         <div class="status">{{ status }}</div>
-        <main-dialog ref="dialog"></main-dialog>
+        <main-dialog ref="dialog" @state-changed=onDialogStateChanged v-ref:child></main-dialog>
     </div>
 </template>
 
@@ -33,7 +34,8 @@ export default {
     data() {
         return {
             leftHasFocus: true,
-            selectedItem: ""
+            selectedItem: "",
+            dialogOpen: false
         }
     },
     components: {
@@ -80,6 +82,7 @@ export default {
         onSelectionChanged(newItem) {
             this.selectedItem = newItem
         },
+        onDialogStateChanged(isShowing) { this.dialogOpen = isShowing },
         async createFolder() {
             const folder = this.getActiveFolder()
             if (folder.canCreateFolder()) {
@@ -116,6 +119,10 @@ export default {
                         ok: true, 
                         cancel : true,
                         defButton: "ok",
+
+                        fullscreen: true,
+
+
                         simpleDialog: { 
                             text: `${(selectedItems[0].isDirectory ? "Verzeichnis" : "Datei")} umbenennen`, 
                             input: true, 
@@ -218,6 +225,12 @@ export default {
     flex-direction: column;
     flex-grow: 1;
     position: relative;
+}
+.content {
+    transition: .6s filter;
+}
+.content.dialogOpen {
+    filter: blur(5px);
 }
 .folder {
     flex-grow: 1;
