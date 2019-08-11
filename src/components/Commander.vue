@@ -17,7 +17,7 @@
             </template>
         </splitter-grid>
         <div class="status">{{ status }}</div>
-        <main-dialog ref="dialog" @state-changed=onDialogStateChanged v-ref:child></main-dialog>
+        <main-dialog ref="dialog" @state-changed=onDialogStateChanged></main-dialog>
     </div>
 </template>
 
@@ -29,7 +29,8 @@ import MainDialog from './controls/MainDialog'
 import { mapState } from 'vuex'
 const electron = window.require('electron')
 
-// TODO: Status displays alternativly# selected items
+// TODO: F9 adapt folder
+// TODO: Status displays alternativly # selected items
 export default {
     data() {
         return {
@@ -227,10 +228,11 @@ export default {
     position: relative;
 }
 .content {
-    transition: .6s filter;
+    transition: .3s filter;
 }
 .content.dialogOpen {
-    filter: blur(5px);
+    filter: blur(2px);
+    will-change: filter;
 }
 .folder {
     flex-grow: 1;

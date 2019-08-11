@@ -280,16 +280,19 @@ export default {
 }
 .fade-enter, .fade-leave-to {
     opacity: 0;
+    will-change: opacity;
 }
 .slide-enter-active, .slide-leave-active {
     transition: transform 0.3s, opacity 0.3s;
 }
 .slide-enter {
     transform: translateX(-50%);
+    will-change: transform;
     opacity: 0;
 }
 .slide-leave-to {
     transform: translateX(50%);
+    will-change: transform;
     opacity: 0;
 }
 

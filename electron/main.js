@@ -106,7 +106,8 @@ const createWindow = function() {
             })
         else if (file.toLowerCase().endsWith(".theme/")) {
             const theme = require(isLightMode ? './themes/light' : './themes/dark')
-            callback({data: Buffer.from(theme.getCss())})
+            callback({data: Buffer.from("")})
+            insertCss(isLightMode)
         }
     }, (error) => {
         if (error) console.error('Failed to register protocol', error)
