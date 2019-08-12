@@ -7,7 +7,7 @@
             <div class="dialogContainer" v-if="isShowing">
                 <div class="dialog" :class="{fullscreen: fullscreen}" @keydown="onKeydown">
                     <simple-dialog ref="simpleDialog" v-if="simpleDialog" :data="simpleDialog"></simple-dialog>
-                    <conflict-items v-if="conflictItems" :items=conflictItems></conflict-items>
+                    <conflict-items ref="conflictsDialog" v-if="conflictItems" :items=conflictItems></conflict-items>
                     <div class="buttons">
                         <div ref=btn1 tabindex="1" v-if="yes" @focus="onFocus" @blur="onBlur" 
                             class="dialogButton pointer-def" :class="{default: isButtonYesDefault}"
@@ -97,6 +97,7 @@ export default {
         },
         mounted() {
             this.focusables = []
+            this.content = this.$refs.simpleDialog || this.$refs.conflictsDialog
             if (this.$refs.btn1)
                 this.focusables.push(this.$refs.btn1)
             if (this.$refs.btn2)
@@ -106,13 +107,8 @@ export default {
             if (this.$refs.btn4)
                 this.focusables.push(this.$refs.btn4)
             const buttonCount = this.focusables.length
-            if (this.$refs.simpleDialog) 
-                this.$refs.simpleDialog.getFocusables().forEach(n => this.focusables.push(n))
-            
-            this.focusIndex = 
-                this.$refs.simpleDialog 
-                ? this.$refs.simpleDialog.getFocusIndex(buttonCount)
-                : 0
+            this.content.getFocusables().forEach(n => this.focusables.push(n))
+            this.focusIndex = this.content.getFocusIndex(buttonCount)
             this.focusables[this.focusIndex].focus()
         },
         onKeydown(evt) {

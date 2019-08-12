@@ -151,9 +151,10 @@ export default {
                 console.log("Conflicts", conflictItems)
                 if (conflictItems) {
                     const result = await this.$refs.dialog.show({
-                        ok: true, 
+                        yes: true, 
+                        no: true, 
                         cancel: true,
-                        defButton: "ok",
+                        defButton: "yes",
                         conflictItems
                     })
                 }
