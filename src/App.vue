@@ -121,7 +121,11 @@ export default {
                             accelerator: { name: "F1"}
                         }, { 
                             name: "_Gleichen Ordner öffnen",
-                            accelerator: { name: "F9"}
+                            action: "openSameFolder",
+                            accelerator: { 
+                                name: "F9",
+                                key: 120,
+                            }
                         }
                     ]
                 }, 
@@ -227,6 +231,9 @@ export default {
                     break
                 case "delete":
                     this.$refs.commander.deleteItems()
+                    break
+                case "openSameFolder":
+                    this.$refs.commander.openSameFolder()
                     break
                 case "theme":
                     changeTheme()

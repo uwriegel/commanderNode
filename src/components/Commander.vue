@@ -29,7 +29,6 @@ import MainDialog from './controls/MainDialog'
 import { mapState } from 'vuex'
 const electron = window.require('electron')
 
-// TODO: F9 adapt folder
 // TODO: Status displays alternativly # selected items
 export default {
     data() {
@@ -110,6 +109,9 @@ export default {
                 }
             }
         },
+        openSameFolder() {
+            this.getInactiveFolder().changeFolder(this.getActiveFolder().path)
+        },
         async rename() { 
             const folder = this.getActiveFolder()
             if (folder.canRename()) {
@@ -120,10 +122,6 @@ export default {
                         ok: true, 
                         cancel : true,
                         defButton: "ok",
-
-                        fullscreen: true,
-
-
                         simpleDialog: { 
                             text: `${(selectedItems[0].isDirectory ? "Verzeichnis" : "Datei")} umbenennen`, 
                             input: true, 
@@ -151,6 +149,14 @@ export default {
                 const selectedItems = folder.getSelectedItems()
                 var conflictItems = await folder.getConflictItems(this.getInactiveFolder().path, selectedItems)
                 console.log("Conflicts", conflictItems)
+                if (conflictItems) {
+                    const result = await this.$refs.dialog.show({
+                        ok: true, 
+                        cancel: true,
+                        defButton: "ok",
+                        conflictItems
+                    })
+                }
                 const  dirs = selectedItems.filter( n => n.isDirectory).length
                 const  files = selectedItems.filter( n => !n.isDirectory).length
                 // const text = 

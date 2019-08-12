@@ -27,7 +27,7 @@ export default {
     components: {
         TableView
     },
-    data: function () {
+    data() {
         return {
             columns: [
                 {

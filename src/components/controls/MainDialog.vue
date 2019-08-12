@@ -7,6 +7,7 @@
             <div class="dialogContainer" v-if="isShowing">
                 <div class="dialog" :class="{fullscreen: fullscreen}" @keydown="onKeydown">
                     <simple-dialog ref="simpleDialog" v-if="simpleDialog" :data="simpleDialog"></simple-dialog>
+                    <conflict-items v-if="conflictItems" :items=conflictItems></conflict-items>
                     <div class="buttons">
                         <div ref=btn1 tabindex="1" v-if="yes" @focus="onFocus" @blur="onBlur" 
                             class="dialogButton pointer-def" :class="{default: isButtonYesDefault}"
@@ -32,6 +33,7 @@
 <script>
 import Vue from 'vue'
 import SimpleDialog from './SimpleDialog'
+import ConflictItems from './ConflictItems'
 
 export default {
     data() {
@@ -44,6 +46,7 @@ export default {
             cancel: false, 
             defButton: "",
             simpleDialog: null,
+            conflictItems: null,
             isButtonFocused: false,
             inputText: "",
             fullscreen: false
@@ -64,7 +67,8 @@ export default {
         } 
     },
     components: {
-        SimpleDialog
+        SimpleDialog,
+        ConflictItems
     },
     methods: {
         show(config) {
@@ -76,11 +80,12 @@ export default {
                 this.yes = config.yes
                 this.cancel = config.cancel
                 this.simpleDialog = config.simpleDialog
+                this.conflictItems = config.conflictItems
                 this.resolve = res
                 this.reject = rej
                 this.isShowing = true
                 this.dialogClosed = false
-                this.fullscreen = config.fullscreen
+                this.fullscreen = config.conflictItems
                 Vue.nextTick(() => this.mounted())
             })
         },

@@ -114,6 +114,9 @@ export default {
         refresh() {
             this.changePath(this.path, this.path, false)
         },
+        changeFolder(path) { 
+            this.changePath(path, path, true)
+        },
         onInputKeyDown(evt) {
             switch (evt.which) {
                 case 9: // TAB
