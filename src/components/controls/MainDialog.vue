@@ -3,7 +3,7 @@
         <transition name="fade">
             <div class=fader v-if="isShowing"></div>
         </transition>                        
-        <transition name="slide" v-on:after-leave="afterLeave">
+        <transition :name="transitionName" v-on:after-leave="afterLeave">
             <div class="dialogContainer" v-if="isShowing">
                 <div class="dialog" :class="{fullscreen: fullscreen}" @keydown="onKeydown">
                     <p>{{text}}</p>
@@ -39,6 +39,7 @@ import ConflictItems from './ConflictItems'
 export default {
     data() {
         return {
+            transitionName: "default",
             isShowing: false,
             dialogClosed: true,
             ok: false,
@@ -74,6 +75,13 @@ export default {
     },
     methods: {
         show(config) {
+            this.transitionNames = 
+                config.rightFolder 
+                    ? [ "slide-left", "slide-right" ] 
+                    : (config.leftFolder 
+                    ? [ "slide-right", "slide-left" ]
+                    : [ "default", "default" ] )
+            this.transitionName = this.transitionNames[0]
             this.$emit("state-changed", true)
             return new Promise((res, rej) => {
                 this.ok = config.ok
@@ -175,9 +183,11 @@ export default {
             }
         },
         onClose() {
+            if (this.result == 0)
+                this.transitionName = this.transitionNames[1]
             this.inputText = this.$refs.simpleDialog ? this.$refs.simpleDialog.getInputText() : ""
             this.$emit("state-changed", false)
-            this.isShowing = false
+            Vue.nextTick(() => this.isShowing = false)
         },
         afterLeave() {
             this.dialogClosed = true
@@ -287,18 +297,37 @@ export default {
     opacity: 0;
     will-change: opacity;
 }
-.slide-enter-active, .slide-leave-active {
+.slide-right-enter-active, .slide-right-leave-active, .slide-left-enter-active, .slide-left-leave-active, .default-enter-active, .default-leave-active {
     transition: transform 0.3s, opacity 0.3s;
 }
-.slide-enter {
+.slide-right-enter {
     transform: translateX(-50%);
-    will-change: transform;
+    will-change: transform, opacity;
     opacity: 0;
 }
-.slide-leave-to {
+.slide-right-leave-to {
     transform: translateX(50%);
-    will-change: transform;
+    will-change: transform, opacity;
+    opacity: 0;
+}
+ 
+.slide-left-enter {
+    transform: translateX(50%);
+    will-change: transform, opacity;
+    opacity: 0;
+}
+.slide-left-leave-to {
+    transform: translateX(-50%);
+    will-change: transform, opacity;
     opacity: 0;
 }
 
+.default-enter {
+    opacity: 0;
+    will-change: opacity;
+}
+.default-leave-to {
+    will-change: opacity;
+    opacity: 0;
+}
 </style>

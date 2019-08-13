@@ -151,28 +151,32 @@ export default {
                 var conflictItems = await folder.getConflictItems(otherFolder.path, selectedItems)
                 console.log("Conflicts", conflictItems)
 
-
                 const action = move ? "verschieben": "kopieren"
                 const  dirs = selectedItems.filter( n => n.isDirectory).length
                 const  files = selectedItems.filter( n => !n.isDirectory).length
 
                 // TODO: Dont copy in the same folder or in a subfolder
                 const text = 
-                    files && dirs
-                    ? `Möchtest Du die selektierten Einträge ${action}?`
-                    : (files
-                    ? (files > 1
-                        ? `Möchtest Du die selektierten Dateien ${action}?`
-                        : `Möchtest Du die selektierte Datei '${selectedItems[0].name}' ${action}?`)
-                    : (dirs > 1
-                        ? `Möchtest Du die selektierten Verzeichnisse ${action}?`
-                        : `Möchtest Du das selektierte Verzeichnis '${selectedItems[0].name}' ${action}?`)
-                    )
+                    conflictItems == 0
+                    ? (files && dirs
+                        ? `Möchtest Du die selektierten Einträge ${action}?`
+                        : (files
+                            ? (files > 1
+                                ? `Möchtest Du die selektierten Dateien ${action}?`
+                                : `Möchtest Du die selektierte Datei '${selectedItems[0].name}' ${action}?`)
+                            : (dirs > 1
+                                ? `Möchtest Du die selektierten Verzeichnisse ${action}?`
+                                : `Möchtest Du das selektierte Verzeichnis '${selectedItems[0].name}' ${action}?`)
+                            )
+                        )
+                    : "Möchtest Du die Einträge überschreiben?"
 
                 const result = await this.$refs.dialog.show({
                     yes: conflictItems.length > 0, 
                     no: conflictItems.length > 0, 
                     ok : conflictItems.length == 0,
+                    rightFolder: folder == this.$refs.rightFolder,
+                    leftFolder: folder == this.$refs.leftFolder,
                     text,
                     cancel: true,
                     defButton: "yes",
