@@ -1,6 +1,5 @@
 <template>
     <div class="container">
-        <p>{{data.text}}</p>    
         <input ref=input v-if="data.input" v-model="data.inputText" v-selectall v-select-name-only="data.selectOnlyNameInInput">
     </div>
 </template>

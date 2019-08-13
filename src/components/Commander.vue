@@ -96,8 +96,8 @@ export default {
                     ok: true, 
                     cancel : true,
                     defButton: "ok",
+                    text: "Neuen Ordner anlegen", 
                     simpleDialog: { 
-                        text: "Neuen Ordner anlegen", 
                         input: true, 
                         inputText: proposalName
                     }
@@ -122,8 +122,8 @@ export default {
                         ok: true, 
                         cancel : true,
                         defButton: "ok",
+                        text: `${(selectedItems[0].isDirectory ? "Verzeichnis" : "Datei")} umbenennen`, 
                         simpleDialog: { 
-                            text: `${(selectedItems[0].isDirectory ? "Verzeichnis" : "Datei")} umbenennen`, 
                             input: true, 
                             inputText: proposalName,
                             selectOnlyNameInInput: true
@@ -145,44 +145,45 @@ export default {
         },
         async copyItems(move) {
             const folder = this.getActiveFolder()
-            if (move ? folder.canMoveItems() : folder.canCopyItems()) {
+            const otherFolder = this.getInactiveFolder()
+            if (otherFolder.canInsertItems() &&  (move ? folder.canMoveItems() : folder.canCopyItems())) {
                 const selectedItems = folder.getSelectedItems()
-                var conflictItems = await folder.getConflictItems(this.getInactiveFolder().path, selectedItems)
+                var conflictItems = await folder.getConflictItems(otherFolder.path, selectedItems)
                 console.log("Conflicts", conflictItems)
-                if (conflictItems) {
-                    const result = await this.$refs.dialog.show({
-                        yes: true, 
-                        no: true, 
-                        cancel: true,
-                        defButton: "yes",
-                        conflictItems
-                    })
-                }
+
+
+                const action = move ? "verschieben": "kopieren"
                 const  dirs = selectedItems.filter( n => n.isDirectory).length
                 const  files = selectedItems.filter( n => !n.isDirectory).length
-                // const text = 
-                //     files && dirs
-                //     ? "Möchtest Du die selektierten Einträge löschen?"
-                //     : (files
-                //     ? (files > 1
-                //         ? "Möchtest Du die selektierten Dateien löschen?"
-                //         : `Möchtest Du die selektierte Datei '${selectedItems[0].name}' löschen?`)
-                //     : (dirs > 1
-                //         ? "Möchtest Du die selektierten Verzeichnisse löschen?"
-                //         : `Möchtest Du das selektierte Verzeichnis '${selectedItems[0].name}' löschen?`)
-                //     )
-                    
-                // const result = await this.$refs.dialog.show({
-                //     ok: true, 
-                //     cancel: true,
-                //     defButton: "ok",
-                //     simpleDialog: { text }
-                // })
-                // this.getActiveFolder().focus()
-                // if (result.result == 1) {
-                //     await folder.deleteFiles(selectedItems)
-                //     folder.refresh()
-                // }
+
+                // TODO: Dont copy in the same folder or in a subfolder
+                const text = 
+                    files && dirs
+                    ? `Möchtest Du die selektierten Einträge ${action}?`
+                    : (files
+                    ? (files > 1
+                        ? `Möchtest Du die selektierten Dateien ${action}?`
+                        : `Möchtest Du die selektierte Datei '${selectedItems[0].name}' ${action}?`)
+                    : (dirs > 1
+                        ? `Möchtest Du die selektierten Verzeichnisse ${action}?`
+                        : `Möchtest Du das selektierte Verzeichnis '${selectedItems[0].name}' ${action}?`)
+                    )
+
+                const result = await this.$refs.dialog.show({
+                    yes: conflictItems.length > 0, 
+                    no: conflictItems.length > 0, 
+                    ok : conflictItems.length == 0,
+                    text,
+                    cancel: true,
+                    defButton: "yes",
+                    conflictItems: conflictItems.length > 0 ? conflictItems : null,
+                })
+
+                folder.focus()
+                if (result.result == 1) {
+//                    await folder.deleteFiles(selectedItems)
+                    folder.refresh()
+                }
             }
         },
         async deleteItems(folder) {
@@ -208,9 +209,9 @@ export default {
                     ok: true, 
                     cancel: true,
                     defButton: "ok",
-                    simpleDialog: { text }
+                    text
                 })
-                this.getActiveFolder().focus()
+                folder.focus()
                 if (result.result == 1) {
                     await folder.deleteFiles(selectedItems)
                     folder.refresh()

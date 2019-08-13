@@ -75,6 +75,7 @@ export function getRootProcessor() {
     function canRename() { return false }
     function canCopyItems() { return false }
     function canMoveItems() { return false }
+    function canInsertItems() { return false }
 
     return {
         name,
@@ -91,6 +92,7 @@ export function getRootProcessor() {
         canDelete,
         canRename,
         canCopyItems,
-        canMoveItems
+        canMoveItems,        
+        canInsertItems
     }
 }

@@ -1,6 +1,5 @@
 <template>
     <div class="root">
-        <p>Möchtest Du?</p>
         <table-view ref="table" class="table" :columns='columns' :items='conflictItems' :itemHeight='32'>
             <template v-slot=row >
                 <tr :class="{ 'isCurrent': row.item.index == $refs.table.index }">

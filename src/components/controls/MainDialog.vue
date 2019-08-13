@@ -6,6 +6,7 @@
         <transition name="slide" v-on:after-leave="afterLeave">
             <div class="dialogContainer" v-if="isShowing">
                 <div class="dialog" :class="{fullscreen: fullscreen}" @keydown="onKeydown">
+                    <p>{{text}}</p>
                     <simple-dialog ref="simpleDialog" v-if="simpleDialog" :data="simpleDialog"></simple-dialog>
                     <conflict-items ref="conflictsDialog" v-if="conflictItems" :items=conflictItems></conflict-items>
                     <div class="buttons">
@@ -45,6 +46,7 @@ export default {
             no: false,
             cancel: false, 
             defButton: "",
+            text: "",
             simpleDialog: null,
             conflictItems: null,
             isButtonFocused: false,
@@ -82,6 +84,7 @@ export default {
                 this.simpleDialog = config.simpleDialog
                 this.conflictItems = config.conflictItems
                 this.resolve = res
+                this.text = config.text
                 this.reject = rej
                 this.isShowing = true
                 this.dialogClosed = false
@@ -107,8 +110,9 @@ export default {
             if (this.$refs.btn4)
                 this.focusables.push(this.$refs.btn4)
             const buttonCount = this.focusables.length
-            this.content.getFocusables().forEach(n => this.focusables.push(n))
-            this.focusIndex = this.content.getFocusIndex(buttonCount)
+            if (this.content) 
+                this.content.getFocusables().forEach(n => this.focusables.push(n))
+            this.focusIndex = this.content ? this.content.getFocusIndex(buttonCount) : 0
             this.focusables[this.focusIndex].focus()
         },
         onKeydown(evt) {

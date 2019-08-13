@@ -179,6 +179,7 @@ export default {
         canCreateFolder() { return this.processor.canCreateFolder() },
         canCopyItems() { return this.processor.canCopyItems() },
         canMoveItems() { return this.processor.canMoveItems() },
+        canInsertItems() { return this.processor.canInsertItems() },
         canRename() { return this.processor.canRename() },
         async getConflictItems(targetPath, selectedItems) {
             return this.processor.getConflictItems(targetPath, selectedItems.map(n => n.name))
