@@ -173,7 +173,11 @@ export default {
         },
         getSelectedItems() {
             const items = this.items.filter(n => n.isSelected)
-            return items.length > 0? items : [ this.items[this.$refs.table.index] ]
+            return items.length > 0 
+            ? items 
+            : (this.items[this.$refs.table.index].name != ".." 
+                ? [ this.items[this.$refs.table.index] ] 
+                : [])
         },
         canDeleteItems() { return this.processor.canDelete() },
         canCreateFolder() { return this.processor.canCreateFolder() },
@@ -229,6 +233,9 @@ export default {
         },
         renameItem(name, newName) {
             return this.processor.renameItem(name, newName)
+        },
+        copyItems(selectedItems, targetPath, move) {
+            return this.processor.copyItems(selectedItems, targetPath, move)
         },
         initializeSelection() {
             const ends$ = this.keyDown$.pipe(filter(n => n.event.which == 35 && n.event.shiftKey))

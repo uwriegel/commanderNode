@@ -62,6 +62,16 @@ const createWindow = function() {
                 const files = JSON.parse(arg)
                 await extFs.deleteFiles(files)
                 return ""
+            case "copyItems": {
+                const copyItems = JSON.parse(arg)
+                await extFs.copyFiles(copyItems.items, copyItems.targetPath, false)
+                return ""
+            }
+            case "moveItems": {
+                const copyItems = JSON.parse(arg)
+                await extFs.moveFiles(copyItems.items, copyItems.targetPath, false)
+                return ""
+            }
         }
     })
 

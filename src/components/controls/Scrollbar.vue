@@ -16,6 +16,8 @@
 </template>
 
 <script>
+// TODO: Grip with mouse jumps down a bit
+
 const scrollerHeight = 15
 
 export default {

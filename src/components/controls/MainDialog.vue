@@ -12,16 +12,16 @@
                     <div class="buttons">
                         <div ref=btn1 tabindex="1" v-if="yes" @focus="onFocus" @blur="onBlur" 
                             class="dialogButton pointer-def" :class="{default: isButtonYesDefault}"
-                            @keydown=keydownYes>Ja</div>
+                            @keydown=keydownYes @click=clickButton(2)>Ja</div>
                         <div ref=btn2 tabindex="1" v-if="ok" @focus="onFocus" @blur="onBlur" 
                             class="dialogButton pointer-def" :class="{default: isButtonOkDefault}"
-                            @keydown=keydownOk>OK</div>
+                            @keydown=keydownOk @click=clickButton(1)>OK</div>
                         <div ref=btn3 tabindex="2" v-if="no" @focus="onFocus" @blur="onBlur" 
                             class="dialogButton pointer-def" :class="{default: isButtonNoDefault}"
-                            @keydown=keydownNo>Nein</div>
+                            @keydown=keydownNo @click=clickButton(3)>Nein</div>
                         <div ref=btn4 tabindex="3" v-if="cancel" @focus="onFocus" @blur="onBlur" 
                             class="dialogButton pointer-def" :class="{default: isButtonCancelDefault}" 
-                            @keydown=keydownCancel @click="onClose">Abbrechen</div>
+                            @keydown=keydownCancel @click=clickButton(0)>Abbrechen</div>
                     </div>                
                 </div>
             </div>
@@ -181,6 +181,10 @@ export default {
                 this.result = 0
                 this.onClose()
             }
+        },
+        clickButton(btn) {
+            this.result = btn
+            this.onClose()
         },
         onClose() {
             if (this.result == 0)

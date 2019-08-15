@@ -89,7 +89,7 @@ export default {
                 const selectedItems = folder.getSelectedItems()
                 const proposalName = 
                     selectedItems.length == 1 && selectedItems[0].isDirectory 
-                    ? selectedItems[0].name != ".." ? selectedItems[0].name : ""
+                    ? selectedItems[0].name 
                     : ""
 
                 const result = await this.$refs.dialog.show({
@@ -116,7 +116,7 @@ export default {
             const folder = this.getActiveFolder()
             if (folder.canRename()) {
                 const selectedItems = folder.getSelectedItems()
-                if (selectedItems.length == 1 && selectedItems[0].name != "..") {
+                if (selectedItems.length == 1) {
                     const proposalName = selectedItems[0].name
                     const result = await this.$refs.dialog.show({
                         ok: true, 
@@ -185,8 +185,10 @@ export default {
 
                 folder.focus()
                 if (result.result == 1) {
-//                    await folder.deleteFiles(selectedItems)
-                    folder.refresh()
+                    await folder.copyItems(selectedItems, otherFolder.path, move)
+                    if (move)
+                        folder.refresh()
+                    otherFolder.refresh()
                 }
             }
         },

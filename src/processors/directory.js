@@ -182,6 +182,22 @@ export function getDirectoryProcessor() {
         await sendToMain("rename", JSON.stringify({ path: privates.path, name, newName }))
     }
 
+    async function copyItems(selectedItems, targetPath, move) {
+        const items = selectedItems.map(n => privates.path + '\\' + n.name)
+        if (move)
+            await sendToMain("moveItems", JSON.stringify({
+                items,
+                targetPath,
+                move
+            }))
+        else
+            await sendToMain("copyItems", JSON.stringify({
+                items,
+                targetPath,
+                move
+            }))
+    }
+
     async function getConflictItems(targetPath, items) {
         return extFs.getConflicts(privates.path, targetPath, items)
     }
@@ -204,6 +220,7 @@ export function getDirectoryProcessor() {
         deleteFiles,
         createFolder,
         renameItem,
+        copyItems,
         canCopyItems,
         canMoveItems,
         getConflictItems
