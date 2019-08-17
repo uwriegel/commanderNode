@@ -64,12 +64,12 @@ const createWindow = function() {
                 return ""
             case "copyItems": {
                 const copyItems = JSON.parse(arg)
-                await extFs.copyFiles(copyItems.items, copyItems.targetPath, false)
+                await extFs.copyFiles(copyItems.sourcePath, copyItems.targetPath, copyItems.items, copyItems.conflictItems)
                 return ""
             }
             case "moveItems": {
                 const copyItems = JSON.parse(arg)
-                await extFs.moveFiles(copyItems.items, copyItems.targetPath, false)
+                await extFs.moveFiles(copyItems.sourcePath, copyItems.targetPath, copyItems.items, copyItems.conflictItems)
                 return ""
             }
         }

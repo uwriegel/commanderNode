@@ -182,20 +182,14 @@ export function getDirectoryProcessor() {
         await sendToMain("rename", JSON.stringify({ path: privates.path, name, newName }))
     }
 
-    async function copyItems(selectedItems, targetPath, move) {
-        const items = selectedItems.map(n => privates.path + '\\' + n.name)
-        if (move)
-            await sendToMain("moveItems", JSON.stringify({
-                items,
-                targetPath,
-                move
-            }))
-        else
-            await sendToMain("copyItems", JSON.stringify({
-                items,
-                targetPath,
-                move
-            }))
+    async function copyItems(selectedItems, targetPath, move, conflictItems) {
+        const items = selectedItems.map(n => n.name)
+        await sendToMain(move ? "moveItems" : "copyItems", JSON.stringify({
+            items,
+            sourcePath: privates.path,
+            targetPath,
+            conflictItems
+        }))
     }
 
     async function getConflictItems(targetPath, items) {

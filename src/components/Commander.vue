@@ -184,8 +184,9 @@ export default {
                 })
 
                 folder.focus()
-                if (result.result == 1) {
-                    await folder.copyItems(selectedItems, otherFolder.path, move)
+                if (result.result) {
+                    await folder.copyItems(selectedItems, otherFolder.path, move, 
+                        result.result == 3 ? conflictItems.map(n => n.name) : null)
                     if (move)
                         folder.refresh()
                     otherFolder.refresh()

@@ -121,6 +121,7 @@ export default {
             if (this.content) 
                 this.content.getFocusables().forEach(n => this.focusables.push(n))
             this.focusIndex = this.content ? this.content.getFocusIndex(buttonCount) : 0
+            this.defButton = this.content ? this.content.getDefaultButton(this.defButton) : this.defButton
             this.focusables[this.focusIndex].focus()
         },
         onKeydown(evt) {

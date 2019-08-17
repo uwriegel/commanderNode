@@ -14,7 +14,8 @@ export default {
         getFocusIndex(buttonCount) {
             return this.$refs.input ? buttonCount : 0
         },
-        getInputText() { return this.data.inputText }
+        getInputText() { return this.data.inputText },
+        getDefaultButton(defBtn) { return defBtn }
     }
 }   
 </script>

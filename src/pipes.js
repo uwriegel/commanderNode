@@ -64,3 +64,5 @@ export function getVersion(version) {
         ? version.major + "."  + version.minor + "." + version.build + "." + version.patch
         : ""
 }
+
+export function get0IfEmpty(text) { return text || "0" }

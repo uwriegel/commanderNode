@@ -234,8 +234,8 @@ export default {
         renameItem(name, newName) {
             return this.processor.renameItem(name, newName)
         },
-        copyItems(selectedItems, targetPath, move) {
-            return this.processor.copyItems(selectedItems, targetPath, move)
+        copyItems(selectedItems, targetPath, move, conflictItems) {
+            return this.processor.copyItems(selectedItems, targetPath, move, conflictItems)
         },
         initializeSelection() {
             const ends$ = this.keyDown$.pipe(filter(n => n.event.which == 35 && n.event.shiftKey))
