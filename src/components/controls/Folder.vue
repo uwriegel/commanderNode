@@ -1,9 +1,10 @@
 <template>
-    <div tabindex="1" class="root" v-stream:keydown='keyDown$' @focus=focus @focusin=onfocusIn> 
+    <div tabindex="1" class="root" v-stream:keydown='keyDown$' @focus=focus @focusin=onfocusIn 
+            @dragenter='onDragEnter' @dragleave='onDragLeave' @dragover='onDragOver' @drop='onDrop'> 
         <input ref="input" v-selectall @keydown='onInputKeyDown' :value="path">
-        <table-view ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18'
-                @column-click='onSort' @columns-widths-changed='onColumnsWidthChanged' 
-                @action='onAction' @selection-changed=onSelectionChanged @delete='onDelete'>
+        <table-view ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18' :class="{isDragging: isDragging}"
+                @column-click='onSort' 
+                @columns-widths-changed='onColumnsWidthChanged' @action='onAction' @selection-changed=onSelectionChanged @delete='onDelete'>
             <template v-slot=row>
                 <tr v-if='processor.name == "directory" && row.item.isDirectory ' 
                         :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
@@ -64,7 +65,8 @@ export default {
             items: [],
             processor: getDefaultProcessor(),
             path: "",
-            restrictValue: ""
+            restrictValue: "",
+            isDragging: false
         }
     },
     props: [
@@ -136,6 +138,47 @@ export default {
         },
         onDelete() {
             this.$emit("delete")
+        },
+        onDragEnter(evt) {
+            if (this.$refs.table.$el.contains(evt.target)) 
+                this.isDragging = true
+        },
+        onDragLeave(evt) {
+            if (!(evt.fromElement && this.$refs.table.$el.contains(evt.fromElement)))
+                this.isDragging = false
+        },
+        onDrop(evt) {
+            this.isDragging = false
+            console.log(evt)
+            for (const f of evt.dataTransfer.files) {
+                console.log('File(s) you dragged here: ', f.path)
+            }            
+            return false
+        },
+        onDragOver(evt) {
+            if (this.isDragging) {
+                evt.dataTransfer.dropEffect = 
+                    evt.dataTransfer.allowedEffect == "move" 
+                    || evt.dataTransfer.effectAllowed == "copyMove"
+                    || evt.dataTransfer.effectAllowed == "linkMove"
+                    || evt.dataTransfer.effectAllowed == "all"
+                    ? "move" 
+                    : (evt.dataTransfer.allowedEffect == "copy" 
+                        || evt.dataTransfer.effectAllowed == "copyMove"
+                        || evt.dataTransfer.effectAllowed == "copyLink"
+                        || evt.dataTransfer.effectAllowed == "all"
+                        ? "copy"
+                        : none)
+                if (evt.ctrlKey && evt.dataTransfer.dropEffect == "move" && (evt.dataTransfer.allowedEffect == "copy" 
+                        || evt.dataTransfer.effectAllowed == "copyMove"
+                        || evt.dataTransfer.effectAllowed == "copyLink"
+                        || evt.dataTransfer.effectAllowed == "all"))
+                    evt.dataTransfer.dropEffect = "copy"
+                    
+                evt.preventDefault(); // Necessary. Allows us to drop.
+            }
+            else
+                evt.dataTransfer.dropEffect = "none"
         },
         async changePath(path, lastPath, checkProcessor) {
             this.restrictClose(true)
@@ -292,6 +335,9 @@ input {
     border-style: none;
     width: calc(100% - 6px);
     outline-width: 0px;
+}
+.isDragging {
+    background-color: var(--drag-highlight);
 }
 .isExif {
     color: blue;

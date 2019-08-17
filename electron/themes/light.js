@@ -42,5 +42,6 @@ exports.getCss = function () {
 "--dialog-fader-color: rgba(0, 0, 0, 0.50);" +
 "--dialog-input-border-color: #grey;" +
 "--dialog-input-outline-color: blue;" +
+"--drag-highlight: aqua;" +
 "}" 
 }
