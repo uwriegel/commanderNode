@@ -148,7 +148,7 @@ export default {
         onDragStart(evt) {
             this.isDragStarted = true
             electron.ipcRenderer.send("dragStart", this.getSelectedItems().map(n => path.join(this.path, n.name)))
-            //evt.preventDefault()
+            evt.preventDefault()
         },
         onDragEnd(evt) {
             this.isDragStarted = false
