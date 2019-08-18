@@ -49,6 +49,9 @@ const createWindow = function() {
         else
             win.maximize()  
     })
+    electron.ipcMain.on("dragStart", (evt, files) => {
+        win.webContents.startDrag({ files, icon: null })
+    })
     ipc.subscribe(win.webContents, async (method, arg) => {
         switch (method) {
             case "createDirectory":

@@ -4,11 +4,11 @@ import { name as rootName } from './root'
 import { sendToMain } from '../Connection'
 const electron = window.require('electron')
 
-export function getDirectoryProcessor() {
+export function getDirectoryProcessor(path) {
     let privates = {
         sortIndex: null,
         sortDescending: false,
-        path: ""
+        path
     }
 
     function getProcessor(path) { 

@@ -5,10 +5,12 @@
             <template v-slot:first>
                 <splitter-grid>
                     <template v-slot:first>
-                        <folder ref="leftFolder" @delete='onLeftDelete' class="folder" id="left" @focus-in=onLeftFocus @selection-changed=onSelectionChanged></folder>
+                        <folder ref="leftFolder" @delete='onLeftDelete' class="folder" id="left" @focus-in=onLeftFocus 
+                        @selection-changed=onSelectionChanged @drop-files="leftDropFiles"></folder>
                     </template>
                     <template v-slot:second>
-                        <folder ref="rightFolder" @delete='onRightDelete' class="folder" id="right" @focus-in=onRightFocus @selection-changed=onSelectionChanged></folder>
+                        <folder ref="rightFolder" @delete='onRightDelete' class="folder" id="right" @focus-in=onRightFocus 
+                        @selection-changed=onSelectionChanged @drop-files="rightDropFiles"></folder>
                     </template>
                 </splitter-grid>
             </template>
@@ -27,6 +29,7 @@ import Folder from './controls/Folder'
 import Viewer from './controls/Viewer'
 import MainDialog from './controls/MainDialog'
 import { mapState } from 'vuex'
+import { createProcessor } from '../processors/processor'
 const electron = window.require('electron')
 
 // TODO: Status displays alternativly # selected items
@@ -144,54 +147,11 @@ export default {
             this.deleteItems(this.$refs.rightFolder)
         },
         async copyItems(move) {
-            const folder = this.getActiveFolder()
-            const otherFolder = this.getInactiveFolder()
-            if (otherFolder.canInsertItems() &&  (move ? folder.canMoveItems() : folder.canCopyItems())) {
-                const selectedItems = folder.getSelectedItems()
-                var conflictItems = await folder.getConflictItems(otherFolder.path, selectedItems)
-                console.log("Conflicts", conflictItems)
-
-                const action = move ? "verschieben": "kopieren"
-                const  dirs = selectedItems.filter( n => n.isDirectory).length
-                const  files = selectedItems.filter( n => !n.isDirectory).length
-
-                // TODO: Dont copy in the same folder or in a subfolder
-                const text = 
-                    conflictItems == 0
-                    ? (files && dirs
-                        ? `Möchtest Du die selektierten Einträge ${action}?`
-                        : (files
-                            ? (files > 1
-                                ? `Möchtest Du die selektierten Dateien ${action}?`
-                                : `Möchtest Du die selektierte Datei '${selectedItems[0].name}' ${action}?`)
-                            : (dirs > 1
-                                ? `Möchtest Du die selektierten Verzeichnisse ${action}?`
-                                : `Möchtest Du das selektierte Verzeichnis '${selectedItems[0].name}' ${action}?`)
-                            )
-                        )
-                    : "Möchtest Du die Einträge überschreiben?"
-
-                const result = await this.$refs.dialog.show({
-                    yes: conflictItems.length > 0, 
-                    no: conflictItems.length > 0, 
-                    ok : conflictItems.length == 0,
-                    rightFolder: folder == this.$refs.rightFolder,
-                    leftFolder: folder == this.$refs.leftFolder,
-                    text,
-                    cancel: true,
-                    defButton: "yes",
-                    conflictItems: conflictItems.length > 0 ? conflictItems : null,
-                })
-
-                folder.focus()
-                if (result.result) {
-                    await folder.copyItems(selectedItems, otherFolder.path, move, 
-                        result.result == 3 ? conflictItems.map(n => n.name) : null)
-                    if (move)
-                        folder.refresh()
-                    otherFolder.refresh()
-                }
-            }
+            const sourceFolder = this.getActiveFolder()
+            const sourceProcessor = sourceFolder.getProcessor()
+            const targetFolder = this.getInactiveFolder()
+            const selectedItems = sourceFolder.getSelectedItems()
+            await this.doCopyItems(sourceProcessor, sourceFolder, targetFolder, selectedItems, move)
         },
         async deleteItems(folder) {
             if (!folder)
@@ -230,6 +190,74 @@ export default {
         },
         getInactiveFolder() {
             return this.leftHasFocus ? this.$refs.rightFolder : this.$refs.leftFolder
+        },
+        getOtherFolder(folder) {
+            return folder == this.$refs.leftFolder 
+                ? this.$refs.rightFolder 
+                : this.$refs.leftFolder
+        },
+        leftDropFiles(param) {
+            this.dropFiles(this.$refs.leftFolder, param)
+        },
+        rightDropFiles(param) {
+            this.dropFiles(this.$refs.rightFolder, param)
+        },
+        dropFiles(targetFolder, param) {
+            console.log("drop", param)
+            this.doCopyItems(createProcessor(param.sourcePath), null, targetFolder, param.files, param.dropEffect == "move")
+        },        
+        async doCopyItems(sourceProcessor, sourceFolder, targetFolder, selectedItems, move) {
+            if (!sourceFolder) {
+                const candidate = this.getOtherFolder(targetFolder)
+                if (candidate.getProcessor().path == sourceProcessor.path)
+                    sourceFolder = candidate
+            }
+            if (targetFolder.canInsertItems() &&  (move ? sourceProcessor.canMoveItems() : sourceProcessor.canCopyItems())) {
+                var conflictItems = await sourceProcessor.getConflictItems(targetFolder.path, selectedItems.map(n => n.name))
+                const action = move ? "verschieben": "kopieren"
+                const  dirs = selectedItems.filter( n => n.isDirectory).length
+                const  files = selectedItems.filter( n => !n.isDirectory).length
+                const activeFolder = this.getActiveFolder()
+                // TODO: Dont copy in the same folder or in a subfolder
+                const text = 
+                    conflictItems == 0
+                    ? (files && dirs
+                        ? `Möchtest Du die selektierten Einträge ${action}?`
+                        : (files
+                            ? (files > 1
+                                ? `Möchtest Du die selektierten Dateien ${action}?`
+                                : `Möchtest Du die selektierte Datei '${selectedItems[0].name}' ${action}?`)
+                            : (dirs > 1
+                                ? `Möchtest Du die selektierten Verzeichnisse ${action}?`
+                                : `Möchtest Du das selektierte Verzeichnis '${selectedItems[0].name}' ${action}?`)
+                            )
+                        )
+                    : "Möchtest Du die Einträge überschreiben?"
+                const result = await this.$refs.dialog.show({
+                    yes: conflictItems.length > 0, 
+                    no: conflictItems.length > 0, 
+                    ok : conflictItems.length == 0,
+                    rightFolder: sourceFolder ? sourceFolder == this.$refs.rightFolder : null,
+                    leftFolder: sourceFolder ? sourceFolder == this.$refs.leftFolder : null,
+                    text,
+                    cancel: true,
+                    defButton: "yes",
+                    conflictItems: conflictItems.length > 0 ? conflictItems : null,
+                })
+                if (sourceFolder)
+                    sourceFolder.focus()
+                else if (activeFolder)
+                    activeFolder.focus()
+                else
+                    leftFolder.focus()
+                if (result.result) {
+                    await sourceProcessor.copyItems(selectedItems, targetFolder.path, move, 
+                        result.result == 3 ? conflictItems.map(n => n.name) : null)
+                    if (move && sourceFolder)
+                        sourceFolder.refresh()
+                    targetFolder.refresh()
+                }
+            }
         }
     }
 }

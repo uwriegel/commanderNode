@@ -63,7 +63,7 @@ export function getRootProcessor() {
     function onAction(item) {
         return {
             done: false,
-            newProcessor: getDirectoryProcessor(), 
+            newProcessor: getDirectoryProcessor(item.name), 
             path: item.name
         }
     }    

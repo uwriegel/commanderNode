@@ -2,11 +2,11 @@
     <div tabindex="1" class="root" v-stream:keydown='keyDown$' @focus=focus @focusin=onfocusIn 
             @dragenter='onDragEnter' @dragleave='onDragLeave' @dragover='onDragOver' @drop='onDrop'> 
         <input ref="input" v-selectall @keydown='onInputKeyDown' :value="path">
-        <table-view ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18' :class="{isDragging: isDragging}"
+        <table-view ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18' :class="{isDragging: isDragging, isDragStarted: isDragStarted}"
                 @column-click='onSort' 
                 @columns-widths-changed='onColumnsWidthChanged' @action='onAction' @selection-changed=onSelectionChanged @delete='onDelete'>
             <template v-slot=row>
-                <tr v-if='processor.name == "directory" && row.item.isDirectory ' 
+                <tr v-if='processor.name == "directory" && row.item.isDirectory' draggable="true" @dragstart='onDragStart' @dragend='onDragEnd'
                         :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
                     <td class="icon-name">
                         <folder-icon class=icon></folder-icon>
@@ -17,7 +17,7 @@
                     <td></td>
                     <td></td>
                 </tr>
-                <tr v-if='processor.name == "directory" && !row.item.isDirectory ' 
+                <tr v-if='processor.name == "directory" && !row.item.isDirectory ' draggable="true" @dragstart='onDragStart'
                         :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
                     <td class="icon-name">
                         <img :src='row.item.name | iconUrl(processor.path)' alt="">
@@ -52,6 +52,11 @@ import DriveIcon from '../../icons/DriveIcon'
 import FolderIcon from '../../icons/FolderIcon'
 import { Observable, map, pipe, filter } from "rxjs/operators"
 import { mapState } from 'vuex'
+const electron = window.require('electron')
+const path = window.require('path')
+
+// TODO: drag: move
+// TODO: drag: icon
 
 export default {
     components: {
@@ -66,7 +71,8 @@ export default {
             processor: getDefaultProcessor(),
             path: "",
             restrictValue: "",
-            isDragging: false
+            isDragging: false,
+            isDragStarted: false
         }
     },
     props: [
@@ -139,21 +145,21 @@ export default {
         onDelete() {
             this.$emit("delete")
         },
+        onDragStart(evt) {
+            this.isDragStarted = true
+            electron.ipcRenderer.send("dragStart", this.getSelectedItems().map(n => path.join(this.path, n.name)))
+            //evt.preventDefault()
+        },
+        onDragEnd(evt) {
+            this.isDragStarted = false
+        },
         onDragEnter(evt) {
-            if (this.$refs.table.$el.contains(evt.target)) 
+            if (this.$refs.table.$el.contains(evt.target) && !this.isDragStarted) 
                 this.isDragging = true
         },
         onDragLeave(evt) {
             if (!(evt.fromElement && this.$refs.table.$el.contains(evt.fromElement)))
                 this.isDragging = false
-        },
-        onDrop(evt) {
-            this.isDragging = false
-            console.log(evt)
-            for (const f of evt.dataTransfer.files) {
-                console.log('File(s) you dragged here: ', f.path)
-            }            
-            return false
         },
         onDragOver(evt) {
             if (this.isDragging) {
@@ -168,17 +174,36 @@ export default {
                         || evt.dataTransfer.effectAllowed == "copyLink"
                         || evt.dataTransfer.effectAllowed == "all"
                         ? "copy"
-                        : none)
+                        : "none")
                 if (evt.ctrlKey && evt.dataTransfer.dropEffect == "move" && (evt.dataTransfer.allowedEffect == "copy" 
                         || evt.dataTransfer.effectAllowed == "copyMove"
                         || evt.dataTransfer.effectAllowed == "copyLink"
                         || evt.dataTransfer.effectAllowed == "all"))
                     evt.dataTransfer.dropEffect = "copy"
+                    this.dropEffect = evt.dataTransfer.dropEffect
                     
                 evt.preventDefault(); // Necessary. Allows us to drop.
             }
-            else
-                evt.dataTransfer.dropEffect = "none"
+        },
+        onDrop(evt) {
+            this.isDragging = false
+            const files = Array.from(evt.dataTransfer.files)
+            const pathes = files.map(n => { return { 
+                        dir: path.dirname(n.path), 
+                        name: n.name,
+                        size: n.size,
+                        time: n.lastModifiedDate
+                    }})
+            if (pathes.length > 0) {
+                var sourcePath = pathes[0].dir
+                if (!pathes.some(n => n.dir != sourcePath)) 
+                    this.$emit("drop-files", {
+                        dropEffect: this.dropEffect,
+                        sourcePath,
+                        files: pathes
+                    })
+            }
+            return false
         },
         async changePath(path, lastPath, checkProcessor) {
             this.restrictClose(true)
@@ -222,15 +247,11 @@ export default {
                 ? [ this.items[this.$refs.table.index] ] 
                 : [])
         },
+        getProcessor() { return this.processor },
         canDeleteItems() { return this.processor.canDelete() },
         canCreateFolder() { return this.processor.canCreateFolder() },
-        canCopyItems() { return this.processor.canCopyItems() },
-        canMoveItems() { return this.processor.canMoveItems() },
         canInsertItems() { return this.processor.canInsertItems() },
         canRename() { return this.processor.canRename() },
-        async getConflictItems(targetPath, selectedItems) {
-            return this.processor.getConflictItems(targetPath, selectedItems.map(n => n.name))
-        },
         getStorageColumnsWidthName() { return this.id + '-' + this.processor.name + '-columnsWidths'},
         changeProcessor(processor) {
             if (processor) {
@@ -276,9 +297,6 @@ export default {
         },
         renameItem(name, newName) {
             return this.processor.renameItem(name, newName)
-        },
-        copyItems(selectedItems, targetPath, move, conflictItems) {
-            return this.processor.copyItems(selectedItems, targetPath, move, conflictItems)
         },
         initializeSelection() {
             const ends$ = this.keyDown$.pipe(filter(n => n.event.which == 35 && n.event.shiftKey))
@@ -338,6 +356,9 @@ input {
 }
 .isDragging {
     background-color: var(--drag-highlight);
+}
+.isDragStarted {
+    background-color: darkred;
 }
 .isExif {
     color: blue;

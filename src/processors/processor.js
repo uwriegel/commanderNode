@@ -5,7 +5,7 @@ export function createProcessor(path) {
     if (path == "root")
         return getRootProcessor()
     else
-        return getDirectoryProcessor()
+        return getDirectoryProcessor(path)
 }
 
 export function getDefaultProcessor() {
