@@ -2,11 +2,13 @@
     <div tabindex="1" class="root" v-stream:keydown='keyDown$' @focus=focus @focusin=onfocusIn 
             @dragenter='onDragEnter' @dragleave='onDragLeave' @dragover='onDragOver' @drop='onDrop'> 
         <input ref="input" v-selectall @keydown='onInputKeyDown' :value="path">
-        <table-view ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18' :class="{isDragging: isDragging, isDragStarted: isDragStarted}"
+        <table-view class='table' ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18' 
+                :class="{isDragging: isDragging, isDragStarted: isDragStarted}"
                 @column-click='onSort' 
                 @columns-widths-changed='onColumnsWidthChanged' @action='onAction' @selection-changed=onSelectionChanged @delete='onDelete'>
             <template v-slot=row>
-                <tr v-if='processor.name == "directory" && row.item.isDirectory' draggable="true" @dragstart='onDragStart' @dragend='onDragEnd'
+                <tr v-if='processor.name == "directory" && row.item.isDirectory' 
+                        draggable="true" @dragstart='onDragStart' @drag='onDrag' @dragend='onDragEnd'
                         :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
                     <td class="icon-name">
                         <folder-icon class=icon></folder-icon>
@@ -17,7 +19,8 @@
                     <td></td>
                     <td></td>
                 </tr>
-                <tr v-if='processor.name == "directory" && !row.item.isDirectory ' draggable="true" @dragstart='onDragStart'
+                <tr v-if='processor.name == "directory" && !row.item.isDirectory ' 
+                        draggable="true" @dragstart='onDragStart' @drag='onDrag' @dragend='onDragEnd'
                         :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
                     <td class="icon-name">
                         <img :src='row.item.name | iconUrl(processor.path)' alt="">
@@ -55,7 +58,6 @@ import { mapState } from 'vuex'
 const electron = window.require('electron')
 const path = window.require('path')
 
-// TODO: drag: move
 // TODO: drag: icon
 
 export default {
@@ -147,8 +149,21 @@ export default {
         },
         onDragStart(evt) {
             this.isDragStarted = true
-            electron.ipcRenderer.send("dragStart", this.getSelectedItems().map(n => path.join(this.path, n.name)))
-            evt.preventDefault()
+            const files = this.getSelectedItems().map(n => { return {
+                        dir: this.path, 
+                        name: n.name,
+                        size: n.size,
+                        time: n.time
+                    }
+                })
+            evt.dataTransfer.setData("copyFiles", JSON.stringify(files));
+        },
+        onDrag(evt) {
+            if (evt.screenX == 0 && evt.screenY == 0) {
+                electron.ipcRenderer.send("dragStart", this.getSelectedItems().map(n => path.join(this.path, n.name)))
+                this.isDragStarted = false
+                evt.preventDefault()
+            }
         },
         onDragEnd(evt) {
             this.isDragStarted = false
@@ -163,6 +178,7 @@ export default {
         },
         onDragOver(evt) {
             if (this.isDragging) {
+                console.log(evt)
                 evt.dataTransfer.dropEffect = 
                     evt.dataTransfer.allowedEffect == "move" 
                     || evt.dataTransfer.effectAllowed == "copyMove"
@@ -187,8 +203,12 @@ export default {
         },
         onDrop(evt) {
             this.isDragging = false
-            const files = Array.from(evt.dataTransfer.files)
-            const pathes = files.map(n => { return { 
+
+            const data = evt.dataTransfer.getData("copyFiles")
+            const pathes = 
+                data 
+                ? JSON.parse(data)
+                : Array.from(evt.dataTransfer.files).map(n => { return { 
                         dir: path.dirname(n.path), 
                         name: n.name,
                         size: n.size,
@@ -354,11 +374,15 @@ input {
     width: calc(100% - 6px);
     outline-width: 0px;
 }
+.table {
+    transition: .3s filter;
+    will-change: filter;
+}
+.table.isDragStarted {
+    filter: blur(2px);
+}
 .isDragging {
     background-color: var(--drag-highlight);
-}
-.isDragStarted {
-    background-color: darkred;
 }
 .isExif {
     color: blue;

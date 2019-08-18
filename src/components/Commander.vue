@@ -272,10 +272,10 @@ export default {
 }
 .content {
     transition: .3s filter;
+    will-change: filter;
 }
 .content.dialogOpen {
     filter: blur(2px);
-    will-change: filter;
 }
 .folder {
     flex-grow: 1;

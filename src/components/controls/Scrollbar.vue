@@ -16,8 +16,6 @@
 </template>
 
 <script>
-// TODO: Grip with mouse jumps down a bit
-
 const scrollerHeight = 15
 
 export default {
@@ -87,7 +85,7 @@ export default {
             this.timer = setTimeout(() => this.interval = setInterval(page, 50), 600)
         },
         gripMouseDown: function (evt) {
-            const startPos = evt.y - this.gripTop
+            const startPos = evt.y - this.gripTop + scrollerHeight
             const range = this.parentHeight - this.gripHeight - 2 * scrollerHeight
             const maxPosition = this.totalCount - this.itemsPerPage
             const onmove = evt => {
