@@ -165,6 +165,7 @@ export function getDirectoryProcessor(path) {
     function canCreateFolder() { return true }
     function canDelete() { return true }
     function canRename() { return true }
+    function canExtendedRename() { return true }
     function canCopyItems() { return true }
     function canMoveItems() { return true }
     function canInsertItems() { return true }
@@ -210,6 +211,7 @@ export function getDirectoryProcessor(path) {
         canCreateFolder,
         canDelete,
         canRename,
+        canExtendedRename,
         canInsertItems,
         deleteFiles,
         createFolder,

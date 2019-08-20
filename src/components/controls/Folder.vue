@@ -40,6 +40,30 @@
                     <td>{{ row.item.description }}</td>
                     <td class="size">{{ row.item.size | size }}</td>
                 </tr>
+                <tr v-if='processor.name == "extendedRename" && row.item.isDirectory' 
+                        draggable="true" @dragstart='onDragStart' @drag='onDrag' @dragend='onDragEnd'
+                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
+                    <td class="icon-name">
+                        <folder-icon class=icon></folder-icon>
+                        {{ row.item.name }}
+                    </td>  
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr v-if='processor.name == "extendedRename" && !row.item.isDirectory ' 
+                        draggable="true" @dragstart='onDragStart' @drag='onDrag' @dragend='onDragEnd'
+                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
+                    <td class="icon-name">
+                        <img :src='row.item.name | iconUrl(processor.path)' alt="">
+                        {{ row.item.name | nameOnly }}
+                    </td>
+                    <td></td>
+                    <td>{{ row.item.name | extension }}</td>
+                    <td :class="{ 'isExif': row.item.isExifDate }">{{ row.item.time | dateTime }}</td>
+                    <td class="size">{{ row.item.size | size }}</td>
+                </tr>
             </template>
         </table-view>
         <transition name="slide">
@@ -50,6 +74,7 @@
 
 <script>
 import { getDefaultProcessor, combinePath } from '../../processors/processor'
+import { create as createExtendedRename, reset as resetExtendedRename } from '../../processors/extendedRename'
 import TableView from './TableView'
 import DriveIcon from '../../icons/DriveIcon'
 import FolderIcon from '../../icons/FolderIcon'
@@ -285,6 +310,13 @@ export default {
                 }
                 this.columns = columns
             }
+        },
+        setExtendedRename(set) {
+            this.changeProcessor(set ? createExtendedRename(this.processor) : resetExtendedRename(this.processor))
+            this.refresh()
+        },
+        getExtendedRename() {
+            return this.processor.name == "extendedRename"
         },
         restrictTo(evt) {
             const items = this.items.filter(n => n.name.toLowerCase().startsWith(this.restrictValue + evt.key))

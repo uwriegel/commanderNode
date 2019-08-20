@@ -9,7 +9,7 @@
                     <p v-if="text">{{text}}</p>
                     <simple-dialog ref="simpleDialog" v-if="simpleDialog" :data="simpleDialog"></simple-dialog>
                     <conflict-items ref="conflictsDialog" v-if="conflictItems" :items=conflictItems></conflict-items>
-                    <extended-rename ref="extendedRename" v-if="extendedRename"></extended-rename>
+                    <extended-rename ref="extendedRename" v-if="extendedRename" :param=extendedRename></extended-rename>
                     <div class="buttons">
                         <div ref=btn1 tabindex="1" v-if="yes" @focus="onFocus" @blur="onBlur" 
                             class="dialogButton pointer-def" :class="{default: isButtonYesDefault}"
@@ -52,7 +52,7 @@ export default {
             text: "",
             simpleDialog: null,
             conflictItems: null,
-            extendedRename: false,
+            extendedRename: null,
             isButtonFocused: false,
             inputText: "",
             fullscreen: false
