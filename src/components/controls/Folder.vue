@@ -59,7 +59,7 @@
                         <img :src='row.item.name | iconUrl(processor.path)' alt="">
                         {{ row.item.name | nameOnly }}
                     </td>
-                    <td></td>
+                    <td>{{ row.item.newName }}</td>
                     <td>{{ row.item.name | extension }}</td>
                     <td :class="{ 'isExif': row.item.isExifDate }">{{ row.item.time | dateTime }}</td>
                     <td class="size">{{ row.item.size | size }}</td>
@@ -268,6 +268,7 @@ export default {
             const selected = this.items[this.$refs.table.index]
             this.items = this.processor.sort(this.items, index, descending, this.showHidden)
             const newPos = this.items.findIndex(n => n == selected)
+            this.onSelectedItemsChanged()
             setTimeout(() => this.$refs.table.setCurrentIndex(newPos))
         },
         onAction(item) {
@@ -279,6 +280,22 @@ export default {
             }
         },
         onSelectionChanged(newIndex) { this.$emit('selection-changed', this.getSelectedItem(newIndex)) },
+        onSelectedItemsChanged() {
+            if (this.getExtendedRename()) {
+                const prefix = localStorage["extendedRenamePrexix"]
+                const digits = localStorage["extendedRenameDigits"]
+                const startIndex = Number(localStorage["extendedRenameStartIndex"])
+
+                const selectedItems = this.items.filter(n => !n.isDirectory && n.isSelected)    
+                const unSelectedItems = this.items.filter(n => !n.isSelected)    
+                unSelectedItems.forEach(n => n.newName = "")
+                selectedItems.forEach((n, i) => {
+                    const newNameNumber = `${i+startIndex}`
+                    const nulls = digits - newNameNumber.length
+                    n.newName = `${prefix}${(nulls > 0 ? '0'.repeat(nulls) : '')}${newNameNumber}`
+                })
+            }
+        },
         getSelectedItem(selectedIndex) { 
             return this.$refs.table && this.path
                 ? this.processor.getItemWithPath(this.path, this.items[selectedIndex || this.$refs.table.index]) 
@@ -368,22 +385,27 @@ export default {
                 toggleSelection()
                 if (this.$refs.table.index < this.items.length - 1) 
                     this.$refs.table.setCurrentIndex(this.$refs.table.index + 1)
+                this.onSelectedItemsChanged()
             })
             this.$subscribeTo(pluses$, () => this.items.forEach(n => {
                 if (n.isSelected != undefined)
                     n.isSelected = true
+                this.onSelectedItemsChanged()
             }))
             this.$subscribeTo(minuses$, () => this.items.forEach(n => {
                 if (n.isSelected != undefined)
                     n.isSelected = false
+                this.onSelectedItemsChanged()
             }))
             this.$subscribeTo(homes$, () => this.items.forEach((n, i) => {
                 if (n.isSelected != undefined) 
                     n.isSelected = i <= this.$refs.table.index
+                this.onSelectedItemsChanged()
             }))
             this.$subscribeTo(ends$, () => this.items.forEach((n, i) => {
                 if (n.isSelected != undefined)
                     n.isSelected = i >= this.$refs.table.index
+                this.onSelectedItemsChanged()
             }))
         }
     }

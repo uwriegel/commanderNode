@@ -17,7 +17,6 @@ export function create(directoryProcessor) {
                         isSortable: true,
                         name: "Name"
                     }, {
-                        isSortable: true,
                         name: "Neu"
                     }, {
                         isSortable: true,
