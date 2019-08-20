@@ -140,6 +140,20 @@ export default {
                 }
             }            
         },
+        async extendedRename() {
+            const folder = this.getActiveFolder()
+            const result = await this.$refs.dialog.show({
+                ok: true, 
+                cancel : true,
+                defButton: "ok",
+                extendedRename: true
+            })
+            folder.focus()
+            if (result.result == 1) {
+                await folder.renameItem(proposalName, result.inputText)
+                folder.refresh()                    
+            }
+        },
         onLeftDelete() {
             this.deleteItems(this.$refs.leftFolder)
         },

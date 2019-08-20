@@ -59,6 +59,14 @@ export default {
                                 key: 113
                             }
                         }, { 
+                            name: "Er_weitertes Umbenennen",
+                            action: "extendedRename",
+                            accelerator: { 
+                                name: "Strg+F2",
+                                ctrl: true,
+                                key: 113
+                            }
+                        }, { 
                             name: "-"
                         }, { 
                             name: "_Kopieren",
@@ -210,6 +218,9 @@ export default {
             switch (action) {
                 case "rename":
                     this.$refs.commander.rename()
+                    break
+                case "extendedRename":
+                    this.$refs.commander.extendedRename()
                     break
                 case 'properties':
                     this.$refs.commander.properties()

@@ -6,9 +6,10 @@
         <transition :name="transitionName" v-on:after-leave="afterLeave">
             <div class="dialogContainer" v-if="isShowing">
                 <div class="dialog" :class="{fullscreen: fullscreen}" @keydown="onKeydown">
-                    <p>{{text}}</p>
+                    <p v-if="text">{{text}}</p>
                     <simple-dialog ref="simpleDialog" v-if="simpleDialog" :data="simpleDialog"></simple-dialog>
                     <conflict-items ref="conflictsDialog" v-if="conflictItems" :items=conflictItems></conflict-items>
+                    <extended-rename ref="extendedRename" v-if="extendedRename"></extended-rename>
                     <div class="buttons">
                         <div ref=btn1 tabindex="1" v-if="yes" @focus="onFocus" @blur="onBlur" 
                             class="dialogButton pointer-def" :class="{default: isButtonYesDefault}"
@@ -35,6 +36,7 @@
 import Vue from 'vue'
 import SimpleDialog from './SimpleDialog'
 import ConflictItems from './ConflictItems'
+import ExtendedRename from './ExtendedRename'
 
 export default {
     data() {
@@ -50,6 +52,7 @@ export default {
             text: "",
             simpleDialog: null,
             conflictItems: null,
+            extendedRename: false,
             isButtonFocused: false,
             inputText: "",
             fullscreen: false
@@ -71,7 +74,8 @@ export default {
     },
     components: {
         SimpleDialog,
-        ConflictItems
+        ConflictItems,
+        ExtendedRename
     },
     methods: {
         show(config) {
@@ -91,6 +95,7 @@ export default {
                 this.cancel = config.cancel
                 this.simpleDialog = config.simpleDialog
                 this.conflictItems = config.conflictItems
+                this.extendedRename = config.extendedRename
                 this.resolve = res
                 this.text = config.text
                 this.reject = rej
@@ -108,7 +113,7 @@ export default {
         },
         mounted() {
             this.focusables = []
-            this.content = this.$refs.simpleDialog || this.$refs.conflictsDialog
+            this.content = this.$refs.simpleDialog || this.$refs.conflictsDialog || this.$refs.extendedRename
             if (this.$refs.btn1)
                 this.focusables.push(this.$refs.btn1)
             if (this.$refs.btn2)
@@ -127,12 +132,18 @@ export default {
         onKeydown(evt) {
             switch (evt.which) {
                 case 9: // tab
-                    this.focusIndex = evt.shiftKey ? this.focusIndex - 1 : this.focusIndex + 1
-                    if (this.focusIndex >= this.focusables.length)
-                        this.focusIndex = 0
-                    if (this.focusIndex < 0)
-                        this.focusIndex = this.focusables.length - 1
-                    this.focusables[this.focusIndex].focus()
+                    const active = document.activeElement
+                    const setFocus = () => {
+                        this.focusIndex = evt.shiftKey ? this.focusIndex - 1 : this.focusIndex + 1
+                        if (this.focusIndex >= this.focusables.length)
+                            this.focusIndex = 0
+                        if (this.focusIndex < 0)
+                            this.focusIndex = this.focusables.length - 1
+                        this.focusables[this.focusIndex].focus()
+                        if (document.activeElement == active)
+                            setFocus()    
+                    }
+                    setFocus()
                     break
                 case 13: // Return
                     if (this.defButton && !this.isButtonFocused) {
@@ -284,7 +295,7 @@ export default {
     background-color: #01018e;
 }
 .dialogButton.default {
-    outline-color: blue;
+    outline-color: rgb(160, 160, 160);
     outline-width: 1px;
     outline-style: solid;
     outline-offset: 1px;
