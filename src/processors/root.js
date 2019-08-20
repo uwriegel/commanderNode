@@ -73,6 +73,7 @@ export function getRootProcessor() {
     function canCreateFolder() { return false }
     function canDelete() { return false }
     function canRename() { return false }
+    function canExtendedRename() { return false }
     function canCopyItems() { return false }
     function canMoveItems() { return false }
     function canInsertItems() { return false }
@@ -91,6 +92,7 @@ export function getRootProcessor() {
         canCreateFolder,
         canDelete,
         canRename,
+        canExtendedRename,
         canCopyItems,
         canMoveItems,        
         canInsertItems

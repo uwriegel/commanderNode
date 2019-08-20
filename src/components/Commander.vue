@@ -142,16 +142,16 @@ export default {
         },
         async extendedRename() {
             const folder = this.getActiveFolder()
-            const result = await this.$refs.dialog.show({
-                ok: true, 
-                cancel : true,
-                defButton: "ok",
-                extendedRename: true
-            })
-            folder.focus()
-            if (result.result == 1) {
-                await folder.renameItem(proposalName, result.inputText)
-                folder.refresh()                    
+            if (folder.canExtendedRename()) {
+                const result = await this.$refs.dialog.show({
+                    ok: true, 
+                    cancel : true,
+                    defButton: "ok",
+                    extendedRename: true
+                })
+                folder.focus()
+                if (result.result == 1) 
+                    folder.refresh()                    
             }
         },
         onLeftDelete() {

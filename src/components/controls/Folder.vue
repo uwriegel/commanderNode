@@ -272,6 +272,7 @@ export default {
         canCreateFolder() { return this.processor.canCreateFolder() },
         canInsertItems() { return this.processor.canInsertItems() },
         canRename() { return this.processor.canRename() },
+        canExtendedRename() { return this.processor.canExtendedRename() },
         getStorageColumnsWidthName() { return this.id + '-' + this.processor.name + '-columnsWidths'},
         changeProcessor(processor) {
             if (processor) {
