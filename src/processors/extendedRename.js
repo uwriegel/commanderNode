@@ -31,6 +31,11 @@ export function create(directoryProcessor) {
                 ]
             }
     }
+    const baseSort = processor.sort
+    processor.sort = function (items, index, descending, showHidden) {
+        const renameSortIndex = index > 1 ? index - 1 : index
+        return baseSort(items, renameSortIndex, descending, showHidden)
+    }
 
     return processor
 }

@@ -80,6 +80,8 @@ import DriveIcon from '../../icons/DriveIcon'
 import FolderIcon from '../../icons/FolderIcon'
 import { Observable, map, pipe, filter } from "rxjs/operators"
 import { mapState } from 'vuex'
+import { getExtension } from '../../pipes'
+import { renameFiles } from "../../extendedRename"
 const electron = window.require('electron')
 const path = window.require('path')
 
@@ -335,6 +337,21 @@ export default {
         getExtendedRename() {
             return this.processor.name == "extendedRename"
         },
+        async renameExtended() {
+            const selectedItems = this.getSelectedItems()
+
+            const getNewName = (name, newNameWithoutExtension) => {
+                const ext = getExtension(name)
+                return newNameWithoutExtension + (ext ? `.${ext}` : '')
+            }
+            
+            return await renameFiles(this.processor.path, selectedItems.map(n => { 
+                return {
+                    name: n.name,
+                    newName: getNewName(n.name, n.newName)
+                }
+            }))
+        },
         restrictTo(evt) {
             const items = this.items.filter(n => n.name.toLowerCase().startsWith(this.restrictValue + evt.key))
             if (items.length > 0) {
@@ -463,6 +480,9 @@ tr.isHidden {
 tr.isSelected {
     color: white;
     background-color: blue;
+}
+tr.isSelected .isExif {
+    color: yellow;
 }
 td {
     min-height: 16px;

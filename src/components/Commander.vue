@@ -117,28 +117,39 @@ export default {
         },
         async rename() { 
             const folder = this.getActiveFolder()
-            if (folder.canRename()) {
-                const selectedItems = folder.getSelectedItems()
-                if (selectedItems.length == 1) {
-                    const proposalName = selectedItems[0].name
-                    const result = await this.$refs.dialog.show({
-                        ok: true, 
-                        cancel : true,
-                        defButton: "ok",
-                        text: `${(selectedItems[0].isDirectory ? "Verzeichnis" : "Datei")} umbenennen`, 
-                        simpleDialog: { 
-                            input: true, 
-                            inputText: proposalName,
-                            selectOnlyNameInInput: true
+            if (!folder.getExtendedRename()) {
+                if (folder.canRename()) {
+                    const selectedItems = folder.getSelectedItems()
+                    if (selectedItems.length == 1) {
+                        const proposalName = selectedItems[0].name
+                        const result = await this.$refs.dialog.show({
+                            ok: true, 
+                            cancel : true,
+                            defButton: "ok",
+                            text: `${(selectedItems[0].isDirectory ? "Verzeichnis" : "Datei")} umbenennen`, 
+                            simpleDialog: { 
+                                input: true, 
+                                inputText: proposalName,
+                                selectOnlyNameInInput: true
+                            }
+                        })
+                        folder.focus()
+                        if (result.result == 1) {
+                            await folder.renameItem(proposalName, result.inputText)
+                            folder.refresh()                    
                         }
-                    })
-                    folder.focus()
-                    if (result.result == 1) {
-                        await folder.renameItem(proposalName, result.inputText)
-                        folder.refresh()                    
                     }
+                }            
+            } else {
+                if (!(await folder.renameExtended())) {
+                    await this.$refs.dialog.show({
+                        ok: true, 
+                        text: 'Konnte nicht umbenennen', 
+                    })
+                   folder.focus()
                 }
-            }            
+                folder.refresh()                    
+            }
         },
         async extendedRename() {
             const folder = this.getActiveFolder()
