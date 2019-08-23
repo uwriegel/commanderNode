@@ -23,7 +23,7 @@ const createWindow = function() {
         height: 600,
     })
     bounds.webPreferences = { nodeIntegration: true }    
-    bounds.icon = 'kirk2.png'
+    bounds.icon = __dirname + '/kirk2.png'
     // Undocument this to get the default menu with developer tools
     bounds.frame = false
     bounds.show = false 

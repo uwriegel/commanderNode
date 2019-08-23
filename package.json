@@ -9,7 +9,7 @@
     "appId": "de.hotmail.uriegel.commander",
     "copyright": "Copyright © 2019 Uwe Riegel",
     "productName": "Commander",
-    "electronVersion": "5.0.0",
+    "electronVersion": "6.0.1",
     "win": {
       "target": [
         "nsis"
