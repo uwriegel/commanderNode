@@ -290,11 +290,11 @@ export default {
             if (checkProcessor) 
                 this.changeProcessor(this.processor.getProcessor(path))
             this.items = await this.processor.getItems(path, this.showHidden)
+            const pathChanged = this.path != path
             this.path = path
             localStorage[`${this.id}-path`] = path
-            if (!backtrackDirection)
+            if (!backtrackDirection && pathChanged)
                 this.backtrackPosition = this.backtrack.push(path) -1
-            console.log("BäckTräck", this.backtrackPosition, path)
             if (lastPath) {
                 const newPos = this.items.findIndex(n => n.name == lastPath)
                 if (newPos != -1) 
