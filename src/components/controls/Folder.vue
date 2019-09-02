@@ -3,7 +3,7 @@
             @dragenter='onDragEnter' @dragleave='onDragLeave' @dragover='onDragOver' @drop='onDrop'> 
         <input ref="input" v-selectall @keydown='onInputKeyDown' :value="path">
         <table-view class='table' ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18' 
-                :class="{isDragging: isDragging, isDragStarted: isDragStarted}"
+                :class="{isDragging: isDragging, isDragStarted: isDragStarted, isBacktrackEnd: isBacktrackEnd}"
                 @column-click='onSort' 
                 @columns-widths-changed='onColumnsWidthChanged' @action='onAction' @selection-changed=onSelectionChanged @delete='onDelete'>
             <template v-slot=row>
@@ -101,7 +101,8 @@ export default {
             path: "",
             restrictValue: "",
             isDragging: false,
-            isDragStarted: false
+            isDragStarted: false,
+            isBacktrackEnd: false
         }
     },
     props: [
@@ -119,6 +120,8 @@ export default {
     domStreams: ["keyDown$"],
     created() {
         const path = localStorage[`${this.id}-path`] || "root"
+        this.backtrack = []
+        this.backtrackPosition = -1
         this.changePath(path, null, true)
     },
     mounted() {
@@ -133,6 +136,7 @@ export default {
             n.event.preventDefault()
         })
         this.$subscribeTo(inputChars$, evt => this.restrictTo(evt.event))
+        this.$subscribeTo(backSpaces$, evt => this.onBacktrack(evt.event))
         this.$subscribeTo(backSpaces$, () => this.restrictBack())
         this.$subscribeTo(escapes$, () => this.restrictClose())
 
@@ -153,6 +157,10 @@ export default {
         },
         changeFolder(path) { 
             this.changePath(path, path, true)
+        },
+        onBacktrack(evt) {
+            if (!this.restrictValue) 
+                this.changePath(null, null, true, evt.ctrlKey ? 1 : -1) 
         },
         onInputKeyDown(evt) {
             switch (evt.which) {
@@ -252,13 +260,41 @@ export default {
             }
             return false
         },
-        async changePath(path, lastPath, checkProcessor) {
+        async changePath(path, lastPath, checkProcessor, backtrackDirection) {
             this.restrictClose(true)
+
+            switch (backtrackDirection) {
+                case -1: 
+                    if (this.backtrackPosition < 1) {
+                        this.isBacktrackEnd = true
+                        setTimeout(() => this.isBacktrackEnd = false, 300)
+                        return
+                    }
+                        
+                    this.backtrackPosition -=  1
+                    path = this.backtrack[this.backtrackPosition]
+                    break
+                case 1:
+                    if (this.backtrackPosition > this.backtrack.length - 2){
+                        this.isBacktrackEnd = true
+                        setTimeout(() => this.isBacktrackEnd = false, 300)
+                        return
+                    }
+                    this.backtrackPosition +=  1
+                    path = this.backtrack[this.backtrackPosition]
+                    break
+                default:
+                    break
+            }
+
             if (checkProcessor) 
                 this.changeProcessor(this.processor.getProcessor(path))
             this.items = await this.processor.getItems(path, this.showHidden)
             this.path = path
             localStorage[`${this.id}-path`] = path
+            if (!backtrackDirection)
+                this.backtrackPosition = this.backtrack.push(path) -1
+            console.log("BäckTräck", this.backtrackPosition, path)
             if (lastPath) {
                 const newPos = this.items.findIndex(n => n.name == lastPath)
                 if (newPos != -1) 
@@ -447,11 +483,14 @@ input {
     outline-width: 0px;
 }
 .table {
-    transition: .3s filter;
+    transition: .3s filter, 0.3s background-color;
     will-change: filter;
 }
 .table.isDragStarted {
     filter: blur(2px);
+}
+.table.isBacktrackEnd {
+    background-color: rgba(255, 0, 0, 0.2);
 }
 .isDragging {
     background-color: var(--drag-highlight);
