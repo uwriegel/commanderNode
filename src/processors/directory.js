@@ -1,6 +1,5 @@
 import { getNameOnly, getExtension } from '../pipes'
-import { createProcessor, combinePath } from './processor'
-import { name as rootName } from './root'
+import { createProcessor, combinePath, ROOT } from './processor'
 import { sendToMain } from '../Connection'
 const electron = window.require('electron')
 
@@ -12,7 +11,7 @@ export function getDirectoryProcessor(path) {
     }
 
     function getProcessor(path) { 
-        return path != rootName ? null : createProcessor(rootName)
+        return path != ROOT ? null : createProcessor(ROOT)
     }
 
     function checkPath(path) { return path == name }
@@ -140,8 +139,8 @@ export function getDirectoryProcessor(path) {
                 }
                 : {
                     done: false,
-                    newProcessor: createProcessor(rootName),
-                    path: rootName,
+                    newProcessor: createProcessor(ROOT),
+                    path: ROOT,
                     lastPath: getDirectoryName(privates.path)
                 }
         } 

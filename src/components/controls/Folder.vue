@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import { getDefaultProcessor, combinePath } from '../../processors/processor'
+import { getDefaultProcessor, combinePath, ROOT } from '../../processors/processor'
 import { create as createExtendedRename, reset as resetExtendedRename } from '../../processors/extendedRename'
 import TableView from './TableView'
 import DriveIcon from '../../icons/DriveIcon'
@@ -119,7 +119,7 @@ export default {
     },
     domStreams: ["keyDown$"],
     created() {
-        const path = localStorage[`${this.id}-path`] || "root"
+        const path = localStorage[`${this.id}-path`] || ROOT
         this.backtrack = []
         this.backtrackPosition = -1
         this.changePath(path, null, true)

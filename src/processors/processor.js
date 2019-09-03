@@ -1,11 +1,19 @@
 import { getRootProcessor } from './root'
 import { getDirectoryProcessor } from './directory'
+import { getServicesProcessor } from './servicesProcessor'
+
+export const ROOT = "root:"
+export const SERVICES = "dienste:"
 
 export function createProcessor(path) {
-    if (path == "root")
-        return getRootProcessor()
-    else
-        return getDirectoryProcessor(path)
+    switch (path) {
+        case ROOT:
+            return getRootProcessor()
+        case SERVICES:
+            return getServicesProcessor()
+        default:
+            return getDirectoryProcessor(path)
+    }
 }
 
 export function getDefaultProcessor() {

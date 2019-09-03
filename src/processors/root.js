@@ -1,22 +1,42 @@
 import { getDirectoryProcessor } from './directory'
-import { createProcessor } from './processor'
-export const name = "root"
+import { createProcessor, ROOT } from './processor'
+
+/*
+enum class Drive_type
+{
+	UNKNOWN,
+	HARDDRIVE,
+	ROM,
+	REMOVABLE,
+    NETWORK,
+    
+    Services
+};
+
+struct Drive_item {
+	const std::wstring name;
+	const std::wstring description;
+	const uint64_t size;
+	const Drive_type type;
+	const bool is_mounted;
+};
+*/
 
 export function getRootProcessor() {
     let sortIndex = null
     let sortDescending = false
     
-    function checkPath(path) { return path == name }
+    function checkPath(path) { return path == ROOT }
 
     function getProcessor(path) { 
-        return path == name ? null : createProcessor(path)
+        return path == ROOT ? null : createProcessor(path)
     }
 
     function getColumns(columns) {
-        return columns && columns.type == name
+        return columns && columns.type == ROOT
             ? columns
             : {
-                type: name,
+                type: ROOT,
                 values: [{
                         isSortable: true,
                         name: "Name"
@@ -33,6 +53,7 @@ export function getRootProcessor() {
 
     async function getItems() {
         const items = (await extFs.getDrives()).filter(n => n.isMounted)
+            .concat([ { name: "Dienste:", type: 5 } ])
         items.forEach(n => {
             n.isSelected = false
             n.isExif = false
@@ -79,8 +100,8 @@ export function getRootProcessor() {
     function canInsertItems() { return false }
 
     return {
-        name,
-        path: name,
+        name: "root",
+        path: ROOT,
         getProcessor,
         checkPath,
         getColumns,
