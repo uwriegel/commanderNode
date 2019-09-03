@@ -3,7 +3,7 @@ import { getDirectoryProcessor } from './directory'
 import { getServicesProcessor } from './servicesProcessor'
 
 export const ROOT = "root:"
-export const SERVICES = "dienste:"
+export const SERVICES = "services:"
 
 export function createProcessor(path) {
     switch (path) {

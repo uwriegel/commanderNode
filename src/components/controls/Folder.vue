@@ -64,6 +64,15 @@
                     <td :class="{ 'isExif': row.item.isExifDate }">{{ row.item.time | dateTime }}</td>
                     <td class="size">{{ row.item.size | size }}</td>
                 </tr>
+                <tr v-if='processor.name == "services"' 
+                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden }">
+                    <td class="icon-name">
+                        <drive-icon class=icon></drive-icon>
+                        {{ row.item.name }}
+                    </td>
+                    <td>{{ row.item.status }}</td>
+                    <td>{{ row.item.displayName }}</td>
+                </tr>
             </template>
         </table-view>
         <transition name="slide">
