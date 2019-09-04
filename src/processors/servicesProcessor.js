@@ -23,9 +23,6 @@ export function getServicesProcessor() {
                         name: "Name"
                     }, {
                         isSortable: true,
-                        name: "Status"
-                    }, {
-                        isSortable: true,
                         name: "Beschreibung"
                     }
                 ]
@@ -54,10 +51,8 @@ export function getServicesProcessor() {
         if (sortIndex != null) {
             const sort = 
             sortIndex == 0 
-                    ? (a, b) => a.name.localeCompare(b.name) :
-                    sortIndex == 2
-                    ? (a, b) => a.displayName.localeCompare(b.displayName)
-                    : (a, b) => a.status - b.status
+                    ? (a, b) => a.name.localeCompare(b.name) 
+                    : (a, b) => a.displayName.localeCompare(b.displayName)
                     
             return parent.concat(services.sort((a, b) => (sortDescending ? -1 : 1) * sort(a, b)))
         }

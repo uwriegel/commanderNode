@@ -65,12 +65,11 @@
                     <td class="size">{{ row.item.size | size }}</td>
                 </tr>
                 <tr v-if='processor.name == "services"' 
-                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden }">
+                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.status != 4, 'isSelected': row.item.isSelected }">
                     <td class="icon-name">
                         <drive-icon class=icon></drive-icon>
                         {{ row.item.name }}
                     </td>
-                    <td>{{ row.item.status }}</td>
                     <td>{{ row.item.displayName }}</td>
                 </tr>
             </template>
@@ -94,8 +93,11 @@ import { renameFiles } from "../../extendedRename"
 const electron = window.require('electron')
 const path = window.require('path')
 
+// TODO: events
+// TODO: isstarting: green background
+// TODO: isstopping: red background
+// TODO: Start, Stop
 // TODO: drag: icon
-
 export default {
     components: {
         TableView,
