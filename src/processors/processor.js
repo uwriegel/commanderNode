@@ -5,19 +5,19 @@ import { getServicesProcessor } from './servicesProcessor'
 export const ROOT = "root:"
 export const SERVICES = "services:"
 
-export function createProcessor(path) {
+export function createProcessor(recentProcessor, path) {
     switch (path) {
         case ROOT:
-            return getRootProcessor()
+            return getRootProcessor(recentProcessor)
         case SERVICES:
-            return getServicesProcessor()
+            return getServicesProcessor(recentProcessor)
         default:
-            return getDirectoryProcessor(path)
+            return getDirectoryProcessor(recentProcessor, path)
     }
 }
 
 export function getDefaultProcessor() {
-    function getProcessor(path) { return createProcessor(path) }
+    function getProcessor(path) { return createProcessor(null, path) }
     
     return { 
         name: "default",

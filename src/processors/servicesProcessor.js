@@ -1,14 +1,26 @@
 import { createProcessor, ROOT, SERVICES } from './processor'
 import { getRootProcessor } from './root'
 
-export function getServicesProcessor() {
-    // TODO: Icon
+export function getServicesProcessor(processor) {
+    if (processor)
+        processor.dispose()
+
+    let eventHandle = extFs.registerServiceEvents(n => {
+        console.log("Service event", n)
+    })
+
     let sortIndex = null
-    let services = null
     let sortDescending = false
 
     function getProcessor(path) { 
-        return path == SERVICES ? null : createProcessor(path)
+        return path == SERVICES ? null : createProcessor(thisProcessor, path)
+    }
+
+    function dispose() {
+        if (eventHandle) {
+            console.log("Unregistering Service events")
+            extFs.unregisterServiceEvents(eventHandle)
+        }
     }
 
     function checkPath(path) { return path == SERVICES }
@@ -28,10 +40,8 @@ export function getServicesProcessor() {
                 ]
             }
     }
-
     async function getItems() {
-        services = new extFs.Services()
-        const items = [{ name: "..", status: 0, displayName: "" }].concat(services.get())
+        const items = [{ name: "..", status: 0, displayName: "" }].concat(extFs.getServices())
         items.forEach(n => {
             n.isSelected = false
         })
@@ -66,15 +76,16 @@ export function getServicesProcessor() {
         if (item.name == "..")
         return {
             done: false,
-            newProcessor: getRootProcessor(),
+            newProcessor: getRootProcessor(thisProcessor),
             path: ROOT
         }
     }    
 
-    return {
+    var thisProcessor = {
         name: "services",
         path: SERVICES,
         getProcessor,
+        dispose,
         checkPath,
         getColumns,
         getItems,
@@ -83,5 +94,6 @@ export function getServicesProcessor() {
         getItemWithPath,
         onAction
     }
+    return thisProcessor
 }
 

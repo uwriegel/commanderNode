@@ -230,7 +230,7 @@ export default {
         },
         dropFiles(targetFolder, param) {
             console.log("drop", param)
-            this.doCopyItems(createProcessor(param.sourcePath), null, targetFolder, param.files, param.dropEffect == "move")
+            this.doCopyItems(createProcessor(null, param.sourcePath), null, targetFolder, param.files, param.dropEffect == "move")
         },        
         async doCopyItems(sourceProcessor, sourceFolder, targetFolder, selectedItems, move) {
             if (!sourceFolder) {

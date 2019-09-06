@@ -23,14 +23,16 @@ struct Drive_item {
 };
 */
 
-export function getRootProcessor() {
+export function getRootProcessor(processor) {
+    if (processor)
+        processor.dispose()
     let sortIndex = null
     let sortDescending = false
     
     function checkPath(path) { return path == ROOT }
 
     function getProcessor(path) { 
-        return path == ROOT ? null : createProcessor(path)
+        return path == ROOT ? null : createProcessor(thisProcessor, path)
     }
 
     function getColumns(columns) {
@@ -51,6 +53,8 @@ export function getRootProcessor() {
                 ]
             }
     }
+
+    function dispose() {}
 
     async function getItems() {
         const items = (await extFs.getDrives()).filter(n => n.isMounted)
@@ -85,7 +89,7 @@ export function getRootProcessor() {
     function onAction(item) {
         return {
             done: false,
-            newProcessor: item.type == 5 ? getServicesProcessor() : getDirectoryProcessor(item.name), 
+            newProcessor: item.type == 5 ? getServicesProcessor(thisProcessor) : getDirectoryProcessor(thisProcessor, item.name), 
             path: item.type == 5 ? SERVICES : item.name
         }
     }    
@@ -100,9 +104,10 @@ export function getRootProcessor() {
     function canMoveItems() { return false }
     function canInsertItems() { return false }
 
-    return {
+    var thisProcessor = {
         name: "root",
         path: ROOT,
+        dispose,
         getProcessor,
         checkPath,
         getColumns,
@@ -119,4 +124,5 @@ export function getRootProcessor() {
         canMoveItems,        
         canInsertItems
     }
+    return thisProcessor
 }

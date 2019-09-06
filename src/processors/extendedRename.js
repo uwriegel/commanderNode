@@ -2,7 +2,7 @@ import { createProcessor } from './processor'
 const name = "extendedRename"
 
 export function reset(processor) {
-    return createProcessor(processor.path)
+    return createProcessor(null, processor.path)
 }
 
 export function create(directoryProcessor) {

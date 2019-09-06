@@ -3,7 +3,10 @@ import { createProcessor, combinePath, ROOT } from './processor'
 import { sendToMain } from '../Connection'
 const electron = window.require('electron')
 
-export function getDirectoryProcessor(path) {
+export function getDirectoryProcessor(processor, path) {
+    if (processor)
+        processor.dispose()
+
     let privates = {
         sortIndex: null,
         sortDescending: false,
@@ -11,8 +14,10 @@ export function getDirectoryProcessor(path) {
     }
 
     function getProcessor(path) { 
-        return path != ROOT ? null : createProcessor(ROOT)
+        return path != ROOT ? null : createProcessor(thisProcessor, ROOT)
     }
+
+    function dispose() {}
 
     function checkPath(path) { return path == name }
 
@@ -139,7 +144,7 @@ export function getDirectoryProcessor(path) {
                 }
                 : {
                     done: false,
-                    newProcessor: createProcessor(ROOT),
+                    newProcessor: createProcessor(thisProcessor, ROOT),
                     path: ROOT,
                     lastPath: getDirectoryName(privates.path)
                 }
@@ -196,10 +201,11 @@ export function getDirectoryProcessor(path) {
         return extFs.getConflicts(privates.path, targetPath, items)
     }
 
-    return {
+    var thisProcessor = {
         name: "directory",
         get path() { return privates.path },
         getProcessor,
+        dispose,
         checkPath,
         getColumns,
         getItems,
@@ -220,4 +226,5 @@ export function getDirectoryProcessor(path) {
         canMoveItems,
         getConflictItems
     }
+    return thisProcessor;
 }

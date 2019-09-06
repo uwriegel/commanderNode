@@ -67,7 +67,7 @@
                 <tr v-if='processor.name == "services"' 
                         :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.status != 4, 'isSelected': row.item.isSelected }">
                     <td class="icon-name">
-                        <drive-icon class=icon></drive-icon>
+                        <service-icon class=icon></service-icon>
                         {{ row.item.name }}
                     </td>
                     <td>{{ row.item.displayName }}</td>
@@ -86,6 +86,7 @@ import { create as createExtendedRename, reset as resetExtendedRename } from '..
 import TableView from './TableView'
 import DriveIcon from '../../icons/DriveIcon'
 import FolderIcon from '../../icons/FolderIcon'
+import ServiceIcon from '../../icons/ServiceIcon'
 import { Observable, map, pipe, filter } from "rxjs/operators"
 import { mapState } from 'vuex'
 import { getExtension } from '../../pipes'
@@ -93,6 +94,7 @@ import { renameFiles } from "../../extendedRename"
 const electron = window.require('electron')
 const path = window.require('path')
 
+// TODO: Backspace löscht input
 // TODO: events
 // TODO: isstarting: green background
 // TODO: isstopping: red background
@@ -102,7 +104,8 @@ export default {
     components: {
         TableView,
         DriveIcon,
-        FolderIcon
+        FolderIcon,
+        ServiceIcon
     },
     data() {
         return {
