@@ -5,12 +5,16 @@ export function getServicesProcessor(processor) {
     if (processor)
         processor.dispose()
 
-    let eventHandle = extFs.registerServiceEvents(n => {
-        console.log("Service event", n)
-    })
-
     let sortIndex = null
     let sortDescending = false
+    let items = []
+    let eventHandle = extFs.registerServiceEvents(changedServices => {
+        changedServices.forEach(n => {
+            let item = items.find(i => i.name == n.name)
+            item.status = n.status
+            console.log("Dienst", n.name, n.status)
+        })
+    })
 
     function getProcessor(path) { 
         return path == SERVICES ? null : createProcessor(thisProcessor, path)
@@ -41,7 +45,7 @@ export function getServicesProcessor(processor) {
             }
     }
     async function getItems() {
-        const items = [{ name: "..", status: 0, displayName: "" }].concat(extFs.getServices())
+        items = [{ name: "..", status: 0, displayName: "" }].concat(extFs.getServices())
         items.forEach(n => {
             n.isSelected = false
         })
