@@ -9,7 +9,7 @@
     "appId": "de.hotmail.uriegel.commander",
     "copyright": "Copyright © 2019 Uwe Riegel",
     "productName": "Commander",
-    "electronVersion": "6.0.1",
+    "electronVersion": "6.0.7",
     "win": {
       "target": [
         "nsis"
@@ -20,7 +20,10 @@
         "AppImage",
         "deb"
       ]
-    }
+    },
+    "files": [
+      "**/*"
+    ]
   },
   "scripts": {
     "dev": "cross-env NODE_ENV=DEV vue-cli-service serve && electron electron/main.js",
@@ -33,7 +36,7 @@
     "core-js": "^2.6.5",
     "cross-env": "^5.2.0",
     "electron-settings": "^3.2.0",
-    "extension-fs": "^4.0.1",
+    "extension-fs": "^4.1.1",
     "rxjs": "^6.5.2",
     "vue": "^2.6.10",
     "vue-electron-titlebar": "^1.0.1",

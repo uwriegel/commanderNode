@@ -10,7 +10,11 @@
                 <tr v-if='processor.name == "directory" && row.item.isDirectory' 
                         draggable="true" @dragstart='onDragStart' @drag='onDrag' @dragend='onDragEnd'
                         :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
-                    <td class="icon-name">
+                    <td v-if='row.item.name == ".."' class="icon-name">
+                        <parent-icon class=icon></parent-icon>
+                        {{ row.item.name }}
+                    </td>  
+                    <td v-if='row.item.name != ".."' class="icon-name">
                         <folder-icon class=icon></folder-icon>
                         {{ row.item.name }}
                     </td>  
@@ -33,8 +37,12 @@
                 </tr>
                 <tr v-if='processor.name == "root"' 
                         :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden }">
-                    <td class="icon-name">
+                    <td v-if='row.item.type != 5' class="icon-name">
                         <drive-icon class=icon></drive-icon>
+                        {{ row.item.name }}
+                    </td>
+                    <td v-if='row.item.type == 5' class="icon-name">
+                        <service-icon class=icon></service-icon>
                         {{ row.item.name }}
                     </td>
                     <td>{{ row.item.description }}</td>
@@ -43,7 +51,11 @@
                 <tr v-if='processor.name == "extendedRename" && row.item.isDirectory' 
                         draggable="true" @dragstart='onDragStart' @drag='onDrag' @dragend='onDragEnd'
                         :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
-                    <td class="icon-name">
+                    <td v-if='row.item.name == ".."' class="icon-name">
+                        <parent-icon class=icon></parent-icon>
+                        {{ row.item.name }}
+                    </td>  
+                    <td v-if='row.item.name != ".."' class="icon-name">
                         <folder-icon class=icon></folder-icon>
                         {{ row.item.name }}
                     </td>  
@@ -65,8 +77,12 @@
                     <td class="size">{{ row.item.size | size }}</td>
                 </tr>
                 <tr v-if='processor.name == "services"' 
-                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.status != 4, 'isSelected': row.item.isSelected }">
-                    <td class="icon-name">
+                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.status != 4 && row.item.name != '..', 'isSelected': row.item.isSelected }">
+                    <td v-if='row.item.name == ".."' class="icon-name">
+                        <parent-icon class=icon></parent-icon>
+                        {{ row.item.name }}
+                    </td>
+                    <td v-if='row.item.name != ".."' class="icon-name">
                         <service-icon class=icon></service-icon>
                         {{ row.item.name }}
                     </td>
@@ -84,6 +100,7 @@
 import { getDefaultProcessor, combinePath, ROOT } from '../../processors/processor'
 import { create as createExtendedRename, reset as resetExtendedRename } from '../../processors/extendedRename'
 import TableView from './TableView'
+import ParentIcon from '../../icons/ParentIcon'
 import DriveIcon from '../../icons/DriveIcon'
 import FolderIcon from '../../icons/FolderIcon'
 import ServiceIcon from '../../icons/ServiceIcon'
@@ -103,6 +120,7 @@ const path = window.require('path')
 export default {
     components: {
         TableView,
+        ParentIcon,
         DriveIcon,
         FolderIcon,
         ServiceIcon
