@@ -1,6 +1,8 @@
 import { createProcessor, ROOT, SERVICES } from './processor'
 import { getRootProcessor } from './root'
 
+export const SERVICES_NAME = "Dienste"
+
 export function getServicesProcessor(processor) {
     if (processor)
         processor.dispose()
@@ -12,7 +14,6 @@ export function getServicesProcessor(processor) {
         changedServices.forEach(n => {
             let item = items.find(i => i.name == n.name)
             item.status = n.status
-            console.log("Dienst", n.name, n.status)
         })
     })
 
@@ -45,7 +46,7 @@ export function getServicesProcessor(processor) {
             }
     }
     async function getItems() {
-        items = [{ name: "..", status: 0, displayName: "" }].concat(extFs.getServices())
+        items = [{ name: "..", status: 0, displayName: "", isDirectory: true }].concat(extFs.getServices())
         items.forEach(n => {
             n.isSelected = false
         })
@@ -76,14 +77,26 @@ export function getServicesProcessor(processor) {
 
     function getItemWithPath(path, item) { return item.name }
 
-    function onAction(item) {
-        if (item.name == "..")
-        return {
-            done: false,
-            newProcessor: getRootProcessor(thisProcessor),
-            path: ROOT
+    function onAction(items) {
+        if (items.length == 1 && items[0].name == "..")
+            return {
+                done: false,
+                newProcessor: createProcessor(thisProcessor, ROOT),
+                path: ROOT,
+                lastPath: SERVICES_NAME
+            }
+        else {
+            extFs.startService(item.name)
+            return { done: false }
         }
     }    
+
+    function canDelete() { return true }
+
+    async function deleteItems(folder, dialog, selectedItems) {
+        
+    }
+
 
     var thisProcessor = {
         name: "services",
@@ -96,7 +109,9 @@ export function getServicesProcessor(processor) {
         sort,
         refresh,
         getItemWithPath,
-        onAction
+        onAction,
+        canDelete,
+        deleteItems
     }
     return thisProcessor
 }

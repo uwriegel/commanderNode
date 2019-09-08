@@ -342,7 +342,8 @@ export default {
             setTimeout(() => this.$refs.table.setCurrentIndex(newPos))
         },
         onAction(item) {
-            const result = this.processor.onAction(item)
+            const selectedItems = this.getSelectedItems()
+            const result = this.processor.onAction(item.isDirectory ? [ item ] : selectedItems)
             if (!result.done) {
                 if (result.newProcessor)
                     this.changeProcessor(result.newProcessor)
@@ -385,6 +386,10 @@ export default {
         canInsertItems() { return this.processor.canInsertItems() },
         canRename() { return this.processor.canRename() },
         canExtendedRename() { return this.processor.canExtendedRename() },
+        async deleteItems(dialog) { 
+            const selectedItems = this.getSelectedItems()
+            await this.processor.deleteItems(this, dialog, selectedItems) 
+        },
         getStorageColumnsWidthName() { return this.id + '-' + this.processor.name + '-columnsWidths'},
         changeProcessor(processor) {
             if (processor) {

@@ -132,14 +132,23 @@ export function getDirectoryProcessor(processor, path) {
         return refresh(items, showHidden)
     }
 
-    function onAction(item) {
-        const path = combinePath(privates.path, item.name)
-        if (item.isDirectory) {
-            return path
+    /**
+     * 
+     * @param {[]} items 
+     */
+    function onAction(items) {
+        const isDirectory = items.length == 1 && items.every(n => n.isDirectory)
+        const files = items.every(n => !n.isDirectory)
+        const pathes = items.map(n => combinePath(privates.path, n.name))
+        if (!isDirectory && !files) {
+            return { done: true }
+        }
+        if (isDirectory) {
+            return pathes[0]
                 ? {
                     done: false,
                     newProcessor: null,
-                    path: path,
+                    path: pathes[0],
                     lastPath: getDirectoryName(privates.path)
                 }
                 : {
@@ -150,10 +159,8 @@ export function getDirectoryProcessor(processor, path) {
                 }
         } 
         else {
-            electron.ipcRenderer.send("open", path)
-            return {
-                done: true
-            }
+            electron.ipcRenderer.send("open", pathes)
+            return { done: true }
         }
     }        
 
@@ -174,9 +181,33 @@ export function getDirectoryProcessor(processor, path) {
     function canMoveItems() { return true }
     function canInsertItems() { return true }
 
-    async function deleteFiles(itemsToDelete) {
-        const files =  itemsToDelete.map(n => privates.path + '\\' + n.name)
-        await sendToMain("deleteFiles", JSON.stringify(files))
+    async function deleteItems(folder, dialog, selectedItems) {
+        const  dirs = selectedItems.filter( n => n.isDirectory).length
+        const  files = selectedItems.filter( n => !n.isDirectory).length
+        const text = 
+            files && dirs
+            ? "Möchtest Du die selektierten Einträge löschen?"
+            : (files
+            ? (files > 1
+                ? "Möchtest Du die selektierten Dateien löschen?"
+                : `Möchtest Du die selektierte Datei '${selectedItems[0].name}' löschen?`)
+            : (dirs > 1
+                ? "Möchtest Du die selektierten Verzeichnisse löschen?"
+                : `Möchtest Du das selektierte Verzeichnis '${selectedItems[0].name}' löschen?`)
+            )
+                        
+        const result = await dialog.show({
+            ok: true, 
+            cancel: true,
+            defButton: "ok",
+            text
+        })
+        folder.focus()
+        if (result.result == 1) {
+            const files =  selectedItems.map(n => privates.path + '\\' + n.name)
+            await sendToMain("deleteFiles", JSON.stringify(files))
+            folder.refresh()
+        }
     }
 
     async function createFolder(folderName) {
@@ -218,7 +249,7 @@ export function getDirectoryProcessor(processor, path) {
         canRename,
         canExtendedRename,
         canInsertItems,
-        deleteFiles,
+        deleteItems,
         createFolder,
         renameItem,
         copyItems,

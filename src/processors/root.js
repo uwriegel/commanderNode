@@ -1,6 +1,6 @@
 import { getDirectoryProcessor } from './directory'
 import { createProcessor, ROOT, SERVICES } from './processor'
-import { getServicesProcessor } from './servicesProcessor'
+import { getServicesProcessor, SERVICES_NAME } from './servicesProcessor'
 
 /*
 enum class Drive_type
@@ -58,7 +58,7 @@ export function getRootProcessor(processor) {
 
     async function getItems() {
         const items = (await extFs.getDrives()).filter(n => n.isMounted)
-            .concat([ { name: "Dienste", type: 5 } ])
+            .concat([ { name: SERVICES_NAME, type: 5 } ])
         items.forEach(n => {
             n.isSelected = false
             n.isExif = false
@@ -86,12 +86,13 @@ export function getRootProcessor(processor) {
             return items
     }    
 
-    function onAction(item) {
-        return {
-            done: false,
-            newProcessor: item.type == 5 ? getServicesProcessor(thisProcessor) : getDirectoryProcessor(thisProcessor, item.name), 
-            path: item.type == 5 ? SERVICES : item.name
-        }
+    function onAction(items) {
+        if (items.length == 1)
+            return {
+                done: false,
+                newProcessor: items[0].type == 5 ? getServicesProcessor(thisProcessor) : getDirectoryProcessor(thisProcessor, items[0].name), 
+                path: items[0].type == 5 ? SERVICES : items[0].name
+            }
     }    
     
     function getItemWithPath(path, item) { return item.name }
