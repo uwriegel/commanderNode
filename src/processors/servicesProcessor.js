@@ -86,17 +86,16 @@ export function getServicesProcessor(processor) {
                 lastPath: SERVICES_NAME
             }
         else {
-            extFs.startService(item.name)
-            return { done: false }
+            items.forEach(n => extFs.startService(n.name))
+            return { done: true }
         }
     }    
 
     function canDelete() { return true }
 
     async function deleteItems(folder, dialog, selectedItems) {
-        
+        selectedItems.forEach(n => extFs.stopService(n.name))
     }
-
 
     var thisProcessor = {
         name: "services",

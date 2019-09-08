@@ -159,7 +159,8 @@ export function getDirectoryProcessor(processor, path) {
                 }
         } 
         else {
-            electron.ipcRenderer.send("open", pathes)
+            if (pathes.length < 10)
+                pathes.forEach(n => electron.ipcRenderer.send("open", n))
             return { done: true }
         }
     }        
