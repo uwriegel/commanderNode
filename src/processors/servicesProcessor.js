@@ -86,15 +86,25 @@ export function getServicesProcessor(processor) {
                 lastPath: SERVICES_NAME
             }
         else {
-            items.forEach(n => extFs.startService(n.name))
-            return { done: true }
+            try {
+                items.forEach(n => extFs.startService(n.name))
+                return { done: true }
+            } catch (ex) {
+                extFs.startElevated()
+                window.close()
+            }
         }
     }    
 
     function canDelete() { return true }
 
     async function deleteItems(folder, dialog, selectedItems) {
-        selectedItems.forEach(n => extFs.stopService(n.name))
+        try {
+            selectedItems.forEach(n => extFs.stopService(n.name))
+        } catch (ex) {
+            extFs.startElevated()
+            window.close()
+        }
     }
 
     var thisProcessor = {
