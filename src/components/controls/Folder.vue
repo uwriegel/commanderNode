@@ -155,8 +155,7 @@ export default {
     },
     mounted() {
         const shiftTabs$ = this.keyDown$.pipe(filter(n => n.event.which == 9 && n.event.shiftKey))
-        const inputChars$ = this.keyDown$.pipe(filter(n => !n.event.altKey && !n.event.ctrlKey && !n.event.shiftKey && n.event.key.length > 0 && n.event.key.length < 2 
-                                && n.event.target != this.$refs.input))
+        const inputChars$ = this.keyDown$.pipe(filter(n => !n.event.altKey && !n.event.ctrlKey && !n.event.shiftKey && n.event.key.length > 0 && n.event.key.length < 2))
         const backSpaces$ = this.keyDown$.pipe(filter(n => n.event.which == 8))
         const escapes$ = this.keyDown$.pipe(filter(n => n.event.which == 27))
 

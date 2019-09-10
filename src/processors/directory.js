@@ -3,6 +3,17 @@ import { createProcessor, combinePath, ROOT } from './processor'
 import { sendToMain } from '../Connection'
 const electron = window.require('electron')
 
+export function compareVersions(version1, version2) {
+    return !version1 && !version2 ? 1
+    : version1 && !version2 ? 1
+    : !version1 && version2 ? -1
+    : version1.major != version2.major ? version1.major - version2.major
+    : version1.minor != version2.minor ? version1.minor - version2.minor
+    : version1.build != version2.build ? version1.build - version2.build
+    : version1.patch != version2.patch ? version1.patch - version2.patch 
+    : 0
+}
+
 export function getDirectoryProcessor(processor, path) {
     if (processor)
         processor.dispose()
@@ -76,20 +87,9 @@ export function getDirectoryProcessor(processor, path) {
             ? (a, b) => a.time - b.time :
             privates.sortIndex == 3      
             ? (a, b) => a.size - b.size    
-            : (a, b) => sortVersion(a, b)
+            : (a, b) => compareVersions(a.version, b.version)
     
             files = files.sort((a, b) => (privates.sortDescending ? -1 : 1) * sort(a, b))
-
-            function sortVersion(a, b) {
-                return !a.version && !b.version ? 1
-                       : a.version && !b.version ? 1
-                       : !a.version && b.version ? -1
-                       : a.version.major != b.version.major ? a.version.major - b.version.major
-                       : a.version.minor != b.version.minor ? a.version.minor - b.version.minor
-                       : a.version.build != b.version.build ? a.version.build - b.version.build
-                       : a.version.patch != b.version.patch ? a.version.patch - b.version.patch 
-                       : 0
-            }            
         }
         
         if (dirs.length == 0 || dirs[0].name != "..")
