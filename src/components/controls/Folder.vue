@@ -1,10 +1,10 @@
 <template>
-    <div tabindex="1" class="root" v-stream:keydown='keyDown$' @focus=focus @focusin=onfocusIn 
+    <div tabindex="1" class="root" @focus=focus @focusin=onfocusIn 
             @dragenter='onDragEnter' @dragleave='onDragLeave' @dragover='onDragOver' @drop='onDrop'> 
         <input ref="input" v-selectall @keydown='onInputKeyDown' :value="path">
         <table-view class='table' ref="table" :columns='tableViewColumns' :items='items' :itemHeight='18' 
                 :class="{isDragging: isDragging, isDragStarted: isDragStarted, isBacktrackEnd: isBacktrackEnd}"
-                @column-click='onSort' 
+                @column-click='onSort' v-stream:keydown.native='keyDown$'
                 @columns-widths-changed='onColumnsWidthChanged' @action='onAction' @selection-changed=onSelectionChanged @delete='onDelete'>
             <template v-slot=row>
                 <tr v-if='processor.name == "directory" && row.item.isDirectory' 
@@ -111,11 +111,8 @@ import { renameFiles } from "../../extendedRename"
 const electron = window.require('electron')
 const path = window.require('path')
 
-// TODO: Backspace löscht input
-// TODO: events
 // TODO: isstarting: green background
 // TODO: isstopping: red background
-// TODO: Start, Stop
 // TODO: drag: icon
 export default {
     components: {
