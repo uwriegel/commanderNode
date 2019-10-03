@@ -405,25 +405,34 @@ export default {
         },
         setExtendedRename(set) {
             this.changeProcessor(set ? createExtendedRename(this.processor) : resetExtendedRename(this.processor))
-            this.refresh()
+            this.restrictClose(true)
+            this.onSelectedItemsChanged()
+            const index = this.$refs.table.index
+            this.$nextTick(() => this.$refs.table.setCurrentIndex(index))            
+            this.$refs.table.setCurrentIndex(0)
         },
         getExtendedRename() {
             return this.processor.name == "extendedRename"
         },
         async renameExtended() {
-            const selectedItems = this.getSelectedItems()
+            try {
+                const selectedItems = this.getSelectedItems()
 
-            const getNewName = (name, newNameWithoutExtension) => {
-                const ext = getExtension(name)
-                return newNameWithoutExtension + (ext ? `.${ext}` : '')
-            }
-            
-            return await renameFiles(this.processor.path, selectedItems.map(n => { 
-                return {
-                    name: n.name,
-                    newName: getNewName(n.name, n.newName)
+                const getNewName = (name, newNameWithoutExtension) => {
+                    const ext = getExtension(name)
+                    return newNameWithoutExtension + (ext ? `.${ext}` : '')
                 }
-            }))
+                
+                return await renameFiles(this.processor.path, selectedItems.map(n => { 
+                    return {
+                        name: n.name,
+                        newName: getNewName(n.name, n.newName)
+                    }
+                }))
+            } catch (err) {
+                console.error("Could not rename", err)
+                return false
+            }
         },
         restrictTo(evt) {
             const items = this.items.filter(n => n.name.toLowerCase().startsWith(this.restrictValue + evt.key))
