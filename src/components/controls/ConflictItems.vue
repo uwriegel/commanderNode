@@ -13,8 +13,12 @@
                         <div class="size" >{{row.item.targetSize | oIfEmpty | size }}</div>
                     </td>
                     <td>
-                        <div class="size">{{row.item.sourceVersion | version }}</div>
-                        <div class="size">{{row.item.targetVersion | version }}</div>
+                        <div :class="{ 'newer': compareVersions(row.item) > 0 }" class="size">
+                            {{row.item.sourceVersion | version }}
+                        </div>
+                        <div :class="{ 'older': compareVersions(row.item) < 0 }" class="size">
+                            {{row.item.targetVersion | version }}
+                        </div>
                     </td>
                 </tr>
             </template>
@@ -26,6 +30,7 @@
 // TODO: version diffs
 import Vue from 'vue'
 import TableView from './TableView'
+import { compareVersions } from '../../processors/directory'
 
 export default {
     components: {
@@ -45,10 +50,11 @@ export default {
             return [ this.$refs.table ]
         },
         getFocusIndex(buttonCount) { return buttonCount },
-        getDefaultButton() { return this.noIsDefault ? "no" : "yes" }
+        getDefaultButton() { return this.noIsDefault ? "no" : "yes" },
+        compareVersions(item) {  return compareVersions(item.sourceVersion, item.targetVersion) }
     },
     mounted() {
-        this.noIsDefault = this.items.some(n => n.sourceTime < n.targetTime)
+        this.noIsDefault = this.items.some(n => (n.sourceTime < n.targetTime || this.compareVersions(n) < 0))
         Vue.nextTick(() => this.conflictItems = this.items)
     }
 }
@@ -74,7 +80,8 @@ td {
     color: var(--main-color);
 }
 .newer {
-    color: green;
+    background-color: lightgreen;
+    color: black;
 }
 .older {
     background-color: red;
