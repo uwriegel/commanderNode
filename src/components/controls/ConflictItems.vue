@@ -27,7 +27,6 @@
 </template>
 
 <script>
-// TODO: version diffs
 import Vue from 'vue'
 import TableView from './TableView'
 import { compareVersions } from '../../processors/directory'

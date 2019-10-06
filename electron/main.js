@@ -58,9 +58,8 @@ const createWindow = function() {
                 await extFs.createDirectory(arg)
                 return ""
             case "rename":
-                extFs.startService("AxInstSV")
-//                const param = JSON.parse(arg)
-//                 await extFs.rename(param.path, param.name, param.newName)
+                const param = JSON.parse(arg)
+                await extFs.rename(param.path, param.name, param.newName)
                 return ""
             case "deleteFiles":
                 const files = JSON.parse(arg)

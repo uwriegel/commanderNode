@@ -32,6 +32,7 @@ import { mapState } from 'vuex'
 import { createProcessor } from '../processors/processor'
 const electron = window.require('electron')
 
+// TODO: Rename with copy
 // TODO: Status displays alternativly # selected items
 export default {
     data() {
