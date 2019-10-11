@@ -37,8 +37,12 @@
                 </tr>
                 <tr v-if='processor.name == "root"' 
                         :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden }">
-                    <td v-if='row.item.type != 5' class="icon-name">
+                    <td v-if='row.item.type != 5 && row.item.type != 6' class="icon-name">
                         <drive-icon class=icon></drive-icon>
+                        {{ row.item.name }}
+                    </td>
+                    <td v-if='row.item.type == 6' class="icon-name">
+                        <share-icon class=icon></share-icon>
                         {{ row.item.name }}
                     </td>
                     <td v-if='row.item.type == 5' class="icon-name">
@@ -88,6 +92,17 @@
                     </td>
                     <td>{{ row.item.displayName }}</td>
                 </tr>
+                <tr v-if='processor.name == "shares"' 
+                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isSelected': row.item.isSelected }">
+                    <td v-if='row.item.name == ".."' class="icon-name">
+                        <parent-icon class=icon></parent-icon>
+                        {{ row.item.name }}
+                    </td>
+                    <td v-if='row.item.name != ".."' class="icon-name">
+                        <share-icon class=icon></share-icon>
+                        {{ row.item.name }}
+                    </td>
+                </tr>
             </template>
         </table-view>
         <transition name="slide">
@@ -104,6 +119,7 @@ import ParentIcon from '../../icons/ParentIcon'
 import DriveIcon from '../../icons/DriveIcon'
 import FolderIcon from '../../icons/FolderIcon'
 import ServiceIcon from '../../icons/ServiceIcon'
+import ShareIcon from '../../icons/ShareIcon'
 import { Observable, map, pipe, filter } from "rxjs/operators"
 import { mapState } from 'vuex'
 import { getExtension } from '../../pipes'
@@ -120,7 +136,8 @@ export default {
         ParentIcon,
         DriveIcon,
         FolderIcon,
-        ServiceIcon
+        ServiceIcon,
+        ShareIcon
     },
     data() {
         return {

@@ -1,6 +1,7 @@
 import { getDirectoryProcessor } from './directory'
-import { createProcessor, ROOT, SERVICES } from './processor'
+import { createProcessor, ROOT, SERVICES, SHARES } from './processor'
 import { getServicesProcessor, SERVICES_NAME } from './servicesProcessor'
+import { getNetworkShareProcessor, SHARES_NAME } from './networkShareProcessor'
 
 /*
 enum class Drive_type
@@ -11,7 +12,8 @@ enum class Drive_type
 	REMOVABLE,
     NETWORK,
     
-    Services
+    Services,
+    NetworkShares
 };
 
 struct Drive_item {
@@ -58,7 +60,10 @@ export function getRootProcessor(processor) {
 
     async function getItems() {
         const items = (await extFs.getDrives()).filter(n => n.isMounted)
-            .concat([ { name: SERVICES_NAME, type: 5 } ])
+            .concat([ 
+                { name: SHARES_NAME, type: 6 },
+                { name: SERVICES_NAME, type: 5 }
+            ])
         items.forEach(n => {
             n.isSelected = false
             n.isExif = false
@@ -90,8 +95,16 @@ export function getRootProcessor(processor) {
         if (items.length == 1)
             return {
                 done: false,
-                newProcessor: items[0].type == 5 ? getServicesProcessor(thisProcessor) : getDirectoryProcessor(thisProcessor, items[0].name), 
-                path: items[0].type == 5 ? SERVICES : items[0].name
+                newProcessor: items[0].type == 5 
+                        ? getServicesProcessor(thisProcessor) 
+                        : (items[0].type == 6 
+                            ? getNetworkShareProcessor(thisProcessor) 
+                            : getDirectoryProcessor(thisProcessor, items[0].name)), 
+                path: items[0].type == 5 
+                    ? SERVICES 
+                    : (items[0].type == 6 
+                        ? SHARES
+                        :items[0].name)
             }
     }    
     

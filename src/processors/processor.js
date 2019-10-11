@@ -1,9 +1,11 @@
 import { getRootProcessor } from './root'
 import { getDirectoryProcessor } from './directory'
 import { getServicesProcessor } from './servicesProcessor'
+import { getNetworkShareProcessor } from './networkShareProcessor'
 
 export const ROOT = "root:"
 export const SERVICES = "services:"
+export const SHARES = "shares:"
 
 export function createProcessor(recentProcessor, path) {
     switch (path) {
@@ -11,6 +13,8 @@ export function createProcessor(recentProcessor, path) {
             return getRootProcessor(recentProcessor)
         case SERVICES:
             return getServicesProcessor(recentProcessor)
+        case SHARES:
+            return getNetworkShareProcessor(recentProcessor)
         default:
             return getDirectoryProcessor(recentProcessor, path)
     }
