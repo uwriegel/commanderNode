@@ -3,16 +3,17 @@ import { getNetworkShareProcessor } from './networkShare'
 
 export const SHARES_NAME = "Freigaben"
 
+const processorName = "shares"
+
 export function getNetworkSharesProcessor(processor) {
-    if (processor)
+    if (processor) {
+        if (processor.name == processorName)
+            return processor
         processor.dispose()
+    }
 
     let sortDescending = false
     let items = []
-
-    function getProcessor(path) { 
-        return path == SHARES ? null : createProcessor(thisProcessor, path)
-    }
 
     function checkPath(path) { return path == SHARES }
 
@@ -67,6 +68,10 @@ export function getNetworkSharesProcessor(processor) {
     function canCreateFolder() { return true }
     function canDelete() { return true }
 
+    function getCreateFolderText() {
+        return "Name des Servers für die Freigaben"
+    }
+
     async function createFolder(folderName) {
         var items = await extFs.getNetShares(folderName)
         if (items.length > 0) {
@@ -95,9 +100,8 @@ export function getNetworkSharesProcessor(processor) {
     function dispose() {}
 
     var thisProcessor = {
-        name: "shares",
+        name: processorName,
         path: SHARES,
-        getProcessor,
         dispose,
         checkPath,
         getColumns,
@@ -108,6 +112,7 @@ export function getNetworkSharesProcessor(processor) {
         onAction,
         canCreateFolder,
         canDelete,
+        getCreateFolderText,
         createFolder,
         deleteItems
     }

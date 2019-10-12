@@ -100,7 +100,7 @@ export default {
                     ok: true, 
                     cancel : true,
                     defButton: "ok",
-                    text: "Neuen Ordner anlegen", 
+                    text: folder.getCreateFolderText(), 
                     simpleDialog: { 
                         input: true, 
                         inputText: proposalName

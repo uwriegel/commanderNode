@@ -124,7 +124,7 @@
 </template>
 
 <script>
-import { getDefaultProcessor, combinePath, ROOT } from '../../processors/processor'
+import { getDefaultProcessor, combinePath, ROOT, createProcessor } from '../../processors/processor'
 import { create as createExtendedRename, reset as resetExtendedRename } from '../../processors/extendedRename'
 import TableView from './TableView'
 import ParentIcon from '../../icons/ParentIcon'
@@ -345,7 +345,7 @@ export default {
             }
 
             if (checkProcessor) 
-                this.changeProcessor(this.processor.getProcessor(path))
+                this.changeProcessor(createProcessor(this.processor, path))
 
             this.items = await this.processor.getItems(path, this.showHidden)
             const pathChanged = this.path != path
@@ -487,6 +487,7 @@ export default {
         deleteFiles(itemsToDelete) {
             return this.processor.deleteFiles(itemsToDelete)
         },
+        getCreateFolderText() { return this.processor.getCreateFolderText() },
         createFolder(folderName) {
             return this.processor.createFolder(folderName)
         },

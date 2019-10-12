@@ -1,5 +1,6 @@
 import { getNameOnly, getExtension } from '../pipes'
 import { createProcessor, combinePath, ROOT } from './processor'
+import { getNetworkShareProcessor } from './networkShare'
 import { sendToMain } from '../Connection'
 const electron = window.require('electron')
 
@@ -14,18 +15,19 @@ export function compareVersions(version1, version2) {
     : 0
 }
 
+const processorName = "directory"
+
 export function getDirectoryProcessor(processor, path) {
-    if (processor)
+    if (processor) {
+        if (processor.name == processorName)
+            return processor
         processor.dispose()
+    }
 
     let privates = {
         sortIndex: null,
         sortDescending: false,
         path
-    }
-
-    function getProcessor(path) { 
-        return path != ROOT ? null : createProcessor(thisProcessor, ROOT)
     }
 
     function dispose() {}
@@ -145,12 +147,20 @@ export function getDirectoryProcessor(processor, path) {
         }
         if (isDirectory) {
             return pathes[0]
-                ? {
-                    done: false,
-                    newProcessor: null,
-                    path: pathes[0],
-                    lastPath: getDirectoryName(privates.path)
-                }
+                ? (
+                    pathes[0].startsWith("\\\\") && pathes[0].indexOf('\\', 2) == -1
+                    ? {
+                        done: false,
+                        newProcessor: getNetworkShareProcessor(thisProcessor, pathes[0]),
+                        path: pathes[0],
+                        lastPath: getDirectoryName(privates.path)
+                    }
+                    : {
+                        done: false,
+                        newProcessor: null,
+                        path: pathes[0],
+                        lastPath: getDirectoryName(privates.path)
+                    })
                 : {
                     done: false,
                     newProcessor: createProcessor(thisProcessor, ROOT),
@@ -211,6 +221,10 @@ export function getDirectoryProcessor(processor, path) {
         }
     }
 
+    function getCreateFolderText() {
+        return "Neuen Ordner anlegen"
+    }
+
     async function createFolder(folderName) {
         await sendToMain("createDirectory", privates.path + '\\' + folderName)
     }
@@ -234,9 +248,8 @@ export function getDirectoryProcessor(processor, path) {
     }
 
     var thisProcessor = {
-        name: "directory",
+        name: processorName,
         get path() { return privates.path },
-        getProcessor,
         dispose,
         checkPath,
         getColumns,
@@ -250,6 +263,7 @@ export function getDirectoryProcessor(processor, path) {
         canRename,
         canExtendedRename,
         canInsertItems,
+        getCreateFolderText,
         deleteItems,
         createFolder,
         renameItem,

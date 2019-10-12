@@ -3,9 +3,14 @@ import { getRootProcessor } from './root'
 
 export const SERVICES_NAME = "Dienste"
 
+const processorName = "services"
+
 export function getServicesProcessor(processor) {
-    if (processor)
+    if (processor) {
+        if (processor.name == processorName)
+            return processor
         processor.dispose()
+    }
 
     let sortIndex = null
     let sortDescending = false
@@ -16,10 +21,6 @@ export function getServicesProcessor(processor) {
             item.status = n.status
         })
     })
-
-    function getProcessor(path) { 
-        return path == SERVICES ? null : createProcessor(thisProcessor, path)
-    }
 
     function dispose() {
         if (eventHandle) {
@@ -113,9 +114,8 @@ export function getServicesProcessor(processor) {
     }
 
     var thisProcessor = {
-        name: "services",
+        name: processorName,
         path: SERVICES,
-        getProcessor,
         dispose,
         checkPath,
         getColumns,

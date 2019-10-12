@@ -1,4 +1,5 @@
 import { createProcessor, SHARES } from './processor'
+import { getDirectoryProcessor } from './directory'
 
 export function getNetworkShareProcessor(processor, path) {
     if (processor)
@@ -58,7 +59,7 @@ export function getNetworkShareProcessor(processor, path) {
         return parent.concat(services.sort((a, b) => (privates.sortDescending ? -1 : 1) * sort(a, b)))
     }    
 
-    function getItemWithPath(path, item) { return item.name }
+    function getItemWithPath(path, item) { return path + "\\" + item.name }
 
     function onAction(items) {
         if (items.length == 1)
@@ -67,8 +68,17 @@ export function getNetworkShareProcessor(processor, path) {
                     done: false,
                     newProcessor: createProcessor(thisProcessor, SHARES),
                     path: SHARES,
-                    lastPath: ""
+                    lastPath: privates.path
                 }
+            else {
+                const path = getItemWithPath(privates.path, items[0])
+                return {
+                    done: false,
+                    newProcessor: getDirectoryProcessor(thisProcessor, path),
+                    path,
+                    lastPath: privates.path
+                }
+            }
     }    
 
     function canCreateFolder() { return false }

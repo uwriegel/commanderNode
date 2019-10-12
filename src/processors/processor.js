@@ -2,14 +2,13 @@ import { getRootProcessor } from './root'
 import { getDirectoryProcessor } from './directory'
 import { getServicesProcessor } from './services'
 import { getNetworkSharesProcessor } from './networkShares'
+import { getNetworkShareProcessor } from './networkShare'
 
 export const ROOT = "root:"
 export const SERVICES = "services:"
 export const SHARES = "shares:"
 
-// TODO: Wechsel von Freigaben: LatestPath selection
-// TODO: Processorerkennung nur global!!!
-
+// TODO: onAction: getShares mit starker Verzögerung, wenn dann bereits weiter geändert
 
 export function createProcessor(recentProcessor, path) {
     switch (path) {
@@ -20,16 +19,16 @@ export function createProcessor(recentProcessor, path) {
         case SHARES:
             return getNetworkSharesProcessor(recentProcessor)
         default:
-            return getDirectoryProcessor(recentProcessor, path)
+            return (path && path.startsWith("\\\\") && path.indexOf('\\', 2) == -1)
+                ? getNetworkShareProcessor(recentProcessor, path)
+                : getDirectoryProcessor(recentProcessor, path)
     }
 }
 
 export function getDefaultProcessor() {
-    function getProcessor(path) { return createProcessor(null, path) }
-    
     return { 
         name: "default",
-        getProcessor 
+        dispose: () => {}
     }
 }
 

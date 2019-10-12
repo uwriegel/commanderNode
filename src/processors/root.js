@@ -1,7 +1,9 @@
 import { getDirectoryProcessor } from './directory'
-import { createProcessor, ROOT, SERVICES, SHARES } from './processor'
+import { ROOT, SERVICES, SHARES } from './processor'
 import { getServicesProcessor, SERVICES_NAME } from './services'
 import { getNetworkSharesProcessor, SHARES_NAME } from './networkShares'
+
+const processorName = "root"
 
 /*
 enum class Drive_type
@@ -26,16 +28,15 @@ struct Drive_item {
 */
 
 export function getRootProcessor(processor) {
-    if (processor)
+    if (processor) {
+        if (processor.name == processorName)
+            return processor
         processor.dispose()
+    }
     let sortIndex = null
     let sortDescending = false
     
     function checkPath(path) { return path == ROOT }
-
-    function getProcessor(path) { 
-        return path == ROOT ? null : createProcessor(thisProcessor, path)
-    }
 
     function getColumns(columns) {
         return columns && columns.type == ROOT
@@ -119,10 +120,9 @@ export function getRootProcessor(processor) {
     function canInsertItems() { return false }
 
     var thisProcessor = {
-        name: "root",
+        name: processorName,
         path: ROOT,
         dispose,
-        getProcessor,
         checkPath,
         getColumns,
         getItems,
