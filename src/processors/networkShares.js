@@ -1,13 +1,12 @@
 import { createProcessor, ROOT, SHARES } from './processor'
-import { getRootProcessor } from './root'
+import { getNetworkShareProcessor } from './networkShare'
 
 export const SHARES_NAME = "Freigaben"
 
-export function getNetworkShareProcessor(processor) {
+export function getNetworkSharesProcessor(processor) {
     if (processor)
         processor.dispose()
 
-    let sortIndex = null
     let sortDescending = false
     let items = []
 
@@ -55,20 +54,12 @@ export function getNetworkShareProcessor(processor) {
     function getItemWithPath(path, item) { return item.name }
 
     function onAction(items) {
-        if (items.length == 1 && items[0].name == "..")
+        if (items.length == 1) {
             return {
                 done: false,
-                newProcessor: createProcessor(thisProcessor, ROOT),
-                path: ROOT,
+                newProcessor: items[0].name == ".." ? createProcessor(thisProcessor, ROOT) : getNetworkShareProcessor(thisProcessor, items[0].name),
+                path: items[0].name == ".." ? ROOT : items[0].name,
                 lastPath: SHARES_NAME
-            }
-        else {
-            try {
-                items.forEach(n => extFs.startService(n.name))
-                return { done: true }
-            } catch (ex) {
-                extFs.startElevated()
-                window.close()
             }
         }
     }    
@@ -80,7 +71,7 @@ export function getNetworkShareProcessor(processor) {
         var items = await extFs.getNetShares(folderName)
         if (items.length > 0) {
             const shares = JSON.parse(localStorage["networkShares"] || "[]")
-            shares.push(folderName) 
+            shares.push("\\\\" + folderName) 
             localStorage["networkShares"] = JSON.stringify(shares)
         }
     }

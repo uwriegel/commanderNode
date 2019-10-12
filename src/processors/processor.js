@@ -1,11 +1,15 @@
 import { getRootProcessor } from './root'
 import { getDirectoryProcessor } from './directory'
-import { getServicesProcessor } from './servicesProcessor'
-import { getNetworkShareProcessor } from './networkShareProcessor'
+import { getServicesProcessor } from './services'
+import { getNetworkSharesProcessor } from './networkShares'
 
 export const ROOT = "root:"
 export const SERVICES = "services:"
 export const SHARES = "shares:"
+
+// TODO: Wechsel von Freigaben: LatestPath selection
+// TODO: Processorerkennung nur global!!!
+
 
 export function createProcessor(recentProcessor, path) {
     switch (path) {
@@ -14,7 +18,7 @@ export function createProcessor(recentProcessor, path) {
         case SERVICES:
             return getServicesProcessor(recentProcessor)
         case SHARES:
-            return getNetworkShareProcessor(recentProcessor)
+            return getNetworkSharesProcessor(recentProcessor)
         default:
             return getDirectoryProcessor(recentProcessor, path)
     }

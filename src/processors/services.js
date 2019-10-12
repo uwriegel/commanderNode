@@ -53,6 +53,11 @@ export function getServicesProcessor(processor) {
         return refresh(items)
     }
 
+    function getItemWithPath(path, item) {
+        console.log("getItemWithPath", path, item)
+        return null
+    }
+
     function sort(items, index, descending) {
         sortIndex = index
         sortDescending = descending
@@ -114,6 +119,7 @@ export function getServicesProcessor(processor) {
         dispose,
         checkPath,
         getColumns,
+        getItemWithPath,
         getItems,
         sort,
         refresh,

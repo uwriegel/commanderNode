@@ -1,7 +1,7 @@
 import { getDirectoryProcessor } from './directory'
 import { createProcessor, ROOT, SERVICES, SHARES } from './processor'
-import { getServicesProcessor, SERVICES_NAME } from './servicesProcessor'
-import { getNetworkShareProcessor, SHARES_NAME } from './networkShareProcessor'
+import { getServicesProcessor, SERVICES_NAME } from './services'
+import { getNetworkSharesProcessor, SHARES_NAME } from './networkShares'
 
 /*
 enum class Drive_type
@@ -98,7 +98,7 @@ export function getRootProcessor(processor) {
                 newProcessor: items[0].type == 5 
                         ? getServicesProcessor(thisProcessor) 
                         : (items[0].type == 6 
-                            ? getNetworkShareProcessor(thisProcessor) 
+                            ? getNetworkSharesProcessor(thisProcessor) 
                             : getDirectoryProcessor(thisProcessor, items[0].name)), 
                 path: items[0].type == 5 
                     ? SERVICES 

@@ -103,6 +103,18 @@
                         {{ row.item.name }}
                     </td>
                 </tr>
+                <tr v-if='processor.name == "share"' 
+                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isSelected': row.item.isSelected }">
+                    <td v-if='row.item.name == ".."' class="icon-name">
+                        <parent-icon class=icon></parent-icon>
+                        {{ row.item.name }}
+                    </td>
+                    <td v-if='row.item.name != ".."' class="icon-name">
+                        <share-icon class=icon></share-icon>
+                        {{ row.item.name }}
+                    </td>
+                    <td>{{ row.item.description }}</td>
+                </tr>                
             </template>
         </table-view>
         <transition name="slide">
@@ -156,8 +168,9 @@ export default {
     ],
     watch: {
         path(newVal) {
-            if (this.processor.path != newVal)
+            if (this.processor.path != newVal) {
                 this.changePath(newVal, null, true)
+            }
         },
         showHidden() {
             this.changePath(this.path)
@@ -258,7 +271,6 @@ export default {
         },
         onDragOver(evt) {
             if (this.isDragging) {
-                console.log(evt)
                 evt.dataTransfer.dropEffect = 
                     evt.dataTransfer.allowedEffect == "move" 
                     || evt.dataTransfer.effectAllowed == "copyMove"
@@ -334,6 +346,7 @@ export default {
 
             if (checkProcessor) 
                 this.changeProcessor(this.processor.getProcessor(path))
+
             this.items = await this.processor.getItems(path, this.showHidden)
             const pathChanged = this.path != path
             this.path = path
