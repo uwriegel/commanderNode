@@ -81,7 +81,11 @@
                     <td class="size">{{ row.item.size | size }}</td>
                 </tr>
                 <tr v-if='processor.name == "services"' 
-                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.status != 4 && row.item.name != '..', 'isSelected': row.item.isSelected }">
+                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 
+                        'isHidden': row.item.status != 4 && row.item.name != '..', 
+                        'isStarting': row.item.status == 2 && row.item.name != '..', 
+                        'isStopping': row.item.status == 3 && row.item.name != '..', 
+                        'isSelected': row.item.isSelected }">
                     <td v-if='row.item.name == ".."' class="icon-name">
                         <parent-icon class=icon></parent-icon>
                         {{ row.item.name }}
@@ -139,8 +143,6 @@ import { renameFiles } from "../../extendedRename"
 const electron = window.require('electron')
 const path = window.require('path')
 
-// TODO: isstarting: green background
-// TODO: isstopping: red background
 // TODO: drag: icon
 export default {
     components: {
@@ -595,6 +597,14 @@ tr.isSelected {
 }
 tr.isSelected .isExif {
     color: yellow;
+}
+tr.isStarting {
+    background-color: greenyellow;
+    color: black;
+}
+tr.isStopping {
+    color: black;
+    background-color: red;
 }
 td {
     min-height: 16px;
