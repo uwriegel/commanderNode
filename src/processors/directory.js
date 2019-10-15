@@ -32,13 +32,13 @@ export function getDirectoryProcessor(processor, path) {
 
     function dispose() {}
 
-    function checkPath(path) { return path == name }
+    function checkPath(path) { return path == thisProcessor.name }
 
     function getColumns(columns) {
-        return columns && columns.type == name
+        return columns && columns.type == thisProcessor.name
             ? columns
             : {
-                type: name,
+                type: thisProcessor.name,
                 values: [{
                         isSortable: true,
                         name: "Name"
@@ -71,7 +71,7 @@ export function getDirectoryProcessor(processor, path) {
         privates.path = path
         return refresh(values, showHidden, true)
     }
-    function refresh(values, showHidden, withExtendedInfos) {
+    function refresh(values, showHidden) {
         if (!showHidden)
             values = values.filter(n => !n.isHidden)
         let dirs = values.filter(n => n.isDirectory)

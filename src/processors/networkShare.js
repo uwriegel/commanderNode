@@ -17,13 +17,13 @@ export function getNetworkShareProcessor(processor, path) {
 
     function dispose() {}
 
-    function checkPath(path) { return path == name }
+    function checkPath(path) { return path == thisProcessor.name }
 
     function getColumns(columns) {
-        return columns && columns.type == name
+        return columns && columns.type == thisProcessor.name
             ? columns
             : {
-                type: name,
+                type: thisProcessor.name,
                 values: [{
                         isSortable: true,
                         name: "Name"
