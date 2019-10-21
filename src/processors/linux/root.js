@@ -1,7 +1,7 @@
-import { getDirectoryProcessor } from './directory'
-import { ROOT, SERVICES, SHARES } from './processor'
-import { getServicesProcessor, SERVICES_NAME } from './services'
-import { getNetworkSharesProcessor, SHARES_NAME } from './networkShares'
+import { getDirectoryProcessor } from '../directory'
+import { ROOT, SERVICES, SHARES } from '../processor'
+import { getServicesProcessor, SERVICES_NAME } from '../services'
+import { getNetworkSharesProcessor, SHARES_NAME } from '../networkShares'
 
 const processorName = "root"
 
@@ -51,7 +51,15 @@ export function getRootProcessor(processor) {
                         name: "Beschreibung"
                     }, {
                         isSortable: true,
+                        name: "Mount"
+                    }, 
+                    {
+                        isSortable: true,
                         name: "Größe"
+                    }, 
+                    {
+                        isSortable: true,
+                        name: "Typ"
                     }
                 ]
             }
@@ -60,7 +68,7 @@ export function getRootProcessor(processor) {
     function dispose() {}
 
     async function getItems() {
-        const items = (await extFs.getDrives()).filter(n => n.isMounted)
+        const items = [] //(await extFs.getDrives()).filter(n => n.isMounted)
             .concat([ 
                 { name: SHARES_NAME, type: 6 },
                 { name: SERVICES_NAME, type: 5 }

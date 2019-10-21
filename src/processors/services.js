@@ -1,5 +1,4 @@
 import { createProcessor, ROOT, SERVICES } from './processor'
-import { getRootProcessor } from './root'
 
 export const SERVICES_NAME = "Dienste"
 

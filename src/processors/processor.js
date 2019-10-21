@@ -1,4 +1,6 @@
-import { getRootProcessor } from './root'
+import * as platform from '../platform'
+import { getWindowsRootProcessor } from './windows/root'
+import { getLinuxRootProcessor } from './linux/root'
 import { getDirectoryProcessor } from './directory'
 import { getServicesProcessor } from './services'
 import { getNetworkSharesProcessor } from './networkShares'
@@ -13,7 +15,9 @@ export const SHARES = "shares:"
 export function createProcessor(recentProcessor, path) {
     switch (path) {
         case ROOT:
-            return getRootProcessor(recentProcessor)
+            return platform.isLinux 
+                ? getLinuxRootProcessor(recentProcessor) 
+                : getWindowsRootProcessor(recentProcessor)
         case SERVICES:
             return getServicesProcessor(recentProcessor)
         case SHARES:
