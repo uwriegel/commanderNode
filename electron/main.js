@@ -18,6 +18,9 @@ protocol.registerSchemesAsPrivileged([{
     }])
 
 const createWindow = function() {    
+    // if (process.env.NODE_ENV == 'DEV')
+    //     require('vue-devtools').install()        
+
     const bounds = settings.get("window-bounds", { 
         width: 800,
         height: 600,
@@ -134,13 +137,10 @@ const createWindow = function() {
     }, (error) => {
         if (error) console.error('Failed to register protocol', error)
     })
- 
-    if (process.env.NODE_ENV === 'DEV') {
-        require('vue-devtools').install()        
-        win.loadURL('http://localhost:8080/')
-    }
-    else 
-        win.loadURL('vue://' + path.join(__dirname, `/../renderer/index.html`))
+
+    win.loadURL(process.env.NODE_ENV != 'DEV'
+        ? 'vue://' + path.join(__dirname, `/../renderer/index.html`)
+        : 'http://localhost:8080/')
 
     win.on('close', () => {
         if (!win.isMaximized()) {
@@ -164,6 +164,7 @@ const createWindow = function() {
     win.on("closed", () => win = null)    
 }
 
+app.removeAllListeners('ready')
 app.on('ready', createWindow)
 
 app.on("activate", () => {

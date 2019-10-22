@@ -1,6 +1,6 @@
 import * as platform from '../platform'
-import { getWindowsRootProcessor } from './windows/root'
-import { getLinuxRootProcessor } from './linux/root'
+import { getRootProcessor as getWindowsRootProcessor } from './windows/root'
+import { getRootProcessor as getLinuxRootProcessor } from './linux/root'
 import { getDirectoryProcessor } from './directory'
 import { getServicesProcessor } from './services'
 import { getNetworkSharesProcessor } from './networkShares'
