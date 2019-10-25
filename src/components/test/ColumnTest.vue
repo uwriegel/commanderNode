@@ -24,16 +24,18 @@
     </div>
 </template>
 
-<script>
-import Columns from '../controls/Columns'
+<script lang="ts">
+import Vue from 'vue'
+import Columns from '../controls/Columns.vue'
+import {Column} from '../controls/Columns.vue'
 
-export default {
+export default Vue.extend({
     components: {
         Columns        
     },
-    data: function () {
+    data() {
         return {
-            columns: {},
+            columns: [] as Column[],
             columnsWidths: []
         }
     },
@@ -69,7 +71,7 @@ export default {
                 }
             ]
         },
-        onColumnsWidthChanged: function(widths) {
+        onColumnsWidthChanged: function(widths: string[]) {
             console.log("new columnsWidths", widths)
         }
     },
@@ -83,7 +85,7 @@ export default {
             }
         ]
     }
-}
+})
 </script>
 
 <style scoped>

@@ -9,27 +9,29 @@
     </thead>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from 'vue'
 
-export default {
-    props: [
-        /***
-         * @param {string} name
-         * @param {boolean} isSortable
-         * @param {number} columnsType
-         * @param {number} width
-         */
-        'columns'
-    ],
+export interface Column {
+    name: string
+    isSortable?: boolean
+    sortAscending?: boolean
+    columnsType?: number
+    width?: number | string
+}
+
+export default Vue.extend({
+    props: {
+        columns: { type: Object as () => Column[] }
+    },
     watch: {
         columns: {
             immediate: true,
-            handler (newVal, oldVal) {
+            handler (newVal: Column, oldVal: Column) {
                 if (oldVal != newVal)
                     Vue.nextTick(() => {
-                        const ths = Array.from(this.$refs.tr.children)
-                        ths.forEach((th, i) => th.style.width = this.columns[i].width || (100 / this.columns.length) + '%')
+                        const ths = Array.from((this.$refs.tr as HTMLTableRowElement).children) as HTMLTableHeaderCellElement[]
+                        ths.forEach((th, i) => (th.style.width as any) = this.columns[i].width || (100 / this.columns.length) + '%')
                     })
             }
         }
@@ -40,33 +42,33 @@ export default {
         }
     },
     methods: {
-        onMouseMove: function (evt) {
-            const th = evt.target
+        onMouseMove: function (evt: MouseEvent) {
+            const th = evt.target as HTMLTableHeaderCellElement
             const thWidth = th.clientWidth + th.clientLeft
             const mouseX = evt.offsetX + th.clientLeft
-            const trRect = this.$refs.tr.getBoundingClientRect()
+            const trRect = (this.$refs.tr as HTMLTableRowElement).getBoundingClientRect() as DOMRect
             const absoluteRight = trRect.width + trRect.x
 
             this.draggingReady = (mouseX < 3 || mouseX > thWidth - 4) 
                 && (evt.pageX - trRect.x > 4)
                 && (evt.pageX < absoluteRight - 4)
         },
-        onMouseDown: function (evt) {
+        onMouseDown: function (evt: MouseEvent) {
             if (this.draggingReady) {
-                const th = evt.target
+                const th = evt.target as HTMLTableHeaderCellElement
                 const mouseX = evt.offsetX + th.clientLeft
                 const dragleft = mouseX < 3
 
                 const startDragPosition = evt.pageX
-                const targetColumn = evt.target
+                const targetColumn = evt.target as HTMLTableHeaderCellElement
 
-                const currentHeader = dragleft ? targetColumn.previousElementSibling : targetColumn 
-                const nextHeader = currentHeader.nextElementSibling
+                const currentHeader = dragleft ? targetColumn.previousElementSibling as HTMLTableHeaderCellElement : targetColumn
+                const nextHeader = currentHeader!!.nextElementSibling as HTMLTableHeaderCellElement
 
                 const currentLeftWidth = currentHeader.offsetWidth
                 const sumWidth = currentLeftWidth + nextHeader.offsetWidth
 
-                const onmove = evt => {
+                const onmove = (evt: MouseEvent) => {
                     document.body.style.cursor = 'ew-resize'
                     let diff = evt.pageX - startDragPosition
                     if (currentLeftWidth + diff < 15)
@@ -74,7 +76,7 @@ export default {
                     else if (diff > sumWidth - currentLeftWidth - 15)
                         diff = sumWidth - currentLeftWidth - 15
 
-                    const getCombinedWidth = (column, nextColumn) => {
+                    const getCombinedWidth = (column: HTMLTableHeaderCellElement, nextColumn: HTMLTableHeaderCellElement) => {
                         const firstWidth = 
                             column.style.width
                             ? parseFloat(column.style.width.substr(0, column.style.width.length - 1))
@@ -99,9 +101,9 @@ export default {
                     evt.preventDefault()
                 }
 
-                const onup = evt => {
+                const onup = (evt: MouseEvent) => {
                     const getWidths = () => {
-                        const ths = Array.from(this.$refs.tr.children)
+                        const ths = Array.from((this.$refs.tr as HTMLTableRowElement).children) as HTMLTableHeaderCellElement[]
                         return ths.map(th => {
                             let width = th.style.width
                             if (!width)
@@ -112,7 +114,7 @@ export default {
 
                     window.removeEventListener('mousemove', onmove)
                     window.removeEventListener('mouseup', onup)
-                    document.body.style.cursor = null
+                    ;(document.body.style.cursor as any) = null
                     this.$emit('on-columns-widths-changed', getWidths())
                 }
 
@@ -120,7 +122,7 @@ export default {
                 window.addEventListener('mouseup', onup)
             }
         },
-        onClick: function (column) {
+        onClick: function (column: Column) {
             if (!this.draggingReady && column.isSortable) {
                 const descending = column.sortAscending == true
                 this.columns.forEach(n => {
@@ -136,7 +138,7 @@ export default {
             }
         } 
     }
-}
+})
 </script>
 
 <style scoped>
