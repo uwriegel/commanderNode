@@ -1,4 +1,4 @@
-import * as platform from '../platform'
+import * as platform from '../../../platform'
 import { getRootProcessor as getWindowsRootProcessor } from './windows/root'
 import { getRootProcessor as getLinuxRootProcessor } from './linux/root'
 import { getDirectoryProcessor } from './directory'

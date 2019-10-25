@@ -1,4 +1,4 @@
-import { getNameOnly, getExtension } from '../pipes'
+import { getNameOnly, getExtension } from '../../pipes'
 import { createProcessor, combinePath, ROOT } from './processor'
 import { getNetworkShareProcessor } from './networkShare'
 import { sendToMain } from '../Connection'

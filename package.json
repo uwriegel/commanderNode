@@ -46,11 +46,12 @@
     "windows-theme-changes": "^2.0.0"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.0.4",
+    "@vue/cli-plugin-typescript": "^4.0.0",
     "@vue/cli-service": "^4.0.4",
     "electron": "^7.0.0",
     "electron-builder": "^20.44.4",
     "vue-devtools": "^5.1.3",
+    "typescript": "~3.5.3",
     "vue-template-compiler": "^2.6.10"
   }
 }
