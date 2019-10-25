@@ -28,7 +28,7 @@ const createWindow = function() {
     bounds.webPreferences = { nodeIntegration: true }    
     bounds.icon = __dirname + '/kirk2.png'
     // Undocument this to get the default menu with developer tools
-    //bounds.frame = false
+    bounds.frame = false
     bounds.show = false 
     bounds.backgroundColor = isLightMode ? "#fff" : "#1e1e1e" 
     bounds.webPreferences = {
@@ -161,7 +161,7 @@ const createWindow = function() {
         settings.set("isMaximized", false)
     })    
 
-    win.on("closed", () => win = null)    
+     win.on("closed", () => win = null)    
 }
 
 app.removeAllListeners('ready')
