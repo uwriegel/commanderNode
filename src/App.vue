@@ -202,20 +202,20 @@ export default Vue.extend({
                     ]
                 }
             ],
-    //        acceleratorMap: new Map()
+            acceleratorMap: new Map()
         }
     },
     methods: {
         onKeyDown: function (evt: KeyboardEvent) {
-        //     const key = Vue.menuMakeKey(evt.which, evt.altKey, evt.shiftKey, evt.ctrlKey)
-        //     const action = this.acceleratorMap.get(key)
-        //     if (action) {
-        //         this.onMenuItem(action)
-        //         evt.preventDefault()
-        //         evt.stopPropagation()
-            //}
+            const key = (Vue as any).menuMakeKey(evt.which, evt.altKey, evt.shiftKey, evt.ctrlKey)
+            const action = this.acceleratorMap.get(key)
+            if (action) {
+                this.onMenuItem(action)
+                evt.preventDefault()
+                evt.stopPropagation()
+            }
         },
-        onMenuItem: function (action: string, menuItem: MenuItem) {
+        onMenuItem: function (action: string, menuItem?: MenuItem) {
             switch (action) {
                 // case "rename":
                 //     this.$refs.commander.rename()
@@ -273,14 +273,14 @@ export default Vue.extend({
         }
     },
     mounted: function () {
-        // const accelerators = this.menuItems.map(n => n.subItems)
-        //     .flat()
-        //     .filter(n => n.accelerator && n.action && n.accelerator.key)
-        //     .map(n => { return { 
-        //         action: n.action, 
-        //         key: Vue.menuMakeKey(n.accelerator.key, n.accelerator.alt, n.accelerator.shift, n.accelerator.ctrl)
-        //     }})
-        // accelerators.forEach(n => this.acceleratorMap.set(n.key, n.action))
+        const accelerators = this.menuItems.map(n => n.subItems)
+            .flat()
+            .filter(n => n.accelerator && n.action && n.accelerator.key)
+            .map(n => { return { 
+                action: n.action, 
+                key: (Vue as any).menuMakeKey(n.accelerator.key, n.accelerator.alt, n.accelerator.shift, n.accelerator.ctrl)
+            }})
+        accelerators.forEach(n => this.acceleratorMap.set(n.key, n.action))
 
         document.addEventListener('keydown', this.onKeyDown, true)
     }
