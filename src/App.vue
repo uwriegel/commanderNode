@@ -5,11 +5,11 @@
         </vue-electron-titlebar>
         <div class="main">
             <!-- <column-test></column-test> -->
-            <scrollbar-test></scrollbar-test>
+            <!-- <scrollbar-test></scrollbar-test> -->
             <!-- <table-view-test></table-view-test> -->
             <!-- <connection-test></connection-test> -->
             <!-- <folder-test></folder-test> -->
-            <!-- <splitter-grid-test></splitter-grid-test> -->
+            <splitter-grid-test></splitter-grid-test>
             <!-- <viewer-test></viewer-test> -->
             <!-- <commander ref="commander"></commander> -->
         </div>
@@ -28,7 +28,7 @@ import ScrollbarTest from './components/test/ScrollbarTest.vue'
 // import TableViewTest from './components/test/TableViewTest'
 // import ConnectionTest from './components/test/ConnectionTest'
 // import FolderTest from './components/test/FolderTest'
-// import SplitterGridTest from './components/test/SplitterGridTest'
+import SplitterGridTest from './components/test/SplitterGridTest.vue'
 // import ViewerTest from './components/test/ViewerTest'
 
 const electron = (window as any).require('electron')
@@ -44,7 +44,7 @@ export default Vue.extend({
         // TableViewTest,
         // ConnectionTest,
         // FolderTest,
-        // SplitterGridTest,
+        SplitterGridTest,
         // ViewerTest
     },
     data() {

@@ -24,11 +24,12 @@
     </div>
 </template>
 
-<script>
-import SplitterGrid from '../controls/SplitterGrid'
-import Folder from '../controls/Folder'
+<script lang="ts">
+import Vue from 'vue'
+import SplitterGrid from '../controls/SplitterGrid.vue'
+//import Folder from '../controls/Folder.vue'
 
-export default {
+export default Vue.extend({
     data() {
         return {
             isHidden: false
@@ -36,7 +37,7 @@ export default {
     },
     components: {
         SplitterGrid,
-        Folder
+        //Folder
     },
     methods: {
         onHide() {
@@ -46,7 +47,7 @@ export default {
             console.log("new viewer height")
         }
     }
-}
+})
 </script>
 
 <style scoped>

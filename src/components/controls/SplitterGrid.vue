@@ -6,24 +6,24 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from 'vue'
 
-export default {
+export default Vue.extend({
     data() {
         return {
-            height: null
+            height: null as Number|null
         }
     },
-    props: [
-        "isVertical",
-        "isSecondInvisible"
-    ],
+    props: {
+        isVertical: Boolean,
+        isSecondInvisible: Boolean
+    },
     watch: {
         isSecondInvisible(newVal) {
             if (!newVal && this.height) {
                 Vue.nextTick(() => {
-                    const view2 = this.$refs.container.children[2]
+                    const view2 = (this.$refs.container as HTMLElement).children[2] as HTMLElement
                     view2.style.flex = `0 0 ${this.height}%`
                 })
             }
@@ -31,22 +31,22 @@ export default {
         }
     },
     methods: {
-        onSplitterMouseDown(evt) {
+        onSplitterMouseDown(evt: MouseEvent) {
             if (evt.which != 1)
                 return
-            const view1 = this.$refs.container.children[0]
-            const splitter = this.$refs.container.children[1]
-            const view2 = this.$refs.container.children[2]
+            const view1 = (this.$refs.container as HTMLElement).children[0] as HTMLElement
+            const splitter = (this.$refs.container as HTMLElement).children[1] as HTMLElement
+            const view2 = (this.$refs.container as HTMLElement).children[2] as HTMLElement
             const size1 = this.isVertical ? view1.offsetHeight : view1.offsetWidth
             const size2 = this.isVertical ? view2.offsetHeight : view2.offsetWidth
             const initialPosition = this.isVertical ? evt.pageY : evt.pageX
 
-            const onmousemove = evt => {
+            const onmousemove = (evt: MouseEvent) => {
                 let delta = (this.isVertical ? evt.pageY : evt.pageX) - initialPosition
                 if (delta < 10 - size1)
                     delta = 10 - size1
-                if (delta > (this.isVertical ? view1.parentElement.offsetHeight : view1.parentElement.offsetWidth) - 10 - size1 - 6)
-                    delta = (this.isVertical ? view1.parentElement.offsetHeight : view1.parentElement.offsetWidth) - 10 - size1 - 6
+                if (delta > (this.isVertical ? view1.parentElement!!.offsetHeight : view1.parentElement!!.offsetWidth) - 10 - size1 - 6)
+                    delta = (this.isVertical ? view1.parentElement!!.offsetHeight : view1.parentElement!!.offsetWidth) - 10 - size1 - 6
 
                 const newSize1 = size1 + delta
                 const newSize2 = size2 - delta
@@ -62,7 +62,7 @@ export default {
                 evt.preventDefault()
             }
 
-            const onmouseup = evt => {
+            const onmouseup = (evt: MouseEvent) => {
                 window.removeEventListener('mousemove', onmousemove, true)
                 window.removeEventListener('mouseup', onmouseup, true)
 
@@ -77,7 +77,7 @@ export default {
             evt.preventDefault()        
         }
     }
-}
+})
 </script>
 
 <style scoped>
