@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType} from 'vue'
 
 export interface Column {
     name: string
@@ -22,12 +22,12 @@ export interface Column {
 
 export default Vue.extend({
     props: {
-        columns: { type: Object as () => Column[] }
+        columns: Array as PropType<Column[]>
     },
     watch: {
         columns: {
             immediate: true,
-            handler (newVal: Column, oldVal: Column) {
+            handler (newVal: Column[], oldVal: Column[]) {
                 if (oldVal != newVal)
                     Vue.nextTick(() => {
                         const ths = Array.from((this.$refs.tr as HTMLTableRowElement).children) as HTMLTableHeaderCellElement[]
