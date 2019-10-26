@@ -1,9 +1,16 @@
+//<script lang="ts">
 import { getDirectoryProcessor } from '../directory'
 import { ROOT, SERVICES, SHARES } from '../processor'
 import { getServicesProcessor, SERVICES_NAME } from '../services'
 import { getNetworkSharesProcessor, SHARES_NAME } from '../networkShares'
+import { Column } from '../../components/controls/Columns.vue'
 
 const processorName = "root"
+
+export interface Columns {
+    type: string
+    values: Column[]
+}
 
 /*
 enum class Drive_type
@@ -33,12 +40,12 @@ export function getRootProcessor(processor) {
             return processor
         processor.dispose()
     }
-    let sortIndex = null
+    let sortIndex: number | null = null
     let sortDescending = false
     
-    function checkPath(path) { return path == ROOT }
+    function checkPath(path: string) { return path == ROOT }
 
-    function getColumns(columns) {
+    function getColumns(columns: Columns) {
         return columns && columns.type == ROOT
             ? columns
             : {
@@ -148,7 +155,7 @@ export function getRootProcessor(processor) {
     }
     return thisProcessor
 }
-
+//</script>
 /*
 mport { RootPresenter as RootPresenterBase, PresenterBase, RootItem } from '../../rootpresenter.js'
 import { ColumnsControl } from '../../../columnscontrol.js'
