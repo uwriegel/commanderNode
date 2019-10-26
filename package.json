@@ -32,7 +32,8 @@
     "build": "vue-cli-service build --modern",
     "dist": "build -w --x64 --ia32",
     "dist-linux": "build -l --x64",
-    "dist-linux32": "build -l --ia32"
+    "dist-linux32": "build -l --ia32",
+    "dist-linux-arm": "build -l --armv7l"
   },
   "dependencies": {
     "core-js": "^3.3.3",
