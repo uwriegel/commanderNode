@@ -15,64 +15,68 @@
     </transition>
 </template>
 
-<script>
+<script lang="ts">
+import Vue, { PropType} from 'vue'
+
 const scrollerHeight = 15
 
-export default {
-    props: [
-        'value',
-        'totalCount',
-        'itemsPerPage',
-        'parentHeight'
-    ],
+export default Vue.extend({
+    props: {
+        value: Number,
+        totalCount: Number,
+        itemsPerPage: Number,
+        parentHeight: Number
+    },
     data() {
         return {
-            position: 0
+            position: 0,
+            timer: undefined as number|undefined,
+            interval: undefined as number|undefined
         }
     },
     watch: {
-        parentHeight: function (newVal, oldVal) {
+        parentHeight: function (newVal: number, oldVal: number) {
             this.setPosition(Math.min(this.range -1, this.position))
         },
-        value: function (newVal, oldVal) {
+        value: function (newVal: number, oldVal: number) {
             this.position = newVal
         },
-        totalCount: function (newVal, oldVal) {
+        totalCount: function (newVal: number, oldVal: number) {
             this.setPosition(0)
         }
     },
     computed: {
-        range: function () {
+        range(): number {
             return Math.max(0, this.totalCount - this.itemsPerPage) + 1
         },
-        gripHeight: function () {
+        gripHeight(): number {
             var gripHeight = (this.parentHeight - 32) * (this.itemsPerPage / this.totalCount)
             if (gripHeight < 5)
                 gripHeight = 5
             return gripHeight
         },
-        gripTop: function () {
+        gripTop(): number {
             return scrollerHeight + ((this.parentHeight - this.gripHeight - 2 * scrollerHeight) * (this.position / (this.range -1)))
         }
     }, 
     methods: {
-        upMouseDown: function (evt) {
+        upMouseDown: function (evt: MouseEvent) {
             const mouseUp = () => this.setPosition(Math.max(0, this.position - 1))
             mouseUp()
             this.timer = setTimeout(() => this.interval = setInterval(mouseUp, 10), 600)
         },
-        downMouseDown: function (evt) {
+        downMouseDown: function (evt: MouseEvent) {
             const mouseDown = () => this.setPosition(Math.min(this.range -1, this.position + 1))
             mouseDown()
             this.timer = setTimeout(() => this.interval = setInterval(mouseDown, 10), 600)
 
         },
-        pageMouseDown: function (evt) {
+        pageMouseDown: function (evt: MouseEvent) {
             let up = evt.offsetY <= this.gripTop 
             const page = () => {
                 if ((evt.offsetY > this.gripTop && evt.offsetY < this.gripTop + this.gripHeight)
                         || up ? evt.offsetY > this.gripTop : evt.offsetY < this.gripTop + this.gripHeight) {
-                    this.mouseUp()          
+                    this.mouseup()
                     return
                 }
                     
@@ -84,40 +88,36 @@ export default {
             page()
             this.timer = setTimeout(() => this.interval = setInterval(page, 50), 600)
         },
-        gripMouseDown: function (evt) {
+        gripMouseDown: function (evt: MouseEvent) {
             const startPos = evt.y - this.gripTop + scrollerHeight
             const range = this.parentHeight - this.gripHeight - 2 * scrollerHeight
             const maxPosition = this.totalCount - this.itemsPerPage
-            const onmove = evt => {
+            const onmove = (evt: MouseEvent) => {
                 const delta = evt.y - startPos
                 const factor = Math.min(1, (Math.max(0, delta * 1.0 / range)))
                 this.setPosition(Math.floor(factor * maxPosition))
             }
-            const onup = evt => {
+            const onup = (evt: MouseEvent) => {
                 window.removeEventListener('mousemove', onmove)
                 window.removeEventListener('mouseup', onup)
             }
             window.addEventListener('mousemove', onmove)
             window.addEventListener('mouseup', onup)
         },
-        mouseup: function (evt) {
+        mouseup(evt?: MouseEvent) {
             clearTimeout(this.timer)
             clearInterval(this.interval)
         },
-        mouseleave: function (evt) {
+        mouseleave(evt: MouseEvent) {
             clearTimeout(this.timer)
             clearInterval(this.interval)
         },
-        setPosition: function (position) {
+        setPosition(position: number) {
             this.position = position
             this.$emit('input', this.position)
         }
-    },
-    created() {
-        this.timer = 0
-        this.interval = 0
     }
-}
+})
 </script>
 
 <style scoped>

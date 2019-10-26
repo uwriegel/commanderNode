@@ -15,22 +15,23 @@
     </div>
 </template>
 
-<script>
-import Scrollbar from "./../controls/Scrollbar"
+<script lang="ts">
+import Vue from 'vue'
+import Scrollbar from "../controls/Scrollbar.vue"
 
 const itemHeight = 14
 
-export default {
+export default Vue.extend({
     components: {
         Scrollbar
     },
-    data: function () {
+    data() {
         return {
             position: 0,
             totalCount: 0,
             itemsPerPage: 0,
             height: 0,
-            totalItems: [],
+            totalItems: [] as string[],
             startIndex: 0
         }
     },
@@ -38,21 +39,21 @@ export default {
         position: function (newVal, oldVal) { this.startIndex = newVal }
     },
     computed: {
-        items () {
+        items(): string[] {
             return this.totalItems.slice(this.startIndex, this.startIndex + this.itemsPerPage + 1)
         }
     },
     methods: {
-        onChange: function (evt) {
-            this.totalCount = parseInt(evt.srcElement.value)
+        onChange: function (evt: Event) {
+            this.totalCount = parseInt((evt.srcElement as HTMLInputElement).value)
             this.totalItems = Array.from(Array(this.totalCount).keys()).map((n, i) => `Item # ${i}`)
             this.onResize()
         },
         onResize: function () {
-            this.height = this.$refs.list.clientHeight
+            this.height = (this.$refs.list as HTMLElement).clientHeight
             this.itemsPerPage = Math.floor(this.height / itemHeight)
         },
-        onMouseWheel: function (evt) { this.$emit('mousewheel', evt) }
+        onMouseWheel: function (evt: MouseEvent) { this.$emit('mousewheel', evt) }
     },
     created: function () {
         window.addEventListener("resize", this.onResize)
@@ -60,7 +61,7 @@ export default {
     destroyed: function () {
         window.removeEventListener("resize", this.onResize)
     }
-}
+})
 </script>
 
 <style scoped>

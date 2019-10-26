@@ -4,8 +4,8 @@
             <vue-menu-bar :items="menuItems" @on-menu-item-clicked="onMenuItem" />
         </vue-electron-titlebar>
         <div class="main">
-            <column-test></column-test>
-            <!-- <scrollbar-test></scrollbar-test> -->
+            <!-- <column-test></column-test> -->
+            <scrollbar-test></scrollbar-test>
             <!-- <table-view-test></table-view-test> -->
             <!-- <connection-test></connection-test> -->
             <!-- <folder-test></folder-test> -->
@@ -24,7 +24,7 @@ import { MenuItem } from 'vue-menubar'
 
 // Tests
 import ColumnTest from './components/test/ColumnTest.vue'
-// import ScrollbarTest from './components/test/ScrollbarTest'
+import ScrollbarTest from './components/test/ScrollbarTest.vue'
 // import TableViewTest from './components/test/TableViewTest'
 // import ConnectionTest from './components/test/ConnectionTest'
 // import FolderTest from './components/test/FolderTest'
@@ -39,8 +39,8 @@ export default Vue.extend({
 //        Scrollbar,
 //        Commander,
         // Tests:
-        ColumnTest
-        // ScrollbarTest,
+        ColumnTest,
+        ScrollbarTest,
         // TableViewTest,
         // ConnectionTest,
         // FolderTest,
