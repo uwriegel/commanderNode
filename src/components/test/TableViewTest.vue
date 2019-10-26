@@ -20,10 +20,11 @@
     </div>
 </template>
 
-<script>
-import TableView from '../controls/TableView'
+<script lang="ts">
+import Vue from 'vue'
+import TableView, { TableViewItem } from '../controls/TableView.vue'
 
-export default {
+export default Vue.extend({
     components: {
         TableView
     },
@@ -47,17 +48,17 @@ export default {
                     width: "18.3009%"
                 }
             ],
-            items: []
+            items: [] as TableViewItem[]
         }
     },
     computed: {
-        totalCount: function () {
+        totalCount(): number {
             return this.items.length
         }
     },
     methods: {
-        onChange (evt) {
-            const count = parseInt(evt.srcElement.value)
+        onChange(evt: Event) {
+            const count = parseInt((evt.srcElement as HTMLInputElement).value)
             this.items = []
             Array.from(Array(count).keys()).map((n, i) => {
                 return {
@@ -68,10 +69,10 @@ export default {
                     isCurrent: false
                 }
             }).forEach((n, i) => this.items[i] = n)
-            this.$refs.table.focus()
+            ;(this.$refs.table as HTMLElement).focus()
         }
     }
-}
+})
 </script>
 
 <style scoped>

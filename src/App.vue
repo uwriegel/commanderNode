@@ -6,10 +6,10 @@
         <div class="main">
             <!-- <column-test></column-test> -->
             <!-- <scrollbar-test></scrollbar-test> -->
-            <!-- <table-view-test></table-view-test> -->
+            <table-view-test></table-view-test>
             <!-- <connection-test></connection-test> -->
             <!-- <folder-test></folder-test> -->
-            <splitter-grid-test></splitter-grid-test>
+            <!-- <splitter-grid-test></splitter-grid-test> -->
             <!-- <viewer-test></viewer-test> -->
             <!-- <commander ref="commander"></commander> -->
         </div>
@@ -25,7 +25,7 @@ import { MenuItem } from 'vue-menubar'
 // Tests
 import ColumnTest from './components/test/ColumnTest.vue'
 import ScrollbarTest from './components/test/ScrollbarTest.vue'
-// import TableViewTest from './components/test/TableViewTest'
+import TableViewTest from './components/test/TableViewTest.vue'
 // import ConnectionTest from './components/test/ConnectionTest'
 // import FolderTest from './components/test/FolderTest'
 import SplitterGridTest from './components/test/SplitterGridTest.vue'
@@ -41,7 +41,7 @@ export default Vue.extend({
         // Tests:
         ColumnTest,
         ScrollbarTest,
-        // TableViewTest,
+        TableViewTest,
         // ConnectionTest,
         // FolderTest,
         SplitterGridTest,

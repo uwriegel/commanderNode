@@ -7,11 +7,14 @@ const BrowserWindow = electron.BrowserWindow
 const fs = require("fs")
 const extFs = require('extension-fs')
 const ipc = require('./ipc')
+const os = require('os')
 
 let themeCallback 
 const themeChanges = require('windows-theme-changes') 
 themeChanges.register(light => themeCallback(light)) 
 const isLightMode = themeChanges.isLightMode() 
+
+const isLinux = os.platform == "linux"
 
 protocol.registerSchemesAsPrivileged([{
          scheme: 'vue', privileges: {standard: true, secure: true }
@@ -28,7 +31,7 @@ const createWindow = function() {
     bounds.webPreferences = { nodeIntegration: true }    
     bounds.icon = __dirname + '/kirk2.png'
     // Undocument this to get the default menu with developer tools
-    bounds.frame = false
+    //bounds.frame = false
     bounds.show = false 
     bounds.backgroundColor = isLightMode ? "#fff" : "#1e1e1e" 
     bounds.webPreferences = {
@@ -96,6 +99,8 @@ const createWindow = function() {
         let file = decodeURIComponent(request.url.substr(6))
         if (file[1] == '/')
             file = file[0] + ':' + file.substr(1)
+        else if (isLinux)
+            file = "/" + file
         if (file.toLowerCase().endsWith(".html")) 
             fs.readFile(file, (_, data) => {
                 callback({mimeType: 'text/html', data: data})

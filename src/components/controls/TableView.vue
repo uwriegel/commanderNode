@@ -16,34 +16,42 @@
     </div>
 </template>
 
-<script>
-import Columns from './Columns'
-import Scrollbar from './Scrollbar'
+<script lang="ts">
+import Vue, { PropType, Component } from 'vue'
+import Columns, { Column } from './Columns.vue'
+import Scrollbar from './Scrollbar.vue'
 
-export default {
+export interface TableViewItem {
+    isCurrent: boolean
+    index?: number
+}
+
+export default Vue.extend({
+
     components: {
         Columns,
         Scrollbar
     },
-    props: [
-        'columns',
-        'itemHeight',
-        'items'
-    ],
+    props: {
+        columns: Array as PropType<Column[]>,
+        itemHeight: Number,
+        items: Array as PropType<TableViewItem[]>
+    },
     data() {
         return {
             position: 0,
             height: 0,
             itemsPerPage: 0,
             startIndex: 0,
-            displayItems: [],
-            index: 0
+            displayItems: [] as TableViewItem[],
+            index: 0,
+            columnHeight: undefined as number|undefined,
         }
     },
     watch: {
         items: {
             immediate: true,
-            handler(newVal) {
+            handler(newVal: string[]) {
                 if (this.items.length)
                     this.items[0].isCurrent = true
                 this.items.forEach((n, i) => n.index = i)                    
@@ -66,17 +74,17 @@ export default {
         }
     },
     methods: {
-        focus() { this.$refs.list.focus() },
-        onColumnsWidthChanged: function(widths) {
+        focus() { (this.$refs.list as HTMLElement).focus() },
+        onColumnsWidthChanged: function(widths: string[]) {
             this.$emit('columns-widths-changed', widths)
         },
         onResize() {
             if (this.$refs.list)
-                this.height = this.$refs.list.clientHeight - this.columnHeight
+                this.height = (this.$refs.list as HTMLElement).clientHeight - this.columnHeight!!
             this.itemsPerPage = Math.floor(this.height / this.itemHeight)
             this.setPosition()
         },
-        onKeyDown(evt) {
+        onKeyDown(evt: MouseEvent) {
             switch (evt.which) {
                 case 13: // return
                     this.onDblClick()
@@ -109,18 +117,18 @@ export default {
             }
             evt.preventDefault() // prevent the default action (scroll / move caret)
         },
-        onMouseDown(evt) {
-            const tr = evt.target.closest("tbody tr")
+        onMouseDown(evt: MouseEvent) {
+            const tr = (evt.target as HTMLElement).closest("tbody tr")
             if (tr) {
                 const currentIndex = 
-                    Array.from(this.$refs.table.querySelectorAll("tr"))
+                    Array.from((this.$refs.table as HTMLTableElement).querySelectorAll("tr"))
                     .findIndex(n => n == tr)
                     + this.position -1
                 if (currentIndex != -1)
                     this.setCurrentIndex(currentIndex)
             }
         },
-        onMouseWheel(evt) {
+        onMouseWheel(evt: MouseWheelEvent) {
             if (this.items.length > this.itemsPerPage) {
                 var delta = evt.deltaY / Math.abs(evt.deltaY) * 3
                 let newPos = this.position + delta
@@ -146,7 +154,7 @@ export default {
             this.setCurrentIndex(this.index < this.items.length - this.itemsPerPage + 1 ? this.index + this.itemsPerPage - 1: this.items.length - 1)
         },
         pageUp() { this.setCurrentIndex(this.index > this.itemsPerPage - 1 ? this.index - this.itemsPerPage + 1: 0) },
-        setCurrentIndex(index) {
+        setCurrentIndex(index: number) {
             if (index < 0)
                 index = 0
             else if (index >= this.items.length)
@@ -160,7 +168,7 @@ export default {
             if (this.index > this.position + this.itemsPerPage - 1)
                 this.position = this.index - this.itemsPerPage + 1
         }, 
-        onColumnClick(index, descending) {
+        onColumnClick(index: number, descending: boolean) {
             this.$emit('column-click', index, descending)
         }
     },
@@ -171,10 +179,11 @@ export default {
         window.removeEventListener("resize", this.onResize)
     },
     mounted() {
-        this.columnHeight = this.$refs.column.$el.clientHeight
+        // TODO:
+        this.columnHeight = (this.$refs.column as any).$el.clientHeight
         this.onResize()
     }
-}
+})
 </script>
 
 <style scoped>
