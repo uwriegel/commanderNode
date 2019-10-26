@@ -13,15 +13,15 @@
 import Vue from 'vue'
 
 export default {
-    props: [
+    props: {
         /***
          * @param {string} name
          * @param {boolean} isSortable
          * @param {number} columnsType
          * @param {number} width
          */
-        'columns'
-    ],
+        columns: Array
+    },
     watch: {
         columns: {
             immediate: true,
