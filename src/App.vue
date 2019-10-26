@@ -6,7 +6,8 @@
         <div class="main">
             <!-- <column-test></column-test> -->
             <!-- <scrollbar-test></scrollbar-test> -->
-            <table-view-test></table-view-test>
+            <!-- <table-view-test></table-view-test> -->
+            <addon></addon>
             <!-- <connection-test></connection-test> -->
             <!-- <folder-test></folder-test> -->
             <!-- <splitter-grid-test></splitter-grid-test> -->
@@ -26,6 +27,7 @@ import { MenuItem } from 'vue-menubar'
 import ColumnTest from './components/test/ColumnTest.vue'
 import ScrollbarTest from './components/test/ScrollbarTest.vue'
 import TableViewTest from './components/test/TableViewTest.vue'
+import Addon from './components/test/Addon.vue'
 // import ConnectionTest from './components/test/ConnectionTest'
 // import FolderTest from './components/test/FolderTest'
 import SplitterGridTest from './components/test/SplitterGridTest.vue'
@@ -42,6 +44,7 @@ export default Vue.extend({
         ColumnTest,
         ScrollbarTest,
         TableViewTest,
+        Addon,
         // ConnectionTest,
         // FolderTest,
         SplitterGridTest,

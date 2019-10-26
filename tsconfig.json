@@ -11,7 +11,9 @@
         "sourceMap": true,
         "baseUrl": ".",
         "types": [
-            "webpack-env"
+            "webpack-env",
+            "node", 
+            "express"
         ],
         "paths": {
             "@/*": [
@@ -30,11 +32,11 @@
         "src/**/*.tsx",
         "src/**/*.vue",
         "tests/**/*.ts",
-        "tests/**/*.tsx", "src/processors/directory.js", "src/processors/linux/root.ts"
+        "tests/**/*.tsx", "src/processors/directory.js", "src/processors/linux/root.js"
     ],
     "exclude": [
         "node_modules",
         "cache"
-    ]    
+    ]
   }
   
