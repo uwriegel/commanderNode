@@ -137,7 +137,7 @@ import DriveIcon from '../../icons/DriveIcon.vue'
 import FolderIcon from '../../icons/FolderIcon.vue'
 import ServiceIcon from '../../icons/ServiceIcon.vue'
 import ShareIcon from '../../icons/ShareIcon.vue'
-//import { Observable, map, pipe, filter } from "rxjs/operators"
+import { map, filter } from "rxjs/operators"
 import { mapState } from 'vuex'
 import { Column } from './Columns.vue'
 // import { getExtension } from '../../pipes'
@@ -192,21 +192,22 @@ export default Vue.extend({
     mounted() {
         this.eventBus.$on('focus', this.focus)
 
-        // const shiftTabs$ = this.keyDown$.pipe(filter(n => n.event.which == 9 && n.event.shiftKey))
-        // const inputChars$ = this.keyDown$.pipe(filter(n => !n.event.altKey && !n.event.ctrlKey && !n.event.shiftKey && n.event.key.length > 0 && n.event.key.length < 2))
-        // const backSpaces$ = this.keyDown$.pipe(filter(n => n.event.which == 8))
-        // const escapes$ = this.keyDown$.pipe(filter(n => n.event.which == 27))
+        const shiftTabs$ = (this as any).keyDown$.pipe(filter((n: any) => n.event.which == 9 && n.event.shiftKey))
+        const inputChars$ = (this as any).keyDown$.pipe(filter((n: any) => !n.event.altKey && !n.event.ctrlKey && !n.event.shiftKey && n.event.key.length > 0 && n.event.key.length < 2))
+        const backSpaces$ = (this as any).keyDown$.pipe(filter((n: any) => n.event.which == 8))
+        const escapes$ = (this as any).keyDown$.pipe(filter((n: any) => n.event.which == 27))
 
-        // this.$subscribeTo(shiftTabs$, n => {
-        //     this.$refs.input.focus()
-        //     n.event.preventDefault()
-        // })
-        // this.$subscribeTo(inputChars$, evt => this.restrictTo(evt.event))
-        // this.$subscribeTo(backSpaces$, evt => this.onBacktrack(evt.event))
-        // this.$subscribeTo(backSpaces$, () => this.restrictBack())
-        // this.$subscribeTo(escapes$, () => this.restrictClose())
+        this.$subscribeTo(shiftTabs$, (n: any) => {
+            // TODO:
+            (this.$refs as any).input.focus()
+            n.event.preventDefault()
+        })
+        //this.$subscribeTo(inputChars$, evt => this.restrictTo(evt.event))
+        //this.$subscribeTo(backSpaces$, evt => this.onBacktrack(evt.event))
+        //this.$subscribeTo(backSpaces$, () => this.restrictBack())
+        //this.$subscribeTo(escapes$, () => this.restrictClose())
 
-        // this.initializeSelection()        
+        this.initializeSelection()        
     },
     computed: {
         tableViewColumns(): Column[] { 
@@ -388,22 +389,22 @@ export default Vue.extend({
             this.selectedIndex = newIndex
             //this.$emit('selection-changed', this.getSelectedItem(newIndex)) 
         },
-        // onSelectedItemsChanged() {
-        //     if (this.getExtendedRename()) {
-        //         const prefix = localStorage["extendedRenamePrexix"]
-        //         const digits = localStorage["extendedRenameDigits"]
-        //         const startIndex = Number(localStorage["extendedRenameStartIndex"])
+        onSelectedItemsChanged() {
+            // if (this.getExtendedRename()) {
+            //     const prefix = localStorage["extendedRenamePrexix"]
+            //     const digits = localStorage["extendedRenameDigits"]
+            //     const startIndex = Number(localStorage["extendedRenameStartIndex"])
 
-        //         const selectedItems = this.items.filter(n => !n.isDirectory && n.isSelected)    
-        //         const unSelectedItems = this.items.filter(n => !n.isSelected)    
-        //         unSelectedItems.forEach(n => n.newName = "")
-        //         selectedItems.forEach((n, i) => {
-        //             const newNameNumber = `${i+startIndex}`
-        //             const nulls = digits - newNameNumber.length
+            //     const selectedItems = this.items.filter(n => !n.isDirectory && n.isSelected)    
+            //     const unSelectedItems = this.items.filter(n => !n.isSelected)    
+            //     unSelectedItems.forEach(n => n.newName = "")
+            //     selectedItems.forEach((n, i) => {
+            //         const newNameNumber = `${i+startIndex}`
+            //         const nulls = digits - newNameNumber.length
         //             n.newName = `${prefix}${(nulls > 0 ? '0'.repeat(nulls) : '')}${newNameNumber}`
         //         })
         //     }
-        // },
+        },
         // getSelectedItem(selectedIndex) { 
         //     return this.$refs.table && this.path
         //         ? this.processor.getItemWithPath(this.path, this.items[selectedIndex || this.$refs.table.index]) 
@@ -507,46 +508,46 @@ export default Vue.extend({
         // renameItem(name, newName) {
         //     return this.processor.renameItem(name, newName)
         // },
-        // initializeSelection() {
-        //     const ends$ = this.keyDown$.pipe(filter(n => n.event.which == 35 && n.event.shiftKey))
-        //     const homes$ = this.keyDown$.pipe(filter(n => n.event.which == 36 && n.event.shiftKey))
-        //     const inserts$ = this.keyDown$.pipe(filter(n => n.event.which == 45))
-        //     const pluses$ = this.keyDown$.pipe(filter(n => n.event.which == 107))
-        //     const minuses$ = this.keyDown$.pipe(filter(n => n.event.which == 109))
+        initializeSelection() {
+            const ends$ = (this as any).keyDown$.pipe(filter((n: any) => n.event.which == 35 && n.event.shiftKey))
+            const homes$ = (this as any).keyDown$.pipe(filter((n: any) => n.event.which == 36 && n.event.shiftKey))
+            const inserts$ = (this as any).keyDown$.pipe(filter((n: any) => n.event.which == 45))
+            const pluses$ = (this as any).keyDown$.pipe(filter((n: any) => n.event.which == 107))
+            const minuses$ = (this as any).keyDown$.pipe(filter((n: any) => n.event.which == 109))
 
-        //     const toggleSelection = () => {
-        //         const item = this.items[this.$refs.table.index]
-        //         if (item.isSelected != undefined)
-        //             item.isSelected = !item.isSelected
-        //     }
+            const toggleSelection = () => {
+                const item = this.items[this.selectedIndex]
+                if (item.isSelected != undefined)
+                    item.isSelected = !item.isSelected
+            }
 
-        //     this.$subscribeTo(inserts$, () => {
-        //         toggleSelection()
-        //         if (this.$refs.table.index < this.items.length - 1) 
-        //             this.$refs.table.setCurrentIndex(this.$refs.table.index + 1)
-        //         this.onSelectedItemsChanged()
-        //     })
-        //     this.$subscribeTo(pluses$, () => this.items.forEach(n => {
-        //         if (n.isSelected != undefined)
-        //             n.isSelected = true
-        //         this.onSelectedItemsChanged()
-        //     }))
-        //     this.$subscribeTo(minuses$, () => this.items.forEach(n => {
-        //         if (n.isSelected != undefined)
-        //             n.isSelected = false
-        //         this.onSelectedItemsChanged()
-        //     }))
-        //     this.$subscribeTo(homes$, () => this.items.forEach((n, i) => {
-        //         if (n.isSelected != undefined) 
-        //             n.isSelected = i <= this.$refs.table.index
-        //         this.onSelectedItemsChanged()
-        //     }))
-        //     this.$subscribeTo(ends$, () => this.items.forEach((n, i) => {
-        //         if (n.isSelected != undefined)
-        //             n.isSelected = i >= this.$refs.table.index
-        //         this.onSelectedItemsChanged()
-        //     }))
-        // }
+            this.$subscribeTo(inserts$, () => {
+                toggleSelection()
+                if (this.selectedIndex < this.items.length - 1) 
+                    this.tableEventBus.$emit("setCurrentIndex", this.selectedIndex + 1)
+                this.onSelectedItemsChanged()
+            })
+            this.$subscribeTo(pluses$, () => this.items.forEach(n => {
+                if (n.isSelected != undefined)
+                    n.isSelected = true
+                this.onSelectedItemsChanged()
+            }))
+            this.$subscribeTo(minuses$, () => this.items.forEach(n => {
+                if (n.isSelected != undefined)
+                    n.isSelected = false
+                this.onSelectedItemsChanged()
+            }))
+            this.$subscribeTo(homes$, () => this.items.forEach((n, i) => {
+                if (n.isSelected != undefined) 
+                    n.isSelected = i <= this.selectedIndex
+                this.onSelectedItemsChanged()
+            }))
+            this.$subscribeTo(ends$, () => this.items.forEach((n, i) => {
+                if (n.isSelected != undefined)
+                    n.isSelected = i >= this.selectedIndex
+                this.onSelectedItemsChanged()
+            }))
+        }
     }
 })
 </script>

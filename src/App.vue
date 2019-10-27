@@ -9,9 +9,9 @@
             <!-- <table-view-test></table-view-test> -->
             <!-- <addon></addon> -->
             <!-- <connection-test></connection-test> -->
-            <!-- <folder-test></folder-test> -->
+            <folder-test></folder-test>
             <!-- <splitter-grid-test></splitter-grid-test> -->
-            <viewer-test></viewer-test>
+            <!-- <viewer-test></viewer-test> -->
             <!-- <commander ref="commander"></commander> -->
         </div>
     </div>
