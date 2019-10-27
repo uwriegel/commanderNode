@@ -4,20 +4,20 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from 'vue'
 
 // TODO: Directory overview
 // TODO: source code view
 // TODO: Media player
-export default {
-    props: [
-        "src",
-        "path"
-    ],
+export default Vue.extend({
+    props: {
+        src: String
+    },
     data() {
         return {
-            itemPath: ""
+            itemPath: "",
+            timer: undefined as NodeJS.Timeout|undefined,
         }
     },
     watch: {
@@ -29,11 +29,11 @@ export default {
     },
     mounted() { this.itemPath = this.src },
     methods: {
-        isImage(value) {
+        isImage(value: string) {
             return value.toLowerCase().endsWith('jpg')
         }
     }
-}
+})
 </script>
 
 <style scoped>

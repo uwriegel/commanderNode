@@ -8,7 +8,7 @@
 import Vue from 'vue'
 import filesystem from '../../extensionFs'
 
-export default {
+export default Vue.extend({
     methods: {
         async onTest() {
             const files = await filesystem.getFiles("c:\\windows")
@@ -18,8 +18,7 @@ export default {
             console.log("Hallo")
         }
     }
-    
-}
+})
 </script>
 
 <style>

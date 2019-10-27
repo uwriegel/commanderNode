@@ -10,10 +10,11 @@
     </div>
 </template>
 
-<script>
-import Viewer from '../controls/Viewer'
+<script lang="ts">
+import Vue from 'vue'
+import Viewer from '../controls/Viewer.vue'
 
-export default {
+export default Vue.extend({
     data() {
         return {
             src: "",
@@ -25,21 +26,19 @@ export default {
     },
     methods:{
         onBtn1() {
-            this.path = "C:\\Users\\urieg\\OneDrive\\Bilder\\desktop"
-            this.src = "20131116_095204.jpg"
+            this.src = "C:\\Users\\urieg\\OneDrive\\Bilder\\desktop\\20131116_095204.jpg"
         },
         onBtn2() {
-            this.src = "Bild02.jpg"
+            this.src = "A:\\Bilder\\1967\\Bild011.jpg"
         },
         onBtn3() {
             this.src = ""
         },
         onBtn4() {
-            this.path = "C:\\Users\\urieg\\documents"
-            this.src = "NuGet 2 Essentials.pdf"
+            this.src = "C:\\Users\\urieg\\documents\\NuGet 2 Essentials.pdf"
         }
     }
-}
+})
 </script>
 
 <style scoped>

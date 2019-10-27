@@ -9,9 +9,9 @@
             <!-- <table-view-test></table-view-test> -->
             <!-- <addon></addon> -->
             <!-- <connection-test></connection-test> -->
-            <folder-test></folder-test>
+            <!-- <folder-test></folder-test> -->
             <!-- <splitter-grid-test></splitter-grid-test> -->
-            <!-- <viewer-test></viewer-test> -->
+            <viewer-test></viewer-test>
             <!-- <commander ref="commander"></commander> -->
         </div>
     </div>
@@ -31,7 +31,7 @@ import Addon from './components/test/Addon.vue'
 // import ConnectionTest from './components/test/ConnectionTest'
 import FolderTest from './components/test/FolderTest.vue'
 import SplitterGridTest from './components/test/SplitterGridTest.vue'
-// import ViewerTest from './components/test/ViewerTest'
+import ViewerTest from './components/test/ViewerTest.vue'
 
 const electron = (window as any).require('electron')
 
@@ -45,10 +45,9 @@ export default Vue.extend({
         ScrollbarTest,
         TableViewTest,
         Addon,
-        // ConnectionTest,
         FolderTest,
         SplitterGridTest,
-        // ViewerTest
+        ViewerTest
     },
     data() {
         return {
