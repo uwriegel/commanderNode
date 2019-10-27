@@ -30,10 +30,17 @@ export interface FolderColumns {
     values: FolderColumn[]
 }
 
+export interface FolderItem {
+    name: string
+    isSelected: boolean
+}
+
 export interface Processor {
     name: string
+    path: string
     dispose(): void
     getColumns(recentColumns: FolderColumns): FolderColumns
+    getItems(path?: string, showHidden?: boolean): Promise<FolderItem[]>
 }
 
 export function createProcessor(recentProcessor: Processor, path: string) {
@@ -56,8 +63,10 @@ export function createProcessor(recentProcessor: Processor, path: string) {
 export function getDefaultProcessor(): Processor {
     return { 
         name: "default",
+        path: "default",
         dispose: () => {},
-        getColumns: (recentColumns: FolderColumns) => { return { type: FolderType.DEFAULT, values: []} }
+        getColumns: (recentColumns: FolderColumns) => { return { type: FolderType.DEFAULT, values: []} },
+        getItems: () => new Promise<FolderItem[]>(_ => {})
     }
 }
 

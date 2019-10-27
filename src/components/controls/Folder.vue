@@ -9,7 +9,7 @@
             <template v-slot=row>
                 <tr v-if='processor.name == "directory" && row.item.isDirectory' 
                         draggable="true" @dragstart='onDragStart' @drag='onDrag' @dragend='onDragEnd'
-                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
+                        :class="{ 'isCurrent': row.item.index == selectedIndex, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
                     <td v-if='row.item.name == ".."' class="icon-name">
                         <parent-icon class=icon></parent-icon>
                         {{ row.item.name }}
@@ -25,7 +25,7 @@
                 </tr>
                 <tr v-if='processor.name == "directory" && !row.item.isDirectory ' 
                         draggable="true" @dragstart='onDragStart' @drag='onDrag' @dragend='onDragEnd'
-                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
+                        :class="{ 'isCurrent': row.item.index == selectedIndex, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
                     <td class="icon-name">
                         <img :src='row.item.name | iconUrl(processor.path)' alt="">
                         {{ row.item.name | nameOnly }}
@@ -36,7 +36,7 @@
                     <td>{{ row.item.version | version }}</td>
                 </tr>
                 <tr v-if='processor.name == "root"' 
-                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden }">
+                        :class="{ 'isCurrent': row.item.index == selectedIndex, 'isHidden': row.item.isHidden }">
                     <td v-if='row.item.type != 5 && row.item.type != 6' class="icon-name">
                         <drive-icon class=icon></drive-icon>
                         {{ row.item.name }}
@@ -54,7 +54,7 @@
                 </tr>
                 <tr v-if='processor.name == "extendedRename" && row.item.isDirectory' 
                         draggable="true" @dragstart='onDragStart' @drag='onDrag' @dragend='onDragEnd'
-                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
+                        :class="{ 'isCurrent': row.item.index == selectedIndex, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
                     <td v-if='row.item.name == ".."' class="icon-name">
                         <parent-icon class=icon></parent-icon>
                         {{ row.item.name }}
@@ -70,7 +70,7 @@
                 </tr>
                 <tr v-if='processor.name == "extendedRename" && !row.item.isDirectory ' 
                         draggable="true" @dragstart='onDragStart' @drag='onDrag' @dragend='onDragEnd'
-                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
+                        :class="{ 'isCurrent': row.item.index == selectedIndex, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
                     <td class="icon-name">
                         <img :src='row.item.name | iconUrl(processor.path)' alt="">
                         {{ row.item.name | nameOnly }}
@@ -81,7 +81,7 @@
                     <td class="size">{{ row.item.size | size }}</td>
                 </tr>
                 <tr v-if='processor.name == "services"' 
-                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 
+                        :class="{ 'isCurrent': row.item.index == selectedIndex, 
                         'isHidden': row.item.status != 4 && row.item.name != '..', 
                         'isStarting': row.item.status == 2 && row.item.name != '..', 
                         'isStopping': row.item.status == 3 && row.item.name != '..', 
@@ -97,7 +97,7 @@
                     <td>{{ row.item.displayName }}</td>
                 </tr>
                 <tr v-if='processor.name == "shares"' 
-                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isSelected': row.item.isSelected }">
+                        :class="{ 'isCurrent': row.item.index == selectedIndex, 'isSelected': row.item.isSelected }">
                     <td v-if='row.item.name == ".."' class="icon-name">
                         <parent-icon class=icon></parent-icon>
                         {{ row.item.name }}
@@ -108,7 +108,7 @@
                     </td>
                 </tr>
                 <tr v-if='processor.name == "share"' 
-                        :class="{ 'isCurrent': row.item.index == $refs.table.index, 'isSelected': row.item.isSelected }">
+                        :class="{ 'isCurrent': row.item.index == selectedIndex, 'isSelected': row.item.isSelected }">
                     <td v-if='row.item.name == ".."' class="icon-name">
                         <parent-icon class=icon></parent-icon>
                         {{ row.item.name }}
@@ -129,7 +129,7 @@
 
 <script lang="ts">
 import Vue, { PropType} from 'vue'
-import { getDefaultProcessor, combinePath, ROOT, createProcessor, Processor, FolderColumns, FolderType } from '../../processors/processor'
+import { getDefaultProcessor, combinePath, ROOT, createProcessor, Processor, FolderColumns, FolderType, FolderItem } from '../../processors/processor'
 //import { create as createExtendedRename, reset as resetExtendedRename } from '../../processors/extendedRename'
 import TableView from './TableView.vue'
 // import ParentIcon from '../../icons/ParentIcon'
@@ -157,8 +157,9 @@ export default Vue.extend({
     data() {
         return {
             tableEventBus: new Vue(),
+            selectedIndex: 0,
             columns: {type: FolderType.DEFAULT, values: [] } as FolderColumns,
-            items: [],
+            items: [] as FolderItem[],
             processor: getDefaultProcessor(),
             path: "",
             restrictValue: "",
@@ -173,12 +174,12 @@ export default Vue.extend({
     },
     watch: {
         path(newVal: string) {
-            // if (this.processor.path != newVal) {
-            //     this.changePath(newVal, null, true)
-            // }
+            if (this.processor.path != newVal) {
+                this.changePath(newVal, undefined, true)
+            }
         },
         showHidden() {
-//            this.changePath(this.path)
+            this.changePath(this.path)
         }
     },
     domStreams: ["keyDown$"],
@@ -212,7 +213,12 @@ export default Vue.extend({
             return this.columns.values
         },
         // mix this into the outer object with the object spread operator
+
+
+
+        // TODO:
         //...mapState(['showHidden'])
+        showHidden() { return false}
     },
     methods: {
         focus() { this.tableEventBus.$emit("focus") },
@@ -354,10 +360,10 @@ export default Vue.extend({
             if (checkProcessor) 
                 this.changeProcessor(createProcessor(this.processor, path))
 
-        //     this.items = await this.processor.getItems(path, this.showHidden)
-        //     const pathChanged = this.path != path
-        //     this.path = path
-        //     localStorage[`${this.id}-path`] = path
+            this.items = await this.processor.getItems(path, this.showHidden)
+            const pathChanged = this.path != path
+            this.path = path
+            localStorage[`${this.id}-path`] = path
         //     if (!backtrackDirection && pathChanged)
         //         this.backtrackPosition = this.backtrack.push(path) -1
         //     if (lastPath) {
@@ -383,7 +389,10 @@ export default Vue.extend({
         //         this.changePath(result.path, result.lastPath)
         //     }
         // },
-        // onSelectionChanged(newIndex) { this.$emit('selection-changed', this.getSelectedItem(newIndex)) },
+        onSelectionChanged(newIndex: number) { 
+            this.selectedIndex = newIndex
+            //this.$emit('selection-changed', this.getSelectedItem(newIndex)) 
+        },
         // onSelectedItemsChanged() {
         //     if (this.getExtendedRename()) {
         //         const prefix = localStorage["extendedRenamePrexix"]

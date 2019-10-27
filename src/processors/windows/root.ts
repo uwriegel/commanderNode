@@ -1,7 +1,8 @@
-import { ROOT, SERVICES, SHARES, Processor, FolderColumns, FolderType } from '../processor'
+import { ROOT, SERVICES, SHARES, Processor, FolderColumns, FolderType, FolderItem } from '../processor'
+import addon, { RootType } from '../../extensionFs'
 // import { getDirectoryProcessor } from '../directory'
-// import { getServicesProcessor, SERVICES_NAME } from '../services'
-// import { getNetworkSharesProcessor, SHARES_NAME } from '../networkShares'
+//import { getServicesProcessor, SERVICES_NAME } from '../services'
+//import { getNetworkSharesProcessor, SHARES_NAME } from '../networkShares'
 
 const processorName = "root"
 
@@ -59,25 +60,22 @@ export function getRootProcessor(processor: Processor): Processor {
 
     function dispose() {}
 
-    // async function getItems() {
-    //     const items = (await extFs.getDrives()).filter(n => n.isMounted)
-    //         .concat([ 
-    //             { name: SHARES_NAME, type: 6 },
-    //             { name: SERVICES_NAME, type: 5 }
-    //         ])
-    //     items.forEach(n => {
-    //         n.isSelected = false
-    //         n.isExif = false
-    //         n.version = ""
-    //     })
-    //     return refresh(items)
-    // }
+    async function getItems() {
+        const items = (await addon.getDrives()).filter(n => n.isMounted)
+            .concat([ 
+                // TODO
+                { name: "SHARES_NAME", type: RootType.SHARES, isSelected: false },
+                { name: "SERVICES_NAME", type: RootType.SERVICES, isSelected: false }
+            ])
+        items.forEach(n => n.isSelected = false)
+        return refresh(items)
+    }
     // function sort(items, index, descending) {
     //     sortIndex = index
     //     sortDescending = descending
     //     return refresh(items)
     // }
-    // function refresh(items) {
+    function refresh(items: FolderItem[]) {
     //     if (sortIndex != null) {
     //         const sort = 
     //         sortIndex == 0 
@@ -89,8 +87,8 @@ export function getRootProcessor(processor: Processor): Processor {
     //         return items.sort((a, b) => (sortDescending ? -1 : 1) * sort(a, b))
     //     }
     //     else 
-    //         return items
-    // }    
+        return items
+    }    
 
     // function onAction(items) {
     //     if (items.length == 1)
@@ -124,10 +122,10 @@ export function getRootProcessor(processor: Processor): Processor {
         path: ROOT,
         dispose,
         // checkPath,
-        getColumns
-        // getItems,
+        getColumns,
+        getItems,
         // sort,
-        // refresh,
+        refresh,
         // onAction,
         // getItemWithPath,
         // canCreateFolder,

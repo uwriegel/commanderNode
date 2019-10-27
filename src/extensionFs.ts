@@ -1,9 +1,11 @@
-declare enum DriveType {
+export enum RootType {
 	UNKNOWN,
 	HARDDRIVE,
 	ROM,
 	REMOVABLE,
-	NETWORK
+    NETWORK,
+    SHARES,
+    SERVICES
 }
 
 declare enum ServiceStatus {
@@ -23,18 +25,25 @@ declare enum NetShareType {
 
 export interface FileItem {
     name: string
+    isSelected: boolean
+
     size: number
     time: Date
     isDirectory: boolean
     isHidden: boolean
+
+    isExif: boolean
+    version: string
 }
 
 export interface DriveItem {
     name: string
-    description: string
-    size: number
-    type: DriveType
-    isMounted: boolean
+    isSelected: boolean
+
+    description?: string
+    size?: number
+    type: RootType
+    isMounted?: boolean
 }
 
 export interface Version
