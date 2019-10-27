@@ -1,19 +1,26 @@
 <template>
     <div class="root">
         <h3>Folder Test</h3>
-        <folder ref="folder" class="folder" id="test"></folder>
+        <folder :eventBus="folderEventBus" class="folder" id="test"></folder>
         <footer>Status</footer>
     </div>
 </template>
 
-<script>
-import Folder from '../controls/Folder'
-export default {
+<script lang="ts">
+import Vue from 'vue'
+import Folder from '../controls/Folder.vue'
+
+export default Vue.extend({
     components: {
         Folder
     },
-    mounted() { this.$refs.folder.focus() }
-}
+    data() {
+        return {
+            folderEventBus: new Vue()
+        }
+    },
+    mounted() { this.folderEventBus.$emit("focus") }
+})
 </script>
 
 <style scoped>

@@ -2,7 +2,7 @@
     <div class="root" tabindex="1" ref="list" @keydown="onKeyDown" @mousewheel="onMouseWheel">
         <table ref="table" @mousedown="onMouseDown" @dblclick='onDblClick' 
                 :class="{ 'scrollbar': items.length > itemsPerPage }">
-            <columns ref="column" :columns='columns' 
+            <columns :columns='columns' @onColumnHeight='onColumnHeight'
                 @on-columns-widths-changed='onColumnsWidthChanged' @on-column-click='onColumnClick'></columns>
             <tbody>
                 <slot v-for="item in displayItems" :item="item"></slot>
@@ -33,6 +33,7 @@ export default Vue.extend({
         Scrollbar
     },
     props: {
+        eventBus: { type: Object as PropType<Vue>, default: () => new Vue() },
         columns: Array as PropType<Column[]>,
         itemHeight: Number,
         items: Array as PropType<TableViewItem[]>
@@ -75,7 +76,8 @@ export default Vue.extend({
     },
     methods: {
         focus() { (this.$refs.list as HTMLElement).focus() },
-        onColumnsWidthChanged: function(widths: string[]) {
+        onColumnHeight(height: number) { this.columnHeight = height },
+        onColumnsWidthChanged(widths: string[]) {
             this.$emit('columns-widths-changed', widths)
         },
         onResize() {
@@ -179,8 +181,7 @@ export default Vue.extend({
         window.removeEventListener("resize", this.onResize)
     },
     mounted() {
-        // TODO:
-        this.columnHeight = (this.$refs.column as any).$el.clientHeight
+        this.eventBus.$on('focus', this.focus)
         this.onResize()
     }
 })

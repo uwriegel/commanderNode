@@ -137,6 +137,9 @@ export default Vue.extend({
                 this.$emit('on-column-click', index, descending)
             }
         } 
+    },
+    mounted() {
+        this.$emit('onColumnHeight', this.$el.clientHeight)
     }
 })
 </script>

@@ -7,9 +7,9 @@
             <!-- <column-test></column-test> -->
             <!-- <scrollbar-test></scrollbar-test> -->
             <!-- <table-view-test></table-view-test> -->
-            <addon></addon>
+            <!-- <addon></addon> -->
             <!-- <connection-test></connection-test> -->
-            <!-- <folder-test></folder-test> -->
+            <folder-test></folder-test>
             <!-- <splitter-grid-test></splitter-grid-test> -->
             <!-- <viewer-test></viewer-test> -->
             <!-- <commander ref="commander"></commander> -->
@@ -29,7 +29,7 @@ import ScrollbarTest from './components/test/ScrollbarTest.vue'
 import TableViewTest from './components/test/TableViewTest.vue'
 import Addon from './components/test/Addon.vue'
 // import ConnectionTest from './components/test/ConnectionTest'
-// import FolderTest from './components/test/FolderTest'
+import FolderTest from './components/test/FolderTest.vue'
 import SplitterGridTest from './components/test/SplitterGridTest.vue'
 // import ViewerTest from './components/test/ViewerTest'
 
@@ -46,7 +46,7 @@ export default Vue.extend({
         TableViewTest,
         Addon,
         // ConnectionTest,
-        // FolderTest,
+        FolderTest,
         SplitterGridTest,
         // ViewerTest
     },

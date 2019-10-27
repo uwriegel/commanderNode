@@ -2,9 +2,10 @@
     <div class="root">
         <h1>Table View Test</h1>
         <div class="container">
-            <table-view ref="table" :columns='columns' :items='items' :itemHeight='16'>
+            <table-view :eventBus="tableEventBus" :columns='columns' :items='items' :itemHeight='16'
+                @selection-changed="onSelectionChanged">
                 <template v-slot=row >
-                    <tr :class="{ 'isCurrent': row.item.index == $refs.table.index }">
+                    <tr :class="{ 'isCurrent': row.item.index == selectedIndex }">
                         <td>{{row.item.name}}</td>
                         <td>{{row.item.extension}}</td>
                         <td>{{row.item.date}}</td>
@@ -30,6 +31,8 @@ export default Vue.extend({
     },
     data() {
         return {
+            tableEventBus: new Vue(),
+            selectedIndex: 0,
             columns: [
                 {
                     name: "Name",
@@ -57,8 +60,12 @@ export default Vue.extend({
         }
     },
     methods: {
+        onSelectionChanged(index: number) { this.selectedIndex = index },
         onChange(evt: Event) {
             const count = parseInt((evt.srcElement as HTMLInputElement).value)
+            this.fillItems(count)
+        },
+        fillItems(count: number) {
             this.items = []
             Array.from(Array(count).keys()).map((n, i) => {
                 return {
@@ -69,8 +76,12 @@ export default Vue.extend({
                     isCurrent: false
                 }
             }).forEach((n, i) => this.items[i] = n)
-            ;(this.$refs.table as HTMLElement).focus()
+            this.tableEventBus.$emit("focus")
         }
+    },
+    mounted() {
+        this.fillItems(500)
+        setTimeout(() => this.tableEventBus.$emit("focus"))
     }
 })
 </script>

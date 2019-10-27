@@ -1,16 +1,15 @@
-//<script lang="ts">
-import { getDirectoryProcessor } from '../directory'
-import { ROOT, SERVICES, SHARES } from '../processor'
-import { getServicesProcessor, SERVICES_NAME } from '../services'
-import { getNetworkSharesProcessor, SHARES_NAME } from '../networkShares'
-import { Column } from '../../components/controls/Columns.vue'
+import { Processor, ROOT, SERVICES, SHARES, FolderType, FolderColumns } from '../processor'
+// import { getDirectoryProcessor } from '../directory'
+// import { getServicesProcessor, SERVICES_NAME } from '../services'
+// import { getNetworkSharesProcessor, SHARES_NAME } from '../networkShares'
+// import { Column } from '../../components/controls/Columns.vue'
 
 const processorName = "root"
 
-export interface Columns {
-    type: string
-    values: Column[]
-}
+// export interface Columns {
+//     type: string
+//     values: Column[]
+// }
 
 /*
 enum class Drive_type
@@ -34,7 +33,7 @@ struct Drive_item {
 };
 */
 
-export function getRootProcessor(processor) {
+export function getRootProcessor(processor: Processor): Processor {
     if (processor) {
         if (processor.name == processorName)
             return processor
@@ -45,11 +44,11 @@ export function getRootProcessor(processor) {
     
     function checkPath(path: string) { return path == ROOT }
 
-    function getColumns(columns: Columns) {
-        return columns && columns.type == ROOT
-            ? columns
+    function getColumns(recentColumns: FolderColumns) {
+        return recentColumns.type == FolderType.ROOT
+            ? recentColumns
             : {
-                type: ROOT,
+                type: FolderType.ROOT,
                 values: [{
                         isSortable: true,
                         name: "Name"
@@ -74,65 +73,65 @@ export function getRootProcessor(processor) {
 
     function dispose() {}
 
-    async function getItems() {
-        const items = [] //(await extFs.getDrives()).filter(n => n.isMounted)
-            .concat([ 
-                { name: SHARES_NAME, type: 6 },
-                { name: SERVICES_NAME, type: 5 }
-            ])
-        items.forEach(n => {
-            n.isSelected = false
-            n.isExif = false
-            n.version = ""
-        })
-        return refresh(items)
-    }
-    function sort(items, index, descending) {
-        sortIndex = index
-        sortDescending = descending
-        return refresh(items)
-    }
-    function refresh(items) {
-        if (sortIndex != null) {
-            const sort = 
-            sortIndex == 0 
-                    ? (a, b) => a.name.localeCompare(b.name) :
-                    sortIndex == 1 
-                    ? (a, b) => a.description.localeCompare(b.description)
-                    : (a, b) => a.size - b.size
+    // async function getItems() {
+    //     const items = [] //(await extFs.getDrives()).filter(n => n.isMounted)
+    //         .concat([ 
+    //             { name: SHARES_NAME, type: 6 },
+    //             { name: SERVICES_NAME, type: 5 }
+    //         ])
+    //     items.forEach(n => {
+    //         n.isSelected = false
+    //         n.isExif = false
+    //         n.version = ""
+    //     })
+    //     return refresh(items)
+    // }
+    // function sort(items, index, descending) {
+    //     sortIndex = index
+    //     sortDescending = descending
+    //     return refresh(items)
+    // }
+    // function refresh(items) {
+    //     if (sortIndex != null) {
+    //         const sort = 
+    //         sortIndex == 0 
+    //                 ? (a, b) => a.name.localeCompare(b.name) :
+    //                 sortIndex == 1 
+    //                 ? (a, b) => a.description.localeCompare(b.description)
+    //                 : (a, b) => a.size - b.size
                     
-            return items.sort((a, b) => (sortDescending ? -1 : 1) * sort(a, b))
-        }
-        else 
-            return items
-    }    
+    //         return items.sort((a, b) => (sortDescending ? -1 : 1) * sort(a, b))
+    //     }
+    //     else 
+    //         return items
+    // }    
 
-    function onAction(items) {
-        if (items.length == 1)
-            return {
-                done: false,
-                newProcessor: items[0].type == 5 
-                        ? getServicesProcessor(thisProcessor) 
-                        : (items[0].type == 6 
-                            ? getNetworkSharesProcessor(thisProcessor) 
-                            : getDirectoryProcessor(thisProcessor, items[0].name)), 
-                path: items[0].type == 5 
-                    ? SERVICES 
-                    : (items[0].type == 6 
-                        ? SHARES
-                        :items[0].name)
-            }
-    }    
+    // function onAction(items) {
+    //     if (items.length == 1)
+    //         return {
+    //             done: false,
+    //             newProcessor: items[0].type == 5 
+    //                     ? getServicesProcessor(thisProcessor) 
+    //                     : (items[0].type == 6 
+    //                         ? getNetworkSharesProcessor(thisProcessor) 
+    //                         : getDirectoryProcessor(thisProcessor, items[0].name)), 
+    //             path: items[0].type == 5 
+    //                 ? SERVICES 
+    //                 : (items[0].type == 6 
+    //                     ? SHARES
+    //                     :items[0].name)
+    //         }
+    // }    
     
-    function getItemWithPath(path, item) { return item.name }
+    // function getItemWithPath(path, item) { return item.name }
 
-    function canCreateFolder() { return false }
-    function canDelete() { return false }
-    function canRename() { return false }
-    function canExtendedRename() { return false }
-    function canCopyItems() { return false }
-    function canMoveItems() { return false }
-    function canInsertItems() { return false }
+    // function canCreateFolder() { return false }
+    // function canDelete() { return false }
+    // function canRename() { return false }
+    // function canExtendedRename() { return false }
+    // function canCopyItems() { return false }
+    // function canMoveItems() { return false }
+    // function canInsertItems() { return false }
 
     var thisProcessor = {
         name: processorName,
@@ -140,22 +139,21 @@ export function getRootProcessor(processor) {
         dispose,
         checkPath,
         getColumns,
-        getItems,
-        sort,
-        refresh,
-        onAction,
-        getItemWithPath,
-        canCreateFolder,
-        canDelete,
-        canRename,
-        canExtendedRename,
-        canCopyItems,
-        canMoveItems,        
-        canInsertItems
+        // getItems,
+        // sort,
+        // refresh,
+        // onAction,
+        // getItemWithPath,
+        // canCreateFolder,
+        // canDelete,
+        // canRename,
+        // canExtendedRename,
+        // canCopyItems,
+        // canMoveItems,        
+        // canInsertItems
     }
     return thisProcessor
 }
-//</script>
 /*
 mport { RootPresenter as RootPresenterBase, PresenterBase, RootItem } from '../../rootpresenter.js'
 import { ColumnsControl } from '../../../columnscontrol.js'
