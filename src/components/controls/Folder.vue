@@ -222,25 +222,26 @@ export default Vue.extend({
         // refresh() {
         //     this.changePath(this.path, this.path, false)
         // },
-        // changeFolder(path) { 
-        //     this.changePath(path, path, true)
-        // },
+        changeFolder(path: string) { 
+            this.changePath(path, path, true)
+        },
         // onBacktrack(evt) {
         //     if (!this.restrictValue) 
         //         this.changePath(null, null, true, evt.ctrlKey ? 1 : -1) 
         // },
         onInputKeyDown(evt: KeyboardEvent) {
-        //     switch (evt.which) {
-        //         case 9: // TAB
-        //             this.focus()
-        //             break
-        //         case 13: // enter
-        //             this.path = this.$refs.input.value
-        //             this.focus()
-        //             break
-        //         default:
-        //             return // exit this handler for other keys
-        //     }
+            switch (evt.which) {
+                case 9: // TAB
+                    this.focus()
+                    break
+                case 13: // enter
+                    // todo:
+                    this.path = (this as any).$refs.input.value
+                    this.focus()
+                    break
+                default:
+                    return // exit this handler for other keys
+            }
             evt.preventDefault() // prevent the default action (scroll / move caret)
         },
         onColumnsWidthChanged(widths: string[]) {
