@@ -259,11 +259,11 @@ export default Vue.extend({
                 case "devtools":
                     electron.ipcRenderer.send("openDevTools")
                     break
-        //         case "showHidden":
-        //             this.$store.commit('setShowHidden', !this.$store.state.showHidden)
-        //             if (menuItem)
-        //                 menuItem.isSelected = this.$store.state.showHidden
-        //             break
+                case "showHidden":
+                    this.$store.commit('setShowHidden', !this.$store.state.showHidden)
+                    if (menuItem)
+                        menuItem.isSelected = this.$store.state.showHidden
+                    break
         //         case "showViewer":
         //             this.$store.commit('setShowViewer', !this.$store.state.showViewer)
         //             if (menuItem)

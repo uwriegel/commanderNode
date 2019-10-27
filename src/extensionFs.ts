@@ -30,7 +30,7 @@ export interface FileItem {
     size: number
     time: Date
     isDirectory: boolean
-    isHidden: boolean
+    isHidden?: boolean
 
     isExif: boolean
     version: string

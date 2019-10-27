@@ -213,12 +213,7 @@ export default Vue.extend({
             return this.columns.values
         },
         // mix this into the outer object with the object spread operator
-
-
-
-        // TODO:
-        //...mapState(['showHidden'])
-        showHidden() { return false}
+        ...mapState(['showHidden'])
     },
     methods: {
         focus() { this.tableEventBus.$emit("focus") },
@@ -360,7 +355,7 @@ export default Vue.extend({
             if (checkProcessor) 
                 this.changeProcessor(createProcessor(this.processor, path))
 
-            this.items = await this.processor.getItems(path, this.showHidden)
+            this.items = await this.processor.getItems(path, (this as any).showHidden)
             const pathChanged = this.path != path
             this.path = path
             localStorage[`${this.id}-path`] = path
