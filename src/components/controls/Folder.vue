@@ -1,7 +1,7 @@
 <template>
     <div tabindex="1" class="root" @focus=focus @focusin=onfocusIn 
             @dragenter='onDragEnter' @dragleave='onDragLeave' @dragover='onDragOver' @drop='onDrop'> 
-        <input ref="input" v-selectall @keydown='onInputKeyDown' :value="path">
+            <input ref="input" v-selectall @keydown='onInputKeyDown' :value="path">
         <table-view class='table' :eventBus="tableEventBus" :columns='tableViewColumns' :items='items' :itemHeight='18' 
                 :class="{isDragging: isDragging, isDragStarted: isDragStarted, isBacktrackEnd: isBacktrackEnd}"
                 @column-click='onSort' v-stream:keydown.native='keyDown$'
@@ -216,7 +216,7 @@ export default Vue.extend({
     },
     methods: {
         focus() { this.tableEventBus.$emit("focus") },
-        // onfocusIn() { this.$emit("focus-in") },
+        onfocusIn() { this.$emit("focus-in") },
         // refresh() {
         //     this.changePath(this.path, this.path, false)
         // },
@@ -227,7 +227,7 @@ export default Vue.extend({
         //     if (!this.restrictValue) 
         //         this.changePath(null, null, true, evt.ctrlKey ? 1 : -1) 
         // },
-        // onInputKeyDown(evt) {
+        onInputKeyDown(evt: KeyboardEvent) {
         //     switch (evt.which) {
         //         case 9: // TAB
         //             this.focus()
@@ -239,8 +239,8 @@ export default Vue.extend({
         //         default:
         //             return // exit this handler for other keys
         //     }
-        //     evt.preventDefault() // prevent the default action (scroll / move caret)
-        // },
+            evt.preventDefault() // prevent the default action (scroll / move caret)
+        },
         onColumnsWidthChanged(widths: string[]) {
             localStorage[this.getStorageColumnsWidthName()] = JSON.stringify(widths)
         },
@@ -268,15 +268,15 @@ export default Vue.extend({
         // onDragEnd(evt) {
         //     this.isDragStarted = false
         // },
-        // onDragEnter(evt) {
-        //     if (this.$refs.table.$el.contains(evt.target) && !this.isDragStarted) 
-        //         this.isDragging = true
-        // },
-        // onDragLeave(evt) {
+        onDragEnter(evt: DragEvent) {
+            // if (this.$refs.table.$el.contains(evt.target) && !this.isDragStarted) 
+            //     this.isDragging = true
+        },
+        onDragLeave(evt: DragEvent) {
         //     if (!(evt.fromElement && this.$refs.table.$el.contains(evt.fromElement)))
         //         this.isDragging = false
-        // },
-        // onDragOver(evt) {
+        },
+        onDragOver(evt: DragEvent) {
         //     if (this.isDragging) {
         //         evt.dataTransfer.dropEffect = 
         //             evt.dataTransfer.allowedEffect == "move" 
@@ -299,8 +299,8 @@ export default Vue.extend({
                     
         //         evt.preventDefault(); // Necessary. Allows us to drop.
         //     }
-        // },
-        // onDrop(evt) {
+        },
+        onDrop(evt: DragEvent) {
         //     this.isDragging = false
 
         //     const data = evt.dataTransfer.getData("copyFiles")
@@ -323,7 +323,7 @@ export default Vue.extend({
         //             })
         //     }
         //     return false
-        // },
+        },
         async changePath(path: string, lastPath?: string, checkProcessor?: boolean, backtrackDirection?: number) {
         //    this.restrictClose(true)
 
