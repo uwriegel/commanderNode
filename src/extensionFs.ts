@@ -27,13 +27,13 @@ export interface FileItem {
     name: string
     isSelected: boolean
 
-    size: number
-    time: Date
+    size?: number
+    time?: Date
     isDirectory: boolean
     isHidden?: boolean
 
-    isExif: boolean
-    version: string
+    isExif?: boolean
+    version?: string
 }
 
 export interface DriveItem {

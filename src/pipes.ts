@@ -1,3 +1,5 @@
+import { Version } from './extensionFs'
+
 const dateFormat = Intl.DateTimeFormat("de-DE", {
     year: "numeric",
     month: "2-digit",
@@ -9,7 +11,7 @@ const timeFormat = Intl.DateTimeFormat("de-DE", {
     minute: "2-digit"
 })
 
-export function getSize(value) {
+export function getSize(value: number) {
     if (!value)
         return ''
 
@@ -28,7 +30,7 @@ export function getSize(value) {
     return strNumber
 }
 
-export function getNameOnly(value) {
+export function getNameOnly(value: string) {
     if (!value)
         return ''
 
@@ -36,7 +38,7 @@ export function getNameOnly(value) {
     return value.substring(0, pos)
 }
 
-export function getExtension(value) {
+export function getExtension(value: string) {
     if (!value)
         return ''
 
@@ -44,14 +46,14 @@ export function getExtension(value) {
     return value.substring(pos + 1)
 }
 
-export function getDateTime(date) {
+export function getDateTime(date: Date) {
     if (!date)
         return ''
 
     return dateFormat.format(date) + " " + timeFormat.format(date)  
 }
 
-export function getIconUrl(value, path) {
+export function getIconUrl(value: string, path: string) {
     if (value.toLowerCase().endsWith(".exe")) 
         return "icon://" + path + '/' + value 
 
@@ -59,10 +61,10 @@ export function getIconUrl(value, path) {
     return pos != -1 ? "icon://" + value.substring(pos + 1) : ""
 }
 
-export function getVersion(version) {
+export function getVersion(version: Version) {
     return version 
         ? version.major + "."  + version.minor + "." + version.build + "." + version.patch
         : ""
 }
 
-export function get0IfEmpty(text) { return text || "0" }
+export function get0IfEmpty(text: string) { return text || "0" }

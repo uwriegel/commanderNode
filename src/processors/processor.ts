@@ -12,11 +12,6 @@ export const SHARES = "shares:"
 
 // TODO: onAction: getShares mit starker Verzögerung, wenn dann bereits weiter geändert
 
-export enum FolderType {
-    DEFAULT,
-    ROOT,
-}
-
 export interface FolderColumn {
     name: string
     isSortable?: boolean
@@ -25,14 +20,17 @@ export interface FolderColumn {
     width?: number | string
 }
 
+export const FOLDER_DEFAULT = "DEFAULT"
+
 export interface FolderColumns {
-    type: FolderType
+    type: string
     values: FolderColumn[]
 }
 
 export interface FolderItem {
-    name: string
-    isSelected: boolean
+    name?: string
+    isSelected?: boolean
+    isDirectory?: boolean
 }
 
 export interface Processor {
@@ -41,6 +39,14 @@ export interface Processor {
     dispose(): void
     getColumns(recentColumns: FolderColumns): FolderColumns
     getItems(path?: string, showHidden?: boolean): Promise<FolderItem[]>
+    onAction(items: FolderItem[]): OnActionResult
+}
+
+export interface OnActionResult {
+    done: boolean,
+    newProcessor?: Processor,
+    path?: string
+    lastPath?: string
 }
 
 export function createProcessor(recentProcessor: Processor, path: string) {
@@ -65,8 +71,9 @@ export function getDefaultProcessor(): Processor {
         name: "default",
         path: "default",
         dispose: () => {},
-        getColumns: (recentColumns: FolderColumns) => { return { type: FolderType.DEFAULT, values: []} },
-        getItems: () => new Promise<FolderItem[]>(_ => {})
+        getColumns: (recentColumns: FolderColumns) => { return { type: FOLDER_DEFAULT, values: []} },
+        getItems: () => new Promise<FolderItem[]>(_ => {}),
+        onAction: (items: FolderItem[]) => { return { done: false }}
     }
 }
 
@@ -75,7 +82,7 @@ export function combinePath(path1: string, path2: string) {
         let pos = path1.lastIndexOf(pathDelimiter, path1.length - 2)
         if (path1[pos - 1] == ':')
             pos += 1
-        return pos != -1 ? path1.substr(0, pos) : null
+        return pos != -1 ? path1.substr(0, pos) : undefined
     }
     return path1.endsWith(pathDelimiter) ? path1 + path2 : path1 + pathDelimiter + path2
 }

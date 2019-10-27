@@ -1,5 +1,6 @@
-import { Processor, ROOT, SERVICES, SHARES, FolderType, FolderColumns, FolderItem } from '../processor'
+import { Processor, ROOT, SERVICES, SHARES, FolderColumns, FolderItem } from '../processor'
 import { RootType, DriveItem } from '../../extensionFs'
+import { getDirectoryProcessor } from '../directory'
 // import { getDirectoryProcessor } from '../directory'
 // import { getServicesProcessor, SERVICES_NAME } from '../services'
 // import { getNetworkSharesProcessor, SHARES_NAME } from '../networkShares'
@@ -46,10 +47,10 @@ export function getRootProcessor(processor: Processor): Processor {
     function checkPath(path: string) { return path == ROOT }
 
     function getColumns(recentColumns: FolderColumns) {
-        return recentColumns.type == FolderType.ROOT
+        return recentColumns.type == ROOT
             ? recentColumns
             : {
-                type: FolderType.ROOT,
+                type: ROOT,
                 values: [{
                         isSortable: true,
                         name: "Name"
@@ -103,22 +104,15 @@ export function getRootProcessor(processor: Processor): Processor {
             return items
     }    
 
-    // function onAction(items) {
-    //     if (items.length == 1)
-    //         return {
-    //             done: false,
-    //             newProcessor: items[0].type == 5 
-    //                     ? getServicesProcessor(thisProcessor) 
-    //                     : (items[0].type == 6 
-    //                         ? getNetworkSharesProcessor(thisProcessor) 
-    //                         : getDirectoryProcessor(thisProcessor, items[0].name)), 
-    //             path: items[0].type == 5 
-    //                 ? SERVICES 
-    //                 : (items[0].type == 6 
-    //                     ? SHARES
-    //                     :items[0].name)
-    //         }
-    // }    
+    function onAction(items: FolderItem[]) {
+        const driveItems = items as DriveItem[]
+        if (driveItems.length == 1)
+            return {
+                done: false,
+                newProcessor: getDirectoryProcessor(thisProcessor, driveItems[0].name), 
+                path: driveItems[0].name
+            }
+    }    
     
     // function getItemWithPath(path, item) { return item.name }
 
@@ -139,7 +133,7 @@ export function getRootProcessor(processor: Processor): Processor {
         getItems,
         // sort,
         refresh,
-        // onAction,
+        onAction,
         // getItemWithPath,
         // canCreateFolder,
         // canDelete,

@@ -1,32 +1,11 @@
-import { ROOT, SERVICES, SHARES, Processor, FolderColumns, FolderType, FolderItem } from '../processor'
-import addon, { RootType } from '../../extensionFs'
+import { ROOT, SERVICES, SHARES, Processor, FolderColumns, FolderItem, OnActionResult } from '../processor'
+import addon, { RootType, DriveItem } from '../../extensionFs'
+import { getDirectoryProcessor } from '../directory'
 // import { getDirectoryProcessor } from '../directory'
 //import { getServicesProcessor, SERVICES_NAME } from '../services'
 //import { getNetworkSharesProcessor, SHARES_NAME } from '../networkShares'
 
 const processorName = "root"
-
-/*
-enum class Drive_type
-{
-	UNKNOWN,
-	HARDDRIVE,
-	ROM,
-	REMOVABLE,
-    NETWORK,
-    
-    Services,
-    NetworkShares
-};
-
-struct Drive_item {
-	const std::wstring name;
-	const std::wstring description;
-	const uint64_t size;
-	const Drive_type type;
-	const bool is_mounted;
-};
-*/
 
 export function getRootProcessor(processor: Processor): Processor {
     if (processor) {
@@ -40,10 +19,10 @@ export function getRootProcessor(processor: Processor): Processor {
     // function checkPath(path) { return path == ROOT }
 
     function getColumns(recentColumns: FolderColumns) {
-        return recentColumns.type == FolderType.ROOT 
+        return recentColumns.type == ROOT 
             ? recentColumns
             : {
-                type: FolderType.ROOT,
+                type: ROOT,
                 values: [{
                         isSortable: true,
                          name: "Name"
@@ -90,22 +69,25 @@ export function getRootProcessor(processor: Processor): Processor {
         return items
     }    
 
-    // function onAction(items) {
-    //     if (items.length == 1)
-    //         return {
-    //             done: false,
-    //             newProcessor: items[0].type == 5 
-    //                     ? getServicesProcessor(thisProcessor) 
-    //                     : (items[0].type == 6 
-    //                         ? getNetworkSharesProcessor(thisProcessor) 
-    //                         : getDirectoryProcessor(thisProcessor, items[0].name)), 
-    //             path: items[0].type == 5 
-    //                 ? SERVICES 
-    //                 : (items[0].type == 6 
-    //                     ? SHARES
-    //                     :items[0].name)
-    //         }
-    // }    
+    function onAction(items: FolderItem[]): OnActionResult {
+        const driveItems = items as DriveItem[]
+        if (items.length == 1)
+            return {
+               done: false,
+               newProcessor: /*driveItems[0].type == RootType.SERVICES 
+                    ? getServicesProcessor(thisProcessor) 
+                    : (driveItems[0].type == RootType.SHARES 
+                        ? getNetworkSharesProcessor(thisProcessor) 
+                        : */getDirectoryProcessor(thisProcessor, driveItems[0].name),//), 
+                path: driveItems[0].type == RootType.SERVICES
+                    ? SERVICES 
+                    : (driveItems[0].type == RootType.SHARES
+                        ? SHARES
+                        :driveItems[0].name)
+            }
+        else
+            return { done: false }
+    }    
     
     // function getItemWithPath(path, item) { return item.name }
 
@@ -126,7 +108,7 @@ export function getRootProcessor(processor: Processor): Processor {
         getItems,
         // sort,
         refresh,
-        // onAction,
+        onAction,
         // getItemWithPath,
         // canCreateFolder,
         // canDelete,

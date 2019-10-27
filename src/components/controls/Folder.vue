@@ -129,15 +129,15 @@
 
 <script lang="ts">
 import Vue, { PropType} from 'vue'
-import { getDefaultProcessor, combinePath, ROOT, createProcessor, Processor, FolderColumns, FolderType, FolderItem } from '../../processors/processor'
+import { getDefaultProcessor, combinePath, ROOT, FOLDER_DEFAULT, createProcessor, Processor, FolderColumns, FolderItem } from '../../processors/processor'
 //import { create as createExtendedRename, reset as resetExtendedRename } from '../../processors/extendedRename'
-import TableView from './TableView.vue'
-// import ParentIcon from '../../icons/ParentIcon'
-// import DriveIcon from '../../icons/DriveIcon'
-// import FolderIcon from '../../icons/FolderIcon'
-// import ServiceIcon from '../../icons/ServiceIcon'
-// import ShareIcon from '../../icons/ShareIcon'
-// import { Observable, map, pipe, filter } from "rxjs/operators"
+import TableView, { TableViewItem } from './TableView.vue'
+import ParentIcon from '../../icons/ParentIcon.vue'
+import DriveIcon from '../../icons/DriveIcon.vue'
+import FolderIcon from '../../icons/FolderIcon.vue'
+import ServiceIcon from '../../icons/ServiceIcon.vue'
+import ShareIcon from '../../icons/ShareIcon.vue'
+//import { Observable, map, pipe, filter } from "rxjs/operators"
 import { mapState } from 'vuex'
 import { Column } from './Columns.vue'
 // import { getExtension } from '../../pipes'
@@ -148,17 +148,17 @@ import { Column } from './Columns.vue'
 export default Vue.extend({
     components: {
         TableView,
-        // ParentIcon,
-        // DriveIcon,
-        // FolderIcon,
-        // ServiceIcon,
-        // ShareIcon
+        ParentIcon,
+        DriveIcon,
+        FolderIcon,
+        ServiceIcon,
+        ShareIcon
     },
     data() {
         return {
             tableEventBus: new Vue(),
             selectedIndex: 0,
-            columns: {type: FolderType.DEFAULT, values: [] } as FolderColumns,
+            columns: {type: FOLDER_DEFAULT, values: [] } as FolderColumns,
             items: [] as FolderItem[],
             processor: getDefaultProcessor(),
             path: "",
@@ -245,10 +245,10 @@ export default Vue.extend({
         onColumnsWidthChanged(widths: string[]) {
             localStorage[this.getStorageColumnsWidthName()] = JSON.stringify(widths)
         },
-        // onDelete() {
-        //     this.$emit("delete")
-        // },
-        // onDragStart(evt) {
+        onDelete() {
+            this.$emit("delete")
+        },
+        onDragStart(evt: DragEvent) {
         //     this.isDragStarted = true
         //     const files = this.getSelectedItems().map(n => { return {
         //                 dir: this.path, 
@@ -258,17 +258,17 @@ export default Vue.extend({
         //             }
         //         })
         //     evt.dataTransfer.setData("copyFiles", JSON.stringify(files));
-        // },
-        // onDrag(evt) {
+        },
+        onDrag(evt: DragEvent) {
         //     if (evt.screenX == 0 && evt.screenY == 0) {
         //         electron.ipcRenderer.send("dragStart", this.getSelectedItems().map(n => path.join(this.path, n.name)))
         //         this.isDragStarted = false
         //         evt.preventDefault()
         //     }
-        // },
-        // onDragEnd(evt) {
+        },
+        onDragEnd(evt: DragEvent) {
         //     this.isDragStarted = false
-        // },
+        },
         onDragEnter(evt: DragEvent) {
             // if (this.$refs.table.$el.contains(evt.target) && !this.isDragStarted) 
             //     this.isDragging = true
@@ -368,22 +368,22 @@ export default Vue.extend({
         //     }
         },
         // onResize() { this.$refs.table.onResize() },
-        // onSort(index, descending) {
+        onSort(index: number, descending: boolean) {
         //     const selected = this.items[this.$refs.table.index]
         //     this.items = this.processor.sort(this.items, index, descending, this.showHidden)
         //     const newPos = this.items.findIndex(n => n == selected)
         //     this.onSelectedItemsChanged()
         //     setTimeout(() => this.$refs.table.setCurrentIndex(newPos))
-        // },
-        // onAction(item) {
-        //     const selectedItems = this.getSelectedItems()
-        //     const result = this.processor.onAction(item.isDirectory ? [ item ] : selectedItems)
-        //     if (!result.done) {
-        //         if (result.newProcessor)
-        //             this.changeProcessor(result.newProcessor)
-        //         this.changePath(result.path, result.lastPath)
-        //     }
-        // },
+        },
+        onAction(item: TableViewItem) {
+            const selectedItems = this.getSelectedItems()
+            const result = this.processor.onAction((item as FolderItem).isDirectory ? [ item as FolderItem ] : selectedItems)
+            if (!result.done && result.path) {
+                if (result.newProcessor)
+                    this.changeProcessor(result.newProcessor)
+                this.changePath(result.path, result.lastPath)
+            }
+        },
         onSelectionChanged(newIndex: number) { 
             this.selectedIndex = newIndex
             //this.$emit('selection-changed', this.getSelectedItem(newIndex)) 
@@ -409,14 +409,14 @@ export default Vue.extend({
         //         ? this.processor.getItemWithPath(this.path, this.items[selectedIndex || this.$refs.table.index]) 
         //         : ""
         // },
-        // getSelectedItems() {
-        //     const items = this.items.filter(n => n.isSelected)
-        //     return items.length > 0 
-        //     ? items 
-        //     : (this.items[this.$refs.table.index].name != ".." 
-        //         ? [ this.items[this.$refs.table.index] ] 
-        //         : [])
-        // },
+        getSelectedItems() {
+            const items = this.items.filter(n => n.isSelected)
+            return items.length > 0 
+            ? items 
+            : (this.items[this.selectedIndex].name != ".." 
+                ? [ this.items[this.selectedIndex] ] 
+                : [])
+        },
         // getProcessor() { return this.processor },
         // canDeleteItems() { return this.processor.canDelete() },
         // canCreateFolder() { return this.processor.canCreateFolder() },
