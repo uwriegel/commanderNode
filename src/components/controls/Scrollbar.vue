@@ -30,8 +30,8 @@ export default Vue.extend({
     data() {
         return {
             position: 0,
-            timer: undefined as number|undefined,
-            interval: undefined as number|undefined
+            timer: undefined as NodeJS.Timeout|undefined,
+            interval: undefined as NodeJS.Timeout|undefined
         }
     },
     watch: {
@@ -105,12 +105,12 @@ export default Vue.extend({
             window.addEventListener('mouseup', onup)
         },
         mouseup(evt?: MouseEvent) {
-            clearTimeout(this.timer)
-            clearInterval(this.interval)
+            clearTimeout(this.timer as any as number)
+            clearInterval(this.interval as any as number)
         },
         mouseleave(evt: MouseEvent) {
-            clearTimeout(this.timer)
-            clearInterval(this.interval)
+            clearTimeout(this.timer as any as number)
+            clearInterval(this.interval as any as number)
         },
         setPosition(position: number) {
             this.position = position

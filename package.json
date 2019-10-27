@@ -39,7 +39,7 @@
     "core-js": "^3.3.3",
     "cross-env": "^5.2.0",
     "electron-settings": "^3.2.0",
-    "extension-fs": "^5.0.0",
+    "extension-fs": "^6.0.1",
     "rxjs": "^6.5.2",
     "vue": "^2.6.10",
     "vue-electron-titlebar": "^1.2.0",
