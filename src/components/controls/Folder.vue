@@ -140,6 +140,8 @@ import ShareIcon from '../../icons/ShareIcon.vue'
 import { map, filter } from "rxjs/operators"
 import { mapState } from 'vuex'
 import { Column } from './Columns.vue'
+import { Observable } from 'rxjs'
+import { FileItem } from '../../extensionFs'
 // import { getExtension } from '../../pipes'
 // import { renameFiles } from "../../extendedRename"
 // const path = window.require('path')
@@ -165,7 +167,11 @@ export default Vue.extend({
             restrictValue: "",
             isDragging: false,
             isDragStarted: false,
-            isBacktrackEnd: false
+            isBacktrackEnd: false,
+            backtrack: undefined as string[] | undefined,
+            backtrackPosition: undefined as number | undefined,
+            originalItems: undefined as FolderItem[] | undefined | null,
+            dropEffect: undefined as string | undefined
         }
     },
     props: {
@@ -185,8 +191,8 @@ export default Vue.extend({
     domStreams: ["keyDown$"],
     created() {
         const path = localStorage[`${this.id}-path`] || ROOT
-        // this.backtrack = []
-        // this.backtrackPosition = -1
+        this.backtrack = []
+        this.backtrackPosition = -1
         this.changePath(path, undefined, true)
     },
     mounted() {
@@ -202,10 +208,10 @@ export default Vue.extend({
             (this.$refs as any).input.focus()
             n.event.preventDefault()
         })
-        //this.$subscribeTo(inputChars$, evt => this.restrictTo(evt.event))
-        //this.$subscribeTo(backSpaces$, evt => this.onBacktrack(evt.event))
-        //this.$subscribeTo(backSpaces$, () => this.restrictBack())
-        //this.$subscribeTo(escapes$, () => this.restrictClose())
+        this.$subscribeTo(inputChars$, (evt: any) => this.restrictTo(evt.event))
+        this.$subscribeTo(backSpaces$, (evt: any)  => this.onBacktrack(evt.event))
+        this.$subscribeTo(backSpaces$, () => this.restrictBack())
+        this.$subscribeTo(escapes$, () => this.restrictClose())
 
         this.initializeSelection()        
     },
@@ -219,16 +225,16 @@ export default Vue.extend({
     methods: {
         focus() { this.tableEventBus.$emit("focus") },
         onfocusIn() { this.$emit("focus-in") },
-        // refresh() {
-        //     this.changePath(this.path, this.path, false)
-        // },
+        refresh() {
+            this.changePath(this.path, this.path, false)
+        },
         changeFolder(path: string) { 
             this.changePath(path, path, true)
         },
-        // onBacktrack(evt) {
-        //     if (!this.restrictValue) 
-        //         this.changePath(null, null, true, evt.ctrlKey ? 1 : -1) 
-        // },
+        onBacktrack(evt: KeyboardEvent) {
+            if (!this.restrictValue) 
+                this.changePath(undefined, undefined, true, evt.ctrlKey ? 1 : -1) 
+        },
         onInputKeyDown(evt: KeyboardEvent) {
             switch (evt.which) {
                 case 9: // TAB
@@ -251,125 +257,125 @@ export default Vue.extend({
             this.$emit("delete")
         },
         onDragStart(evt: DragEvent) {
-        //     this.isDragStarted = true
-        //     const files = this.getSelectedItems().map(n => { return {
-        //                 dir: this.path, 
-        //                 name: n.name,
-        //                 size: n.size,
-        //                 time: n.time
-        //             }
-        //         })
-        //     evt.dataTransfer.setData("copyFiles", JSON.stringify(files));
+            this.isDragStarted = true
+            const files = this.getSelectedItems().map(n => { return {
+                        dir: this.path, 
+                        name: n.name,
+                        size: (n as FileItem).size,
+                        time: (n as FileItem).time
+                    }
+                })
+            evt.dataTransfer!!.setData("copyFiles", JSON.stringify(files));
         },
         onDrag(evt: DragEvent) {
-        //     if (evt.screenX == 0 && evt.screenY == 0) {
-        //         electron.ipcRenderer.send("dragStart", this.getSelectedItems().map(n => path.join(this.path, n.name)))
-        //         this.isDragStarted = false
-        //         evt.preventDefault()
-        //     }
+            if (evt.screenX == 0 && evt.screenY == 0) {
+                //electron.ipcRenderer.send("dragStart", this.getSelectedItems().map(n => path.join(this.path, n.name)))
+                this.isDragStarted = false
+                evt.preventDefault()
+            }
         },
         onDragEnd(evt: DragEvent) {
-        //     this.isDragStarted = false
+            this.isDragStarted = false
         },
         onDragEnter(evt: DragEvent) {
-            // if (this.$refs.table.$el.contains(evt.target) && !this.isDragStarted) 
+            // if ((this.$refs.table as HTMLElement).$el.contains(evt.target) && !this.isDragStarted) 
             //     this.isDragging = true
         },
         onDragLeave(evt: DragEvent) {
-        //     if (!(evt.fromElement && this.$refs.table.$el.contains(evt.fromElement)))
-        //         this.isDragging = false
+            // if (!(evt.fromElement && this.$refs.table.$el.contains(evt.fromElement)))
+            //     this.isDragging = false
         },
         onDragOver(evt: DragEvent) {
-        //     if (this.isDragging) {
-        //         evt.dataTransfer.dropEffect = 
-        //             evt.dataTransfer.allowedEffect == "move" 
-        //             || evt.dataTransfer.effectAllowed == "copyMove"
-        //             || evt.dataTransfer.effectAllowed == "linkMove"
-        //             || evt.dataTransfer.effectAllowed == "all"
-        //             ? "move" 
-        //             : (evt.dataTransfer.allowedEffect == "copy" 
-        //                 || evt.dataTransfer.effectAllowed == "copyMove"
-        //                 || evt.dataTransfer.effectAllowed == "copyLink"
-        //                 || evt.dataTransfer.effectAllowed == "all"
-        //                 ? "copy"
-        //                 : "none")
-        //         if (evt.ctrlKey && evt.dataTransfer.dropEffect == "move" && (evt.dataTransfer.allowedEffect == "copy" 
-        //                 || evt.dataTransfer.effectAllowed == "copyMove"
-        //                 || evt.dataTransfer.effectAllowed == "copyLink"
-        //                 || evt.dataTransfer.effectAllowed == "all"))
-        //             evt.dataTransfer.dropEffect = "copy"
-        //             this.dropEffect = evt.dataTransfer.dropEffect
+            if (this.isDragging) {
+                evt.dataTransfer!!.dropEffect = 
+                    (evt.dataTransfer as any).allowedEffect == "move" 
+                    || (evt.dataTransfer as any).effectAllowed == "copyMove"
+                    || (evt.dataTransfer as any).effectAllowed == "linkMove"
+                    || (evt.dataTransfer as any).effectAllowed == "all"
+                    ? "move" 
+                    : ((evt.dataTransfer as any).allowedEffect == "copy" 
+                        || evt.dataTransfer!!.effectAllowed == "copyMove"
+                        || evt.dataTransfer!!.effectAllowed == "copyLink"
+                        || evt.dataTransfer!!.effectAllowed == "all"
+                        ? "copy"
+                        : "none")
+                if (evt.ctrlKey && evt.dataTransfer!!.dropEffect == "move" && ((evt.dataTransfer as any).allowedEffect == "copy" 
+                        || evt.dataTransfer!!.effectAllowed == "copyMove"
+                        || evt.dataTransfer!!.effectAllowed == "copyLink"
+                        || evt.dataTransfer!!.effectAllowed == "all"))
+                    evt.dataTransfer!!.dropEffect = "copy"
+                    this.dropEffect = evt.dataTransfer!!.dropEffect
                     
-        //         evt.preventDefault(); // Necessary. Allows us to drop.
-        //     }
+                evt.preventDefault(); // Necessary. Allows us to drop.
+            }
         },
         onDrop(evt: DragEvent) {
-        //     this.isDragging = false
+            this.isDragging = false
 
-        //     const data = evt.dataTransfer.getData("copyFiles")
-        //     const pathes = 
-        //         data 
-        //         ? JSON.parse(data)
-        //         : Array.from(evt.dataTransfer.files).map(n => { return { 
-        //                 dir: path.dirname(n.path), 
-        //                 name: n.name,
-        //                 size: n.size,
-        //                 time: n.lastModifiedDate
-        //             }})
-        //     if (pathes.length > 0) {
-        //         var sourcePath = pathes[0].dir
-        //         if (!pathes.some(n => n.dir != sourcePath)) 
-        //             this.$emit("drop-files", {
-        //                 dropEffect: this.dropEffect,
-        //                 sourcePath,
-        //                 files: pathes
-        //             })
-        //     }
-        //     return false
+            const data = evt.dataTransfer!!.getData("copyFiles")
+            const pathes = 
+                data 
+                ? JSON.parse(data)
+                : Array.from(evt.dataTransfer!!.files).map(n => { return { 
+                        //dir: path.dirname((n as any).path), 
+                        name: n.name,
+                        size: n.size,
+                        time: (n as any).lastModifiedDate
+                    }})
+            if (pathes.length > 0) {
+                var sourcePath = pathes[0].dir
+                if (!pathes.some((n: any) => n.dir != sourcePath)) 
+                    this.$emit("drop-files", {
+                        dropEffect: this.dropEffect,
+                        sourcePath,
+                        files: pathes
+                    })
+            }
+            return false
         },
-        async changePath(path: string, lastPath?: string, checkProcessor?: boolean, backtrackDirection?: number) {
-        //    this.restrictClose(true)
+        async changePath(path?: string, lastPath?: string, checkProcessor?: boolean, backtrackDirection?: number) {
+            this.restrictClose(true)
 
             switch (backtrackDirection) {
-        //         case -1: 
-        //             if (this.backtrackPosition < 1) {
-        //                 this.isBacktrackEnd = true
-        //                 setTimeout(() => this.isBacktrackEnd = false, 300)
-        //                 return
-        //             }
+                case -1: 
+                    if (this.backtrackPosition!! < 1) {
+                        this.isBacktrackEnd = true
+                        setTimeout(() => this.isBacktrackEnd = false, 300)
+                        return
+                    }
                         
-        //             this.backtrackPosition -=  1
-        //             path = this.backtrack[this.backtrackPosition]
-        //             break
-        //         case 1:
-        //             if (this.backtrackPosition > this.backtrack.length - 2){
-        //                 this.isBacktrackEnd = true
-        //                 setTimeout(() => this.isBacktrackEnd = false, 300)
-        //                 return
-        //             }
-        //             this.backtrackPosition +=  1
-        //             path = this.backtrack[this.backtrackPosition]
-        //             break
+                    this.backtrackPosition!! -=  1
+                    path = this.backtrack!![this.backtrackPosition!!]
+                    break
+                case 1:
+                    if (this.backtrackPosition!! > this.backtrack!!.length - 2){
+                        this.isBacktrackEnd = true
+                        setTimeout(() => this.isBacktrackEnd = false, 300)
+                        return
+                    }
+                    this.backtrackPosition!! +=  1
+                    path = this.backtrack!![this.backtrackPosition!!]
+                    break
                 default:
                     break
             }
 
             if (checkProcessor) 
-                this.changeProcessor(createProcessor(this.processor, path))
+                this.changeProcessor(createProcessor(this.processor, path!!))
 
             this.items = await this.processor.getItems(path, (this as any).showHidden)
             const pathChanged = this.path != path
-            this.path = path
+            this.path = path!!
             localStorage[`${this.id}-path`] = path
-        //     if (!backtrackDirection && pathChanged)
-        //         this.backtrackPosition = this.backtrack.push(path) -1
-        //     if (lastPath) {
-        //         const newPos = this.items.findIndex(n => n.name == lastPath)
-        //         if (newPos != -1) 
-        //             setTimeout(() => this.$refs.table.setCurrentIndex(newPos))
-        //     }
+            if (!backtrackDirection && pathChanged)
+                this.backtrackPosition = this.backtrack!!.push(path!!) -1
+            if (lastPath) {
+                const newPos = this.items.findIndex(n => n.name == lastPath)
+                if (newPos != -1) 
+                    setTimeout(() => this.tableEventBus.$emit("setCurrentIndex", newPos))
+            }
         },
-        // onResize() { this.$refs.table.onResize() },
+        //onResize() { this.$refs.table.onResize() },
         onSort(index: number, descending: boolean) {
         //     const selected = this.items[this.$refs.table.index]
         //     this.items = this.processor.sort(this.items, index, descending, this.showHidden)
@@ -475,30 +481,30 @@ export default Vue.extend({
         //         return false
         //     }
         // },
-        // restrictTo(evt) {
-        //     const items = this.items.filter(n => n.name.toLowerCase().startsWith(this.restrictValue + evt.key))
-        //     if (items.length > 0) {
-        //         if (!this.originalItems)
-        //             this.originalItems = this.items
-        //         this.restrictValue += evt.key      
-        //         this.items = items      
-        //     }
-        // },
-        // restrictClose(leaveItems) {
-        //     this.restrictValue = ""
-        //     if (this.originalItems && !leaveItems)
-        //         this.items = this.originalItems
-        //     this.originalItems = null
-        // },
-        // restrictBack() {
-        //     if (this.restrictValue.length > 0) {
-        //         this.restrictValue = this.restrictValue.substr(0, this.restrictValue.length - 1);
-        //         if (this.restrictValue.length == 0)
-        //             this.restrictClose()
-        //         else 
-        //             this.items = this.originalItems.filter(n => n.name.toLowerCase().startsWith(this.restrictValue))
-        //     }
-        // },
+        restrictTo(evt: KeyboardEvent) {
+            const items = this.items.filter(n => n.name!!.toLowerCase().startsWith(this.restrictValue + evt.key))
+            if (items.length > 0) {
+                if (!this.originalItems)
+                    this.originalItems = this.items
+                this.restrictValue += evt.key      
+                this.items = items      
+            }
+        },
+        restrictClose(leaveItems?: boolean) {
+            this.restrictValue = ""
+            if (this.originalItems && !leaveItems)
+                this.items = this.originalItems
+             this.originalItems = null
+        },
+        restrictBack() {
+            if (this.restrictValue.length > 0) {
+                this.restrictValue = this.restrictValue.substr(0, this.restrictValue.length - 1);
+                if (this.restrictValue.length == 0)
+                    this.restrictClose()
+                else 
+                    this.items = this.originalItems!!.filter(n => n.name!!.toLowerCase().startsWith(this.restrictValue))
+            }
+        },
         // deleteFiles(itemsToDelete) {
         //     return this.processor.deleteFiles(itemsToDelete)
         // },
