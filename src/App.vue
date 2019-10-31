@@ -4,14 +4,14 @@
             <vue-menu-bar :items="menuItems" @on-menu-item-clicked="onMenuItem" />
         </vue-electron-titlebar>
         <div class="main">
-            <column-test></column-test>
+            <!-- <column-test></column-test> -->
             <!-- <scrollbar-test></scrollbar-test> -->
             <!-- <table-view-test></table-view-test> -->
             <!-- <connection-test></connection-test> -->
             <!-- <folder-test></folder-test> -->
             <!-- <splitter-grid-test></splitter-grid-test> -->
             <!-- <viewer-test></viewer-test> -->
-            <!-- <commander ref="commander"></commander> -->
+            <commander ref="commander"></commander>
         </div>
     </div>
 </template>
