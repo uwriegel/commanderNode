@@ -257,15 +257,15 @@ export default Vue.extend({
             this.$emit("delete")
         },
         onDragStart(evt: DragEvent) {
-            this.isDragStarted = true
-            const files = this.getSelectedItems().map(n => { return {
-                        dir: this.path, 
-                        name: n.name,
-                        size: (n as FileItem).size,
-                        time: (n as FileItem).time
-                    }
-                })
-            evt.dataTransfer!!.setData("copyFiles", JSON.stringify(files));
+            // this.isDragStarted = true
+            // const files = this.getSelectedItems().map(n => { return {
+            //             dir: this.path, 
+            //             name: n.name,
+            //             size: (n as FileItem).size,
+            //             time: (n as FileItem).time
+            //         }
+            //     })
+            // evt.dataTransfer!!.setData("copyFiles", JSON.stringify(files));
         },
         onDrag(evt: DragEvent) {
             if (evt.screenX == 0 && evt.screenY == 0) {

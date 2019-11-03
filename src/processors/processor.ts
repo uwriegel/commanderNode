@@ -1,10 +1,13 @@
 import { isLinux, pathDelimiter } from '../platform'
 import { getRootProcessor as getWindowsRootProcessor } from './windows/root'
 import { getRootProcessor as getLinuxRootProcessor } from './linux/root'
-// import { getDirectoryProcessor } from './directory'
-// import { getServicesProcessor } from './services'
-// import { getNetworkSharesProcessor } from './networkShares'
-// import { getNetworkShareProcessor } from './networkShare'
+import { DriveItem } from '../extensionFs'
+import { getServicesProcessor } from './services'
+import { getNetworkSharesProcessor } from './networkShares'
+import { getNetworkShareProcessor } from './networkShare'
+import { getDirectoryProcessor } from './directory'
+
+export interface DriveViewItem extends DriveItem, FolderItem {} 
 
 export const ROOT = "root:"
 export const SERVICES = "services:"
@@ -28,9 +31,12 @@ export interface FolderColumns {
 }
 
 export interface FolderItem {
-    name?: string
+    name: string
+    isCurrent?: boolean
+    index: number
     isSelected?: boolean
-    isDirectory?: boolean
+    isDirectory: boolean
+    isHidden?: boolean    
 }
 
 export interface Processor {
@@ -50,20 +56,20 @@ export interface OnActionResult {
 }
 
 export function createProcessor(recentProcessor: Processor, path: string) {
- //   switch (path) {
-//        case ROOT:
+    switch (path) {
+        case ROOT:
             return isLinux 
                 ? getLinuxRootProcessor(recentProcessor) 
                 : getWindowsRootProcessor(recentProcessor)
-        // case SERVICES:
-        //     return getServicesProcessor(recentProcessor)
-        // case SHARES:
-        //     return getNetworkSharesProcessor(recentProcessor)
-        // default:
-        //     return (path && path.startsWith("\\\\") && path.indexOf('\\', 2) == -1)
-        //         ? getNetworkShareProcessor(recentProcessor, path)
-        //         : getDirectoryProcessor(recentProcessor, path)
-//    }
+        case SERVICES:
+            return getServicesProcessor(recentProcessor)
+        case SHARES:
+            return getNetworkSharesProcessor(recentProcessor)
+        default:
+            return (path && path.startsWith("\\\\") && path.indexOf('\\', 2) == -1)
+                ? getNetworkShareProcessor(recentProcessor, path)
+                : getDirectoryProcessor(recentProcessor, path)
+   }
 }
 
 export function getDefaultProcessor(): Processor {

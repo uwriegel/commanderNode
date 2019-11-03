@@ -1,4 +1,4 @@
-import { Version } from './extensionFs'
+import { VersionInfo } from './extensionFs'
 
 const dateFormat = Intl.DateTimeFormat("de-DE", {
     year: "numeric",
@@ -61,7 +61,7 @@ export function getIconUrl(value: string, path: string) {
     return pos != -1 ? "icon://" + value.substring(pos + 1) : ""
 }
 
-export function getVersion(version: Version) {
+export function getVersion(version: VersionInfo) {
     return version 
         ? version.major + "."  + version.minor + "." + version.build + "." + version.patch
         : ""

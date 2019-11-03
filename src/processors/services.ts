@@ -5,7 +5,7 @@ export const SERVICES_NAME = "Dienste"
 
 const processorName = "services"
 
-export function getServicesProcessor(processor: Processor) {
+export function getServicesProcessor(processor: Processor): Processor {
     if (processor) {
         if (processor.name == processorName)
             return processor

@@ -6,7 +6,7 @@ export const SHARES_NAME = "Freigaben"
 
 const processorName = "shares"
 
-export function getNetworkSharesProcessor(processor: Processor) {
+export function getNetworkSharesProcessor(processor: Processor): Processor {
     if (processor) {
         if (processor.name == processorName)
             return processor

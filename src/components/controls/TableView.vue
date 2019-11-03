@@ -22,8 +22,8 @@ import Columns, { Column } from './Columns.vue'
 import Scrollbar from './Scrollbar.vue'
 
 export interface TableViewItem {
-    isCurrent: boolean
-    index?: number
+    isCurrent?: boolean
+    index: number
 }
 
 export default Vue.extend({

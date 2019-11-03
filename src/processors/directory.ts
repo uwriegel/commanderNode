@@ -1,18 +1,21 @@
 //import { getNameOnly, getExtension } from '../../cache/pipes'
 import { createProcessor, combinePath, ROOT, Processor, FolderColumns, FolderItem, OnActionResult, getDefaultProcessor } from './processor'
-import addon, { Version, FileItem } from '../extensionFs'
-//import { getNetworkShareProcessor } from './networkShare'
+import extFs, { VersionInfo, FileItem } from '../extensionFs'
+import { getNetworkShareProcessor } from './networkShare'
+import { getNameOnly, getExtension } from '../pipes'
 //import { sendToMain } from '../../cache/src/Connection'
 //const electron = window.require('electron')
 
-export function compareVersions(version1: Version, version2: Version) {
+export interface FileViewItem extends FileItem, FolderItem {} 
+
+export function compareVersions(version1?: VersionInfo, version2?: VersionInfo) {
     return !version1 && !version2 ? 1
     : version1 && !version2 ? 1
     : !version1 && version2 ? -1
-    : version1.major != version2.major ? version1.major - version2.major
-    : version1.minor != version2.minor ? version1.minor - version2.minor
-    : version1.build != version2.build ? version1.build - version2.build
-    : version1.patch != version2.patch ? version1.patch - version2.patch 
+    : version1!!.major != version2!!.major ? version1!!.major - version2!!.major
+    : version1!!.minor != version2!!.minor ? version1!!.minor - version2!!.minor
+    : version1!!.build != version2!!.build ? version1!!.build - version2!!.build
+    : version1!!.patch != version2!!.patch ? version1!!.patch - version2!!.patch 
     : 0
 }
 
@@ -26,7 +29,7 @@ export function getDirectoryProcessor(processor: Processor, path: string) {
     }
 
     let privates = {
-        sortIndex: null,
+        sortIndex: null as number|null,
         sortDescending: false,
         path
     }
@@ -61,18 +64,20 @@ export function getDirectoryProcessor(processor: Processor, path: string) {
     }
 
     async function getItems(path: string, showHidden: boolean) {
-        const values = (await addon.getFiles(path))
-        values.forEach(n => {
-            if (n.name != "..")
-                n.isSelected = false
-            n.isExif = false
-            n.version = ""
-        })
+        const values = 
+            (await extFs.getFiles(path))
+            .map((n, i) => {
+                const fvi = n as FileViewItem
+                fvi.index = i
+                if (i == 0)
+                    fvi.isSelected = true
+                return fvi
+            })
 
         privates.path = path
         return refresh(values, showHidden)
     }
-    function refresh(values: FileItem[], showHidden: boolean) {
+    function refresh(values: FileViewItem[], showHidden: boolean) {
         if (!showHidden)
             values = values.filter(n => !n.isHidden)
         let dirs = values.filter(n => n.isDirectory)
@@ -80,65 +85,65 @@ export function getDirectoryProcessor(processor: Processor, path: string) {
 
         //getExtendedInfos()
 
-/*        if (privates.sortIndex != null) {
+       if (privates.sortIndex != null) {
             const sort = 
             privates.sortIndex == 0 
-            ? (a, b) => getNameOnly(a.name).localeCompare(getNameOnly(b.name)) :
+            ? (a: FileViewItem, b: FileViewItem) => getNameOnly(a.name).localeCompare(getNameOnly(b.name)) :
             privates.sortIndex == 1 
-            ? (a, b) => getExtension(a.name).localeCompare(getExtension(b.name)) :
+            ? (a: FileViewItem, b: FileViewItem) => getExtension(a.name).localeCompare(getExtension(b.name)) :
             privates.sortIndex == 2
-            ? (a, b) => a.time - b.time :
+            ? (a: FileViewItem, b: FileViewItem) => (a.time ? a.time.getTime() : -1) - (b.time ? b.time.getTime() : -1) :
             privates.sortIndex == 3      
-            ? (a, b) => a.size - b.size    
-            : (a, b) => compareVersions(a.version, b.version)
+            ? (a: FileViewItem, b: FileViewItem) => a.size - b.size    
+            : (a: FileViewItem, b: FileViewItem) => compareVersions(a.version, b.version)
     
             files = files.sort((a, b) => (privates.sortDescending ? -1 : 1) * sort(a, b))
-        }*/
+        }
         
         if (dirs.length == 0 || dirs[0].name != "..")
-            dirs = ([ {name: "..", isDirectory: true, isRoot: true, isSelected: false  } as FileItem ]).concat(dirs)
+            dirs = ([ {name: "..", isDirectory: true, isRoot: true, size: 0, index: 0 } as FileViewItem ]).concat(dirs)
 
         return dirs.concat(files)
 
-        // async function getVersion(fileItem, file) {
-        //     const version = await extFs.getFileVersion(file) 
-        //     if (version.major != 0 || version.minor != 0 || version.build != 0 || version.patch != 0)
-        //         fileItem.version = version
-        // }
+        async function getVersion(fileItem: FileItem, file: string) {
+            const version = await extFs.getFileVersion(file) 
+            if (version.major != 0 || version.minor != 0 || version.build != 0 || version.patch != 0)
+                fileItem.version = version
+        }
 
-        // async function getExif(fileItem, file) {
-        //     const exifDate = await extFs.getExifDate(file)
-        //     if (exifDate) {
-        //         fileItem.time = exifDate
-        //         fileItem.isExifDate = true
-        //     }
-        // }
+        async function getExif(fileItem: FileItem, file: string) {
+            const exifDate = await extFs.getExifDate(file)
+            if (exifDate) {
+                fileItem.time = exifDate
+                fileItem.isExif = true
+            }
+        }
 
-        // async function getExtendedInfos() {
-        //     for (let i = 0; i < files.length; i++) {        
-        //         const fileItem = files[i]
-        //         const file = privates.path + '\\' + fileItem.name
-        //         var checkName = fileItem.name.toLowerCase()
-        //         if (checkName.endsWith(".exe") || checkName.endsWith(".dll")) {
-        //             await getVersion(fileItem, file)
-        //         }
-        //         else if (checkName.endsWith(".jpg")) {
-        //             await getExif(fileItem, file)
-        //         }
-        //     }
-        // }
+        async function getExtendedInfos() {
+            for (let i = 0; i < files.length; i++) {        
+                const fileItem = files[i]
+                const file = privates.path + '\\' + fileItem.name
+                var checkName = fileItem.name.toLowerCase()
+                if (checkName.endsWith(".exe") || checkName.endsWith(".dll")) {
+                    await getVersion(fileItem, file)
+                }
+                else if (checkName.endsWith(".jpg")) {
+                    await getExif(fileItem, file)
+                }
+            }
+        }
     }
 
-    // function sort(items, index, descending, showHidden) {
-    //     privates.sortIndex = index
-    //     privates.sortDescending = descending
-    //     return refresh(items, showHidden)
-    // }
+    function sort(items: FileViewItem[], index: number, descending: boolean, showHidden: boolean) {
+        privates.sortIndex = index
+        privates.sortDescending = descending
+        return refresh(items, showHidden)
+    }
 
-    function onAction(items: FolderItem[]): OnActionResult {
+    function onAction(items: FileViewItem[]): OnActionResult {
         const isDirectory = items.length == 1 && items.every(n => n.isDirectory)
         const files = items.every(n => !n.isDirectory)
-        const pathes = items.map(n => combinePath(privates.path, n.name!!))
+        const pathes = items.map(n => combinePath(privates.path, n.name))
         if (!isDirectory && !files) {
             return { done: true }
         }
@@ -148,7 +153,7 @@ export function getDirectoryProcessor(processor: Processor, path: string) {
                     pathes[0]!!.startsWith("\\\\") && pathes[0]!!.indexOf('\\', 2) == -1
                     ? {
                         done: false,
-                        //newProcessor: getNetworkShareProcessor(thisProcessor, pathes[0]),
+                        newProcessor: getNetworkShareProcessor(thisProcessor, pathes[0]),
                         path: pathes[0],
                         lastPath: getDirectoryName(privates.path)
                     }
@@ -176,8 +181,8 @@ export function getDirectoryProcessor(processor: Processor, path: string) {
         return pos != -1 ? path.substr(pos + 1) : path
     }
 
-    function getItemWithPath(path: string, item: FolderItem) {
-        return combinePath(path, item.name!!)
+    function getItemWithPath(path: string, item: FileViewItem) {
+        return combinePath(path, item.name)
     }
 
     function canCreateFolder() { return true }

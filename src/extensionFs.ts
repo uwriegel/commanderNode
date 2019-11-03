@@ -1,4 +1,4 @@
-export enum RootType {
+export enum RootType  {
 	UNKNOWN,
 	HARDDRIVE,
 	ROM,
@@ -16,52 +16,45 @@ export enum ServiceStatus {
     STARTED
 }
 
-declare enum NetShareType {
+export enum NetShareType {
     DISKTREE,
 	PRINTQ,
 	DEVICE,
 	IPC
 }
 
-export interface FileItem {
-    name: string
-    isSelected: boolean
-
-    size?: number
-    time?: Date
-    isDirectory: boolean
-    isHidden?: boolean
-
-    isExif?: boolean
-    version?: string
-}
-
 export interface DriveItem {
     name: string
-    isSelected: boolean
-
     description?: string
-    size?: number
-    type: RootType
+    size: number
+    type: RootType 
     isMounted?: boolean
 }
 
-export interface Version
-{
+export interface FileItem {
+    name: string
+    size: number
+    time?: Date
+    isDirectory: boolean
+    isExif?: boolean
+    version?: VersionInfo
+}
+
+export interface VersionInfo {
     major: number
     minor: number
-    patch: number
     build: number
+    patch: number
 }
 
 export interface Conflict {
     name: string
     sourceSize: number,
     sourceTime: Date,
-    sourceVersion?: Version
+    sourceVersion?: VersionInfo
     targetSize: number,
     targetTime: Date,
-    targetVersion?: Version
+    targetVersion?: VersionInfo
 }
 
 export interface Service {
@@ -83,7 +76,7 @@ export interface ExtensionFs {
     getIcon(extension: string): Promise<Buffer>
     getExifDate(path: string): Promise<Date|null>
     getConflicts(sourcePath: string, targetPath: string, items: string[]): Promise<Conflict[]>
-    getFileVersion(path: string): Promise<Version>
+    getFileVersion(path: string): Promise<VersionInfo>
     showInfo(path: string): void
     open(path: string): void
     openAs(path: string): void
@@ -103,5 +96,5 @@ export interface ExtensionFs {
     getTest(): number
 }
 
-const addon: ExtensionFs = (window as any).extFs
-export default addon
+const extFs: ExtensionFs = (window as any).extFs
+export default extFs

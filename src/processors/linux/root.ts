@@ -1,31 +1,12 @@
-import { Processor, ROOT, SERVICES, SHARES, FolderColumns, FolderItem } from '../processor'
-import { RootType, DriveItem } from '../../extensionFs'
+import { Processor, ROOT, SERVICES, SHARES, FolderColumns, FolderItem, DriveViewItem } from '../processor'
+import { DriveItem, RootType } from '../../extensionFs'
 import { getDirectoryProcessor } from '../directory'
-// import { getDirectoryProcessor } from '../directory'
-// import { getServicesProcessor, SERVICES_NAME } from '../services'
-// import { getNetworkSharesProcessor, SHARES_NAME } from '../networkShares'
-// import { Column } from '../../components/controls/Columns.vue'
+import { getServicesProcessor, SERVICES_NAME } from '../services'
+import { getNetworkSharesProcessor, SHARES_NAME } from '../networkShares'
+import { Column } from '../../components/controls/Columns.vue'
 
 const processorName = "root"
-
-// export interface Columns {
-//     type: string
-//     values: Column[]
-// }
-
 /*
-enum class Drive_type
-{
-	UNKNOWN,
-	HARDDRIVE,
-	ROM,
-	REMOVABLE,
-    NETWORK,
-    
-    Services,
-    NetworkShares
-};
-
 struct Drive_item {
 	const std::wstring name;
 	const std::wstring description;
@@ -78,34 +59,42 @@ export function getRootProcessor(processor: Processor): Processor {
     async function getItems() {
         const items = ([] as DriveItem[]) //(await extFs.getDrives()).filter(n => n.isMounted)
             .concat([ 
-                { name: "SHARES_NAME", type: RootType.SHARES, isSelected: false },
-                { name: "SERVICES_NAME", type: RootType.SERVICES, isSelected: false }
+                { name: "SHARES_NAME", type: RootType.SHARES, size: 0 },
+                { name: "SERVICES_NAME", type: RootType.SERVICES, size: 0 }
             ])
-        items.forEach(n => n.isSelected = false)
+            .map((n, i) => {
+                const dvi = n as DriveViewItem
+                dvi.index = i
+                if (i == 0)
+                    dvi.isSelected = true
+                return dvi
+            })
         return refresh(items)
     }
-    // function sort(items, index, descending) {
-    //     sortIndex = index
-    //     sortDescending = descending
-    //     return refresh(items)
-    // }
+    
+    function sort(items: FolderItem[], index: number, descending: boolean) {
+        sortIndex = index
+        sortDescending = descending
+        return refresh(items)
+    }
+
     function refresh(items: FolderItem[]) {
-    //     if (sortIndex != null) {
-    //         const sort = 
-    //         sortIndex == 0 
-    //                 ? (a, b) => a.name.localeCompare(b.name) :
-    //                 sortIndex == 1 
-    //                 ? (a, b) => a.description.localeCompare(b.description)
-    //                 : (a, b) => a.size - b.size
-                    
-    //         return items.sort((a, b) => (sortDescending ? -1 : 1) * sort(a, b))
-    //     }
-    //     else 
+        if (sortIndex != null) {
+            const sort = 
+            sortIndex == 0 
+                ? (a: DriveItem, b: DriveItem) => a.name.localeCompare(b.name) :
+                sortIndex == 1 
+                ? (a: DriveItem, b: DriveItem) => a.description && b.description ? a.description.localeCompare(b.description) : 0
+                : (a: DriveItem, b: DriveItem) => a.size - b.size
+                
+                return items.sort((a: FolderItem, b: FolderItem) => (sortDescending ? -1 : 1) * sort(a as DriveViewItem, b as DriveViewItem))
+        }
+        else 
             return items
     }    
 
     function onAction(items: FolderItem[]) {
-        const driveItems = items as DriveItem[]
+        const driveItems = items as DriveViewItem[]
         if (driveItems.length == 1)
             return {
                 done: false,
@@ -114,15 +103,15 @@ export function getRootProcessor(processor: Processor): Processor {
             }
     }    
     
-    // function getItemWithPath(path, item) { return item.name }
+    function getItemWithPath(path: string, item: DriveViewItem) { return item.name }
 
-    // function canCreateFolder() { return false }
-    // function canDelete() { return false }
-    // function canRename() { return false }
-    // function canExtendedRename() { return false }
-    // function canCopyItems() { return false }
-    // function canMoveItems() { return false }
-    // function canInsertItems() { return false }
+    function canCreateFolder() { return false }
+    function canDelete() { return false }
+    function canRename() { return false }
+    function canExtendedRename() { return false }
+    function canCopyItems() { return false }
+    function canMoveItems() { return false }
+    function canInsertItems() { return false }
 
     var thisProcessor = {
         name: processorName,
@@ -131,17 +120,17 @@ export function getRootProcessor(processor: Processor): Processor {
         checkPath,
         getColumns,
         getItems,
-        // sort,
+        sort,
         refresh,
         onAction,
-        // getItemWithPath,
-        // canCreateFolder,
-        // canDelete,
-        // canRename,
-        // canExtendedRename,
-        // canCopyItems,
-        // canMoveItems,        
-        // canInsertItems
+        getItemWithPath,
+        canCreateFolder,
+        canDelete,
+        canRename,
+        canExtendedRename,
+        canCopyItems,
+        canMoveItems,        
+        canInsertItems
     }
     return thisProcessor
 }

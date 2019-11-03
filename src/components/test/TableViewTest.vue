@@ -73,7 +73,8 @@ export default Vue.extend({
                     extension: `extension ${i}`,
                     date: `datum ${i}`,
                     description: `description ${i}`,
-                    isCurrent: false
+                    isCurrent: false,
+                    index: i
                 }
             }).forEach((n, i) => this.items[i] = n)
             this.tableEventBus.$emit("focus")

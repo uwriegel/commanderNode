@@ -2,7 +2,7 @@ import { createProcessor, SHARES, Processor, FolderColumns, FolderItem, OnAction
 import { getDirectoryProcessor } from './directory'
 import addon from '../extensionFs'
 
-export function getNetworkShareProcessor(processor: Processor, path: string) {
+export function getNetworkShareProcessor(processor: Processor, path: string): Processor {
     if (processor)
         processor.dispose()
 
@@ -11,10 +11,6 @@ export function getNetworkShareProcessor(processor: Processor, path: string) {
         sortDescending: false,
         path
     }        
-
-    function getProcessor(path: string) { 
-        return path == privates.path ? null : createProcessor(thisProcessor, path)
-    }
 
     function dispose() {}
 
@@ -35,7 +31,7 @@ export function getNetworkShareProcessor(processor: Processor, path: string) {
                 ]
             }
     }
-    async function getItems() {
+    async function getItems(path?: string, showHidden?: boolean) {
         var shares = await addon.getNetShares(privates.path)
         var sharesItems = shares.map(n => {
             return { name: n.name, description: n.description, isDirectory: true, isSelected: false }})
@@ -90,7 +86,6 @@ export function getNetworkShareProcessor(processor: Processor, path: string) {
     var thisProcessor = {
         name: "share",
         get path() { return privates.path },
-        getProcessor,
         dispose,
         checkPath,
         getColumns,
