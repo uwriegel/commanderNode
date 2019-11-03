@@ -8,7 +8,7 @@ export enum RootType {
     SERVICES
 }
 
-declare enum ServiceStatus {
+export enum ServiceStatus {
     DEFAULT,
     STOPPED,
     IS_STARTING,
@@ -67,11 +67,12 @@ export interface Conflict {
 export interface Service {
     name: string,
     displayName: string,
-    status: ServiceStatus
+    status: ServiceStatus,
 }
 
 export interface NetShare {
     name: string,
+    isSelected: boolean
     description: string
     type: NetShareType
 }
@@ -97,7 +98,7 @@ export interface ExtensionFs {
     unregisterServiceEvents(handle: number): void
     startService(name: string): void
     stopService(name: string): void
-    startElevated(name: string): void
+    startElevated(): void
     getNetShares(server: string): Promise<NetShare[]>
     getTest(): number
 }
