@@ -1,24 +1,24 @@
-const electron = require('electron')
-const path = require("path")
-const settings = require('electron-settings')
+import * as electron from 'electron'
+import * as path from "path"
+import * as settings from 'electron-settings'
+import * as fs from "fs"
+import * as extFs from 'extension-fs'
+import * as ipc from './ipc'
+import * as os from 'os'
 const app = electron.app
 const protocol = electron.protocol
 const BrowserWindow = electron.BrowserWindow
-const fs = require("fs")
-const extFs = require('extension-fs')
-const ipc = require('./ipc')
-const os = require('os')
 
 let themeCallback 
-const themeChanges = require('windows-theme-changes') 
+import * as themeChanges from 'windows-theme-changes' 
 themeChanges.register(light => themeCallback(light)) 
 const isLightMode = themeChanges.isLightMode() 
 
-const isLinux = os.platform == "linux"
+const isLinux = os.platform() == "linux"
 
 protocol.registerSchemesAsPrivileged([{
-         scheme: 'vue', privileges: {standard: true, secure: true }
-    }])
+        scheme: 'vue', privileges: {standard: true, secure: true }
+}])
 
 const createWindow = function() {    
     // if (process.env.NODE_ENV == 'DEV')
@@ -27,13 +27,13 @@ const createWindow = function() {
     const bounds = settings.get("window-bounds", { 
         width: 800,
         height: 600,
-    })
-    bounds.webPreferences = { nodeIntegration: true }    
-    bounds.icon = __dirname + '/kirk2.png'
+    }) as electron.BrowserViewConstructorOptions
+    const b = bounds as any
+    b.icon = __dirname + '/kirk2.png'
     // Undocument this to get the default menu with developer tools
-    bounds.frame = false
-    bounds.show = false 
-    bounds.backgroundColor = isLightMode ? "#fff" : "#1e1e1e" 
+    b.frame = false
+    b.show = false 
+    b.backgroundColor = isLightMode ? "#fff" : "#1e1e1e" 
     bounds.webPreferences = {
         preload: path.join(__dirname, 'preload.js'),
         nodeIntegration: true
@@ -56,7 +56,7 @@ const createWindow = function() {
             win.maximize()  
     })
     electron.ipcMain.on("dragStart", (evt, files) => {
-        win.webContents.startDrag({ files, icon: null })
+        win.webContents.startDrag( { files, icon: null as electron.NativeImage } as any as electron.Item)
     })
     ipc.subscribe(win.webContents, async (method, arg) => {
         switch (method) {
@@ -127,7 +127,7 @@ const createWindow = function() {
             })
         else if (file.toLowerCase().endsWith(".theme/")) {
             const theme = require(isLightMode ? './themes/light' : './themes/dark')
-            callback({data: Buffer.from("")})
+            callback({data: Buffer.from(""), mimeType: 'utf8'})
             insertCss(isLightMode)
         }
     }, (error) => {
@@ -150,7 +150,7 @@ const createWindow = function() {
     win.on('close', () => {
         if (!win.isMaximized()) {
             const bounds = win.getBounds()
-            settings.set("window-bounds", bounds)
+            settings.set("window-bounds", JSON.stringify(bounds))
             win.webContents.send("closed")
         }
         //child.send("kill")
@@ -166,7 +166,7 @@ const createWindow = function() {
         settings.set("isMaximized", false)
     })    
 
-     win.on("closed", () => win = null)    
+     win.on("closed", () => {win = null})    
 }
 
 app.removeAllListeners('ready')
@@ -177,4 +177,4 @@ app.on("activate", () => {
         createWindow()
 })
 
-var win
+var win: electron.BrowserWindow

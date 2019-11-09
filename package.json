@@ -1,61 +1,63 @@
 {
-  "name": "commander",
-  "version": "2.0.0",
-  "main": "electron/main.js",
-  "private": true,
-  "author": "Uwe Riegel <uriegel@hotmail.de>",
-  "description": "A Norton Commander like program to manage files and directories",
-  "build": {
-    "appId": "de.hotmail.uriegel.commander",
-    "copyright": "Copyright © 2019 Uwe Riegel",
-    "productName": "Commander",
-    "electronVersion": "7.0.0",
-    "win": {
-      "target": [
-        "nsis"
-      ]
+    "name": "commander",
+    "version": "2.0.0",
+    "main": "electron/main.js",
+    "private": true,
+    "author": "Uwe Riegel <uriegel@hotmail.de>",
+    "description": "A Norton Commander like program to manage files and directories",
+    "build": {
+        "appId": "de.hotmail.uriegel.commander",
+        "copyright": "Copyright © 2019 Uwe Riegel",
+        "productName": "Commander",
+        "electronVersion": "7.0.0",
+        "win": {
+            "target": [
+                "nsis"
+            ]
+        },
+        "linux": {
+            "target": [
+                "AppImage",
+                "deb"
+            ]
+        },
+        "files": [
+            "**/*"
+        ]
     },
-    "linux": {
-      "target": [
-        "AppImage",
-        "deb"
-      ]
+    "scripts": {
+        "dev": "cross-env NODE_ENV=DEV vue-cli-service serve && electron electron/main.js",
+        "electron-build": "tsc -p electron",
+        "electron": "cross-env NODE_ENV=DEV electron electron/main.js",
+        "electron-prod": "electron electron/main.js",
+        "build": "vue-cli-service build --modern",
+        "dist": "build -w --x64 --ia32",
+        "dist-linux": "build -l --x64",
+        "dist-linux32": "build -l --ia32",
+        "dist-linux-arm": "build -l --armv7l"
     },
-    "files": [
-      "**/*"
-    ]
-  },
-  "scripts": {
-    "dev": "cross-env NODE_ENV=DEV vue-cli-service serve && electron electron/main.js",
-    "electron": "cross-env NODE_ENV=DEV electron electron/main.js",
-    "electron-prod": "electron electron/main.js",
-    "build": "vue-cli-service build --modern",
-    "dist": "build -w --x64 --ia32",
-    "dist-linux": "build -l --x64",
-    "dist-linux32": "build -l --ia32",
-    "dist-linux-arm": "build -l --armv7l"
-  },
-  "dependencies": {
-    "core-js": "^3.4.0",
-    "cross-env": "^5.2.0",
-    "electron-settings": "^3.2.0",
-    "extension-fs": "^6.0.1",
-    "rxjs": "^6.5.2",
-    "vue": "^2.6.10",
-    "vue-electron-titlebar": "^1.2.0",
-    "vue-menubar": "^1.3.0",
-    "vue-rx": "^6.2.0",
-    "vuex": "^3.1.1",
-    "windows-theme-changes": "^2.0.0"
-  },
-  "devDependencies": {
-    "@types/node": "^12.12.7",
-    "@vue/cli-plugin-typescript": "^4.0.0",
-    "@vue/cli-service": "^4.0.4",
-    "electron": "^7.1.1",
-    "electron-builder": "^20.44.4",
-    "typescript": "~3.7.2",
-    "vue-devtools": "^5.1.3",
-    "vue-template-compiler": "^2.6.10"
-  }
+    "dependencies": {
+        "@types/electron-settings": "^3.1.1",
+        "core-js": "^3.4.0",
+        "cross-env": "^5.2.0",
+        "electron-settings": "^3.2.0",
+        "extension-fs": "^6.0.1",
+        "rxjs": "^6.5.2",
+        "vue": "^2.6.10",
+        "vue-electron-titlebar": "^1.2.0",
+        "vue-menubar": "^1.3.0",
+        "vue-rx": "^6.2.0",
+        "vuex": "^3.1.1",
+        "windows-theme-changes": "^2.0.0"
+    },
+    "devDependencies": {
+        "@types/node": "^12.12.7",
+        "@vue/cli-plugin-typescript": "^4.0.0",
+        "@vue/cli-service": "^4.0.4",
+        "electron": "^7.1.1",
+        "electron-builder": "^20.44.4",
+        "typescript": "~3.7.2",
+        "vue-devtools": "^5.1.3",
+        "vue-template-compiler": "^2.6.10"
+    }
 }

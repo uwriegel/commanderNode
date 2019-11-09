@@ -1,6 +1,6 @@
-const electron = require('electron')
+import * as electron from 'electron'
 
-exports.subscribe = async function (webContents, onMessage) {
+export async function subscribe(webContents: electron.WebContents, onMessage: (method: string, arg: any)=>Promise<string>) {
     callback = onMessage
     electron.ipcMain.on("call", async (evt, method, requestId, arg) => {
         try {
@@ -12,4 +12,4 @@ exports.subscribe = async function (webContents, onMessage) {
     })
 }
 
-var callback
+var callback: (method: string, arg: any)=>Promise<string>
