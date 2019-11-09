@@ -1,7 +1,9 @@
-import { createProcessor, ROOT, SERVICES, Processor, FolderColumns } from './processor'
+import { createProcessor, ROOT, SERVICES, Processor, FolderColumns, OnActionResult, FolderItem } from './processor'
 import addon, { Service, ServiceStatus } from '../extensionFs'
 
 export const SERVICES_NAME = "Dienste"
+
+interface ServiceItem extends FolderItem, Service {} 
 
 const processorName = "services"
 
@@ -14,7 +16,7 @@ export function getServicesProcessor(processor: Processor): Processor {
 
     // let sortIndex = null
     // let sortDescending = false
-    let items: Service[] = []
+    let items: ServiceItem[] = []
     let eventHandle = addon.registerServiceEvents(changedServices => {
         changedServices.forEach(n => {
             let item = items.find(i => i.name == n.name)
@@ -47,12 +49,14 @@ export function getServicesProcessor(processor: Processor): Processor {
                 ]
             }
     }
-    async function getItems() {
+    async function getItems(_?: string, __?: boolean) {
         items = [{ name: "..", displayName: "", isDirectory: true, status: ServiceStatus.DEFAULT } as Service]
                     .concat(await addon.getServices())
-        items.forEach(n => {
-            (n as any).isSelected = false
-        })
+                    .map((n, i) => {
+                        const si = n as ServiceItem
+                        si.isSelected = false
+                        return si
+                    })
         return refresh(items)
     }
 
@@ -62,7 +66,7 @@ export function getServicesProcessor(processor: Processor): Processor {
     //     return refresh(items)
     // }
 
-    function refresh(items: Service[]) {
+    function refresh(items: ServiceItem[]) {
         let parent = items.filter(n => n.name == "..")
         let services = items.filter(n => n.name != "..")
 
@@ -80,7 +84,7 @@ export function getServicesProcessor(processor: Processor): Processor {
 
     function getItemWithPath(path: string, item: Service) { return item.name }
 
-    function onAction(items: Service[]) {
+    function onAction(items: FolderItem[]): OnActionResult {
         if (items.length == 1 && items[0].name == "..")
             return {
                 done: false,
@@ -95,6 +99,7 @@ export function getServicesProcessor(processor: Processor): Processor {
             } catch (ex) {
                 addon.startElevated()
                 window.close()
+                return { done: true }
             }
         }
     }    

@@ -65,7 +65,6 @@ export interface Service {
 
 export interface NetShare {
     name: string,
-    isSelected: boolean
     description: string
     type: NetShareType
 }

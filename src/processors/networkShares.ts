@@ -4,6 +4,8 @@ import { getNetworkShareProcessor } from './networkShare'
 
 export const SHARES_NAME = "Freigaben"
 
+interface NetShareServer extends FolderItem {} 
+
 const processorName = "shares"
 
 export function getNetworkSharesProcessor(processor: Processor): Processor {
@@ -30,9 +32,9 @@ export function getNetworkSharesProcessor(processor: Processor): Processor {
             }
     }
     async function getItems() {
-        const shares = JSON.parse(localStorage["networkShares"] || "[]") as NetShare[]
+        const shares = JSON.parse(localStorage["networkShares"] || "[]") as NetShareServer[]
         const shareItems = shares.map(n => { return { name, isDirectory: true, isSelected: false }})
-        items = [{ name: "..", isDirectory: true, isSelected: false }].concat(shareItems)
+        items = [{ name: "..", isDirectory: true, isSelected: false }].concat(shareItems) as NetShareServer[]
         items.forEach(n => {
             n.isSelected = false
         })

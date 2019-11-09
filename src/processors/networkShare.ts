@@ -1,6 +1,8 @@
 import { createProcessor, SHARES, Processor, FolderColumns, FolderItem, OnActionResult } from './processor'
 import { getDirectoryProcessor } from './directory'
-import addon from '../extensionFs'
+import addon, { NetShare } from '../extensionFs'
+
+export interface NetShareItem extends NetShare, FolderItem {} 
 
 export function getNetworkShareProcessor(processor: Processor, path: string): Processor {
     if (processor)
@@ -35,9 +37,10 @@ export function getNetworkShareProcessor(processor: Processor, path: string): Pr
         var shares = await addon.getNetShares(privates.path)
         var sharesItems = shares.map(n => {
             return { name: n.name, description: n.description, isDirectory: true, isSelected: false }})
-        const items = [{ name: "..", isDirectory: true, isSelected: false }].concat(sharesItems)
-        items.forEach(n => {
+        const items = [{ name: "..", isDirectory: true, isSelected: false }].concat(sharesItems) as NetShareItem[]
+        items.forEach((n, i) => {
             n.isSelected = false
+            n.index = i
         })
         return refresh(items)
     }
