@@ -25,7 +25,7 @@ const createWindow = function() {
     // if (process.env.NODE_ENV == 'DEV')
     //     require('vue-devtools').install()        
 
-    const bounds = settings.get("window-bound44s", { 
+    const bounds = settings.get("window-bounds", { 
         width: 800,
         height: 600,
     }) as electron.BrowserViewConstructorOptions

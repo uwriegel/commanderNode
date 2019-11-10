@@ -64,18 +64,9 @@ export function getDirectoryProcessor(processor: Processor, path: string) {
     }
 
     async function getItems(path: string, showHidden: boolean) {
-        const values = 
-            (await extFs.getFiles(path))
-            .map((n, i) => {
-                const fvi = n as FileViewItem
-                fvi.index = i
-                if (i == 0)
-                    fvi.isSelected = true
-                return fvi
-            })
-
+        const values = await extFs.getFiles(path)
         privates.path = path
-        return refresh(values, showHidden)
+        return refresh(values as FileViewItem[], showHidden)
     }
     function refresh(values: FileViewItem[], showHidden: boolean) {
         if (!showHidden)

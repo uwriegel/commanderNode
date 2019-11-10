@@ -1,6 +1,6 @@
 import { ROOT, SERVICES, SHARES, Processor, FolderColumns, FolderItem, OnActionResult, DriveViewItem } from '../processor'
 import extFs, { DriveItem, RootType } from '../../extensionFs'
-import { getDirectoryProcessor } from '../directory'
+import { getDirectoryProcessor, FileViewItem } from '../directory'
 import { getServicesProcessor, SERVICES_NAME } from '../services'
 import { getNetworkSharesProcessor, SHARES_NAME } from '../networkShares'
 
@@ -44,14 +44,7 @@ export function getRootProcessor(processor: Processor): Processor {
                 { name: SHARES_NAME, type: RootType.SHARES, size: 0 },
                 { name: SERVICES_NAME, type: RootType.SERVICES, size: 0 }
             ])
-            .map((n, i) => {
-                const dvi = n as DriveViewItem
-                dvi.index = i
-                if (i == 0)
-                    dvi.isSelected = true
-                return dvi
-            })
-        return refresh(items)
+        return refresh(items as DriveViewItem[])
     }
 
     function sort(items: FolderItem[], index: number, descending: boolean) {
