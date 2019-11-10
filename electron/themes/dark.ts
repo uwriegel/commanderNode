@@ -1,4 +1,4 @@
-exports.getCss = function () {
+export function getCss() {
     return ":root {" +
 "--main-color: #cccccc;" +
 "--main-background-color: #1e1e1e;" +

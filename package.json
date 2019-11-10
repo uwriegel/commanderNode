@@ -1,7 +1,7 @@
 {
     "name": "commander",
     "version": "2.0.0",
-    "main": "electron/main.js",
+    "main": "electron/dist/main.js",
     "private": true,
     "author": "Uwe Riegel <uriegel@hotmail.de>",
     "description": "A Norton Commander like program to manage files and directories",
@@ -26,10 +26,10 @@
         ]
     },
     "scripts": {
-        "dev": "cross-env NODE_ENV=DEV vue-cli-service serve && electron electron/main.js",
         "electron-build": "tsc -p electron",
-        "electron": "cross-env NODE_ENV=DEV electron electron/main.js",
-        "electron-prod": "electron electron/main.js",
+        "dev": "cross-env NODE_ENV=DEV vue-cli-service serve && electron electron/dist/main.js",
+        "electron": "cross-env NODE_ENV=DEV electron electron/dist/main.js",
+        "electron-prod": "electron electron/dist/main.js",
         "build": "vue-cli-service build --modern",
         "dist": "build -w --x64 --ia32",
         "dist-linux": "build -l --x64",
@@ -41,14 +41,14 @@
         "core-js": "^3.4.0",
         "cross-env": "^5.2.0",
         "electron-settings": "^3.2.0",
-        "extension-fs": "^6.0.1",
+        "extension-fs": "^6.0.2",
         "rxjs": "^6.5.2",
         "vue": "^2.6.10",
         "vue-electron-titlebar": "^1.2.0",
         "vue-menubar": "^1.3.0",
         "vue-rx": "^6.2.0",
         "vuex": "^3.1.1",
-        "windows-theme-changes": "^2.0.0"
+        "windows-theme-changes": "^2.0.2"
     },
     "devDependencies": {
         "@types/node": "^12.12.7",

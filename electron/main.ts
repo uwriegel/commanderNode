@@ -1,6 +1,6 @@
 import * as electron from 'electron'
 import * as path from "path"
-import * as settings from 'electron-settings'
+import settings from 'electron-settings'
 import * as fs from "fs"
 import * as extFs from 'extension-fs'
 import * as ipc from './ipc'
@@ -9,9 +9,10 @@ const app = electron.app
 const protocol = electron.protocol
 const BrowserWindow = electron.BrowserWindow
 
-let themeCallback 
+let themeCallback: (light: boolean)=>void
 import * as themeChanges from 'windows-theme-changes' 
-themeChanges.register(light => themeCallback(light)) 
+
+themeChanges.register(themeCallback) 
 const isLightMode = themeChanges.isLightMode() 
 
 const isLinux = os.platform() == "linux"
@@ -24,7 +25,7 @@ const createWindow = function() {
     // if (process.env.NODE_ENV == 'DEV')
     //     require('vue-devtools').install()        
 
-    const bounds = settings.get("window-bounds", { 
+    const bounds = settings.get("window-bound44s", { 
         width: 800,
         height: 600,
     }) as electron.BrowserViewConstructorOptions
@@ -84,8 +85,10 @@ const createWindow = function() {
         }
     })
 
-    function insertCss(light) {
-        const theme = require(light ? './themes/light' : './themes/dark')
+    async function insertCss(light: boolean) {
+        const theme = light 
+            ? await import('./themes/light') 
+            : await import('./themes/dark')
         win.webContents.insertCSS(theme.getCss()) 
     }
 
@@ -126,7 +129,7 @@ const createWindow = function() {
                 callback({mimeType: 'img/png', data: data})
             })
         else if (file.toLowerCase().endsWith(".theme/")) {
-            const theme = require(isLightMode ? './themes/light' : './themes/dark')
+            //const theme = isLightMode ? './themes/light' : './themes/dark'
             callback({data: Buffer.from(""), mimeType: 'utf8'})
             insertCss(isLightMode)
         }
@@ -150,7 +153,7 @@ const createWindow = function() {
     win.on('close', () => {
         if (!win.isMaximized()) {
             const bounds = win.getBounds()
-            settings.set("window-bounds", JSON.stringify(bounds))
+            settings.set("window-bounds", bounds as any)
             win.webContents.send("closed")
         }
         //child.send("kill")
@@ -158,7 +161,7 @@ const createWindow = function() {
 
     win.on('maximize', () => {
         const bounds = win.getBounds()
-        settings.set("window-bounds", JSON.stringify(bounds))
+        settings.set("window-bounds", bounds as any)
         settings.set("isMaximized", true)
     })
 
