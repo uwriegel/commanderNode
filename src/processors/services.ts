@@ -54,7 +54,7 @@ export function getServicesProcessor(processor: Processor): Processor {
                     .concat(await addon.getServices())
                     .map((n, i) => {
                         const si = n as ServiceItem
-                        si.isSelected = false
+                        si.isSelected = i > 0 ? false : undefined
                         return si
                     })
         return refresh(items)

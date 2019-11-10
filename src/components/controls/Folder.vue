@@ -146,9 +146,6 @@ import { FileItem } from '../../extensionFs'
 // import { renameFiles } from "../../extendedRename"
 // const path = window.require('path')
 
-// TODO: set isSelected undefined, when not wanting to select item
-
-
 // TODO: drag: icon
 export default Vue.extend({
     components: {
@@ -366,11 +363,7 @@ export default Vue.extend({
             if (checkProcessor) 
                 this.changeProcessor(createProcessor(this.processor, path!!))
 
-            this.items = (await this.processor.getItems(path, (this as any).showHidden)).map(n => {
-                if (n.isSelected == undefined)
-                    n.isSelected = false
-                return n
-            })
+            this.items = (await this.processor.getItems(path, (this as any).showHidden))
             const pathChanged = this.path != path
             this.path = path!!
             localStorage[`${this.id}-path`] = path
@@ -531,7 +524,8 @@ export default Vue.extend({
 
             const toggleSelection = () => {
                 const item = this.items[this.selectedIndex]
-                item.isSelected = item.isSelected != true
+                if (item.isSelected != undefined)
+                    item.isSelected = item.isSelected != true
             }
 
             this.$subscribeTo(inserts$, () => {
@@ -541,20 +535,28 @@ export default Vue.extend({
                 this.onSelectedItemsChanged()
             })
             this.$subscribeTo(pluses$, () => this.items.forEach(n => {
-                n.isSelected = true
-                this.onSelectedItemsChanged()
+                if (n.isSelected != undefined) {
+                    n.isSelected = true
+                    this.onSelectedItemsChanged()
+                }
             }))
             this.$subscribeTo(minuses$, () => this.items.forEach(n => {
-                n.isSelected = false
-                this.onSelectedItemsChanged()
+                if (n.isSelected != undefined) {
+                    n.isSelected = false
+                    this.onSelectedItemsChanged()
+                }
             }))
             this.$subscribeTo(homes$, () => this.items.forEach((n, i) => {
-                n.isSelected = i <= this.selectedIndex
-                this.onSelectedItemsChanged()
+                if (n.isSelected != undefined) {
+                    n.isSelected = i <= this.selectedIndex
+                    this.onSelectedItemsChanged()
+                }
             }))
             this.$subscribeTo(ends$, () => this.items.forEach((n, i) => {
-                n.isSelected = i >= this.selectedIndex
-                this.onSelectedItemsChanged()
+                if (n.isSelected != undefined) {
+                    n.isSelected = i >= this.selectedIndex
+                    this.onSelectedItemsChanged()
+                }
             }))
         }
     }
