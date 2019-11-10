@@ -14,8 +14,8 @@ export function getServicesProcessor(processor: Processor): Processor {
         processor.dispose()
     }
 
-    // let sortIndex = null
-    // let sortDescending = false
+    let sortIndex = null as number|null
+    let sortDescending = false
     let items: ServiceItem[] = []
     let eventHandle = addon.registerServiceEvents(changedServices => {
         changedServices.forEach(n => {
@@ -60,25 +60,25 @@ export function getServicesProcessor(processor: Processor): Processor {
         return refresh(items)
     }
 
-    // function sort(items, index, descending) {
-    //     sortIndex = index
-    //     sortDescending = descending
-    //     return refresh(items)
-    // }
+    function sort(items: FolderItem[], index: number, descending: boolean) {
+        sortIndex = index
+        sortDescending = descending
+        return refresh(items as ServiceItem[])
+    }
 
     function refresh(items: ServiceItem[]) {
         let parent = items.filter(n => n.name == "..")
         let services = items.filter(n => n.name != "..")
 
-        // if (sortIndex != null) {
-        //     const sort = 
-        //     sortIndex == 0 
-        //             ? (a, b) => a.name.localeCompare(b.name) 
-        //             : (a, b) => a.displayName.localeCompare(b.displayName)
+        if (sortIndex != null) {
+            const sort = 
+                sortIndex == 0 
+                    ? (a: ServiceItem, b: ServiceItem) => a.name.localeCompare(b.name) 
+                    : (a: ServiceItem, b: ServiceItem) => a.displayName.localeCompare(b.displayName)
                     
-        //     return parent.concat(services.sort((a, b) => (sortDescending ? -1 : 1) * sort(a, b)))
-        // }
-        // else 
+            return parent.concat(services.sort((a, b) => (sortDescending ? -1 : 1) * sort(a, b)))
+        }
+        else 
             return items
     }    
 
@@ -123,7 +123,7 @@ export function getServicesProcessor(processor: Processor): Processor {
         getColumns,
         getItemWithPath,
         getItems,
-//        sort,
+        sort,
         refresh,
         onAction,
         canDelete,

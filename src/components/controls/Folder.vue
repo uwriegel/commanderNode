@@ -31,7 +31,7 @@
                         {{ row.item.name | nameOnly }}
                     </td>
                     <td>{{ row.item.name | extension }}</td>
-                    <td :class="{ 'isExif': row.item.isExifDate }">{{ row.item.time | dateTime }}</td>
+                    <td :class="{ 'isExif': row.item.isExif }">{{ row.item.time | dateTime }}</td>
                     <td class="size">{{ row.item.size | size }}</td>
                     <td>{{ row.item.version | version }}</td>
                 </tr>
@@ -377,11 +377,12 @@ export default Vue.extend({
         },
         //onResize() { this.$refs.table.onResize() },
         onSort(index: number, descending: boolean) {
-        //     const selected = this.items[this.$refs.table.index]
-        //     this.items = this.processor.sort(this.items, index, descending, this.showHidden)
-        //     const newPos = this.items.findIndex(n => n == selected)
-        //     this.onSelectedItemsChanged()
-        //     setTimeout(() => this.$refs.table.setCurrentIndex(newPos))
+            const selected = this.items[this.selectedIndex]
+            this.items = this.processor.sort(this.items, index, descending, (this as any).showHidden)
+            const newPos = this.items.findIndex(n => n == selected)
+            this.onSelectedItemsChanged()
+            if (newPos != -1) 
+                setTimeout(() => this.tableEventBus.$emit("setCurrentIndex", newPos))
         },
         onAction(item: TableViewItem) {
             const selectedItems = this.getSelectedItems()

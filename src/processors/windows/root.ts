@@ -1,6 +1,6 @@
 import { ROOT, SERVICES, SHARES, Processor, FolderColumns, FolderItem, OnActionResult, DriveViewItem } from '../processor'
 import extFs, { DriveItem, RootType } from '../../extensionFs'
-import { getDirectoryProcessor, FileViewItem } from '../directory'
+import { getDirectoryProcessor } from '../directory'
 import { getServicesProcessor, SERVICES_NAME } from '../services'
 import { getNetworkSharesProcessor, SHARES_NAME } from '../networkShares'
 

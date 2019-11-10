@@ -72,13 +72,13 @@ export function getDirectoryProcessor(processor: Processor, path: string) {
         privates.path = path
         return refresh(values as FileViewItem[], showHidden)
     }
-    function refresh(values: FileViewItem[], showHidden: boolean) {
+    function refresh(values: FileViewItem[], showHidden?: boolean) {
         if (!showHidden)
             values = values.filter(n => !n.isHidden)
         let dirs = values.filter(n => n.isDirectory)
         let files = values.filter(n => !n.isDirectory)
 
-        //getExtendedInfos()
+        getExtendedInfos()
 
        if (privates.sortIndex != null) {
             const sort = 
@@ -102,7 +102,7 @@ export function getDirectoryProcessor(processor: Processor, path: string) {
 
         async function getVersion(fileItem: FileItem, file: string) {
             const version = await extFs.getFileVersion(file) 
-            if (version.major != 0 || version.minor != 0 || version.build != 0 || version.patch != 0)
+            if (version)
                 fileItem.version = version
         }
 
@@ -129,7 +129,7 @@ export function getDirectoryProcessor(processor: Processor, path: string) {
         }
     }
 
-    function sort(items: FileViewItem[], index: number, descending: boolean, showHidden: boolean) {
+    function sort(items: FileViewItem[], index: number, descending: boolean, showHidden?: boolean) {
         privates.sortIndex = index
         privates.sortDescending = descending
         return refresh(items, showHidden)
@@ -250,7 +250,7 @@ export function getDirectoryProcessor(processor: Processor, path: string) {
         checkPath,
         getColumns,
         getItems,
-//        sort,
+        sort,
         refresh,
         onAction,
         getItemWithPath,

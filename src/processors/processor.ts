@@ -46,6 +46,7 @@ export interface Processor {
     getColumns(recentColumns: FolderColumns): FolderColumns
     getItems(path?: string, showHidden?: boolean): Promise<FolderItem[]>
     onAction(items: FolderItem[]): OnActionResult
+    sort(items: FolderItem[], index: number, descending: boolean, showHidden?: boolean): FolderItem[]
 }
 
 export interface OnActionResult {
@@ -79,7 +80,8 @@ export function getDefaultProcessor(): Processor {
         dispose: () => {},
         getColumns: (recentColumns: FolderColumns) => { return { type: FOLDER_DEFAULT, values: []} },
         getItems: () => new Promise<FolderItem[]>(_ => {}),
-        onAction: (items: FolderItem[]) => { return { done: false }}
+        onAction: (items: FolderItem[]) => { return { done: false }},
+        sort: (items: FolderItem[], index: number, descending: boolean, showHidden?: boolean) => []
     }
 }
 
