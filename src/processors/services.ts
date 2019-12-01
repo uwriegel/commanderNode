@@ -106,14 +106,14 @@ export function getServicesProcessor(processor: Processor): Processor {
 
     function canDelete() { return true }
 
-    // async function deleteItems(folder, dialog, selectedItems) {
-    //     try {
-    //         selectedItems.forEach(n => extFs.stopService(n.name))
-    //     } catch (ex) {
-    //         extFs.startElevated()
-    //         window.close()
-    //     }
-    // }
+    async function deleteItems(folder: any, dialog: any, selectedItems: ServiceItem[]) {
+        try {
+            selectedItems.forEach(n => addon.stopService(n.name))
+        } catch (ex) {
+            addon.startElevated()
+            window.close()
+        }
+    }
 
     var thisProcessor = {
         name: processorName,
@@ -127,7 +127,7 @@ export function getServicesProcessor(processor: Processor): Processor {
         refresh,
         onAction,
         canDelete,
-  //      deleteItems
+        deleteItems
     }
     return thisProcessor
 }

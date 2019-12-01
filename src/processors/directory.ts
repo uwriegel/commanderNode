@@ -1,4 +1,3 @@
-//import { getNameOnly, getExtension } from '../../cache/pipes'
 import { createProcessor, combinePath, ROOT, Processor, FolderColumns, FolderItem, OnActionResult, getDefaultProcessor } from './processor'
 import extFs, { VersionInfo, FileItem } from '../extensionFs'
 import { getNetworkShareProcessor } from './networkShare'
@@ -64,9 +63,10 @@ export function getDirectoryProcessor(processor: Processor, path: string) {
     }
 
     async function getItems(path: string, showHidden: boolean) {
-        const values = await (await extFs.getFiles(path)).map((n, i) => {
+        const values = (await extFs.getFiles(path)).map((n, i) => {
             const fvi = n as FileViewItem
-            fvi.isSelected = false
+            if (i > 0)            
+                fvi.isSelected = false
             return fvi
         })
         privates.path = path
@@ -155,7 +155,7 @@ export function getDirectoryProcessor(processor: Processor, path: string) {
                     : {
                         done: false,
                         path: pathes[0],
-                        lastPath: getDirectoryName(privates.path)
+                        lastPath: items[0].name == ".." ? getDirectoryName(privates.path) : ""
                     })
                 : {
                     done: false,
@@ -268,5 +268,5 @@ export function getDirectoryProcessor(processor: Processor, path: string) {
         canMoveItems,
   //      getConflictItems
     }
-    return thisProcessor;
+    return thisProcessor
 }

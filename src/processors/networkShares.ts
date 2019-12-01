@@ -4,7 +4,7 @@ import { getNetworkShareProcessor } from './networkShare'
 
 export const SHARES_NAME = "Freigaben"
 
-interface NetShareServer extends FolderItem {} 
+interface NetShareServer extends FolderItem { } 
 
 const processorName = "shares"
 
@@ -32,8 +32,8 @@ export function getNetworkSharesProcessor(processor: Processor): Processor {
             }
     }
     async function getItems() {
-        const shares = JSON.parse(localStorage["networkShares"] || "[]") as NetShareServer[]
-        const shareItems = shares.map(n => { return { name, isDirectory: true, isSelected: false }})
+        const shares = JSON.parse(localStorage["networkShares"] || "[]") as string[]
+        const shareItems = shares.map(n => { return { name: n, isDirectory: true, isSelected: false }})
         items = [{ name: "..", isDirectory: true, isSelected: false }].concat(shareItems) as NetShareServer[]
         items.forEach(n => {
             n.isSelected = false
@@ -42,7 +42,7 @@ export function getNetworkSharesProcessor(processor: Processor): Processor {
     }
 
     function sort(items: FolderItem[], index: number, descending: boolean) {
-      //  sortIndex = index
+        //sortIndex = index
         sortDescending = descending
         return refresh(items)
     }

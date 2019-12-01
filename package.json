@@ -38,7 +38,7 @@
     },
     "dependencies": {
         "@types/electron-settings": "^3.1.1",
-        "core-js": "^3.4.0",
+        "core-js": "^3.4.5",
         "cross-env": "^5.2.0",
         "electron-settings": "^3.2.0",
         "extension-fs": "^6.0.2",
@@ -47,13 +47,13 @@
         "vue-electron-titlebar": "^1.2.0",
         "vue-menubar": "^1.3.0",
         "vue-rx": "^6.2.0",
-        "vuex": "^3.1.1",
+        "vuex": "^3.1.2",
         "windows-theme-changes": "^2.0.2"
     },
     "devDependencies": {
-        "@types/node": "^12.12.7",
-        "@vue/cli-plugin-typescript": "^4.0.0",
-        "@vue/cli-service": "^4.0.4",
+        "@types/node": "^12.12.14",
+        "@vue/cli-plugin-typescript": "^4.1.1",
+        "@vue/cli-service": "^4.1.1",
         "electron": "^7.1.1",
         "electron-builder": "^20.44.4",
         "typescript": "~3.7.2",
