@@ -9,10 +9,10 @@
             <!-- <table-view-test></table-view-test> -->
             <!-- <addon></addon> -->
             <!-- <connection-test></connection-test> -->
-            <folder-test></folder-test>
+            <!-- <folder-test></folder-test> -->
             <!-- <splitter-grid-test></splitter-grid-test> -->
             <!-- <viewer-test></viewer-test> -->
-            <!-- <commander ref="commander"></commander> -->
+            <commander ref="commander"></commander>
         </div>
     </div>
 </template>
@@ -21,17 +21,17 @@
 import Vue from 'vue'
 import { MenuItem } from 'vue-menubar'
 //import Scrollbar from './components/controls/Scrollbar'
-//import Commander from './components/Commander'
+import Commander from './components/Commander.vue'
 
 // Tests
-import ColumnTest from './components/test/ColumnTest.vue'
-import ScrollbarTest from './components/test/ScrollbarTest.vue'
-import TableViewTest from './components/test/TableViewTest.vue'
-import Addon from './components/test/Addon.vue'
+// import ColumnTest from './components/test/ColumnTest.vue'
+// import ScrollbarTest from './components/test/ScrollbarTest.vue'
+// import TableViewTest from './components/test/TableViewTest.vue'
+// import Addon from './components/test/Addon.vue'
 // import ConnectionTest from './components/test/ConnectionTest'
-import FolderTest from './components/test/FolderTest.vue'
-import SplitterGridTest from './components/test/SplitterGridTest.vue'
-import ViewerTest from './components/test/ViewerTest.vue'
+// import FolderTest from './components/test/FolderTest.vue'
+// import SplitterGridTest from './components/test/SplitterGridTest.vue'
+// import ViewerTest from './components/test/ViewerTest.vue'
 
 const electron = (window as any).require('electron')
 
@@ -39,15 +39,15 @@ export default Vue.extend({
     name: 'app',
     components: {
 //        Scrollbar,
-//        Commander,
+        Commander,
         // Tests:
-        ColumnTest,
-        ScrollbarTest,
-        TableViewTest,
-        Addon,
-        FolderTest,
-        SplitterGridTest,
-        ViewerTest
+        // ColumnTest,
+        // ScrollbarTest,
+        // TableViewTest,
+        // Addon,
+        // FolderTest,
+        // SplitterGridTest,
+        // ViewerTest
     },
     data() {
         return {
