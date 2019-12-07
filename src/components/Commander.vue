@@ -5,11 +5,11 @@
             <template v-slot:first>
                 <splitter-grid>
                     <template v-slot:first>
-                        <folder ref="leftFolder" @delete='onLeftDelete' class="folder" id="left" @focus-in=onLeftFocus 
+                        <folder :eventBus="leftFolderEventBus" ref="leftFolder" @delete='onLeftDelete' class="folder" id="left" @focus-in=onLeftFocus 
                         @selection-changed=onSelectionChanged @drop-files="leftDropFiles"></folder>
                     </template>
                     <template v-slot:second>
-                        <folder ref="rightFolder" @delete='onRightDelete' class="folder" id="right" @focus-in=onRightFocus 
+                        <folder :eventBus="rightFolderEventBus" ref="rightFolder" @delete='onRightDelete' class="folder" id="right" @focus-in=onRightFocus 
                         @selection-changed=onSelectionChanged @drop-files="rightDropFiles"></folder>
                     </template>
                 </splitter-grid>
@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import SplitterGrid from './controls/SplitterGrid.vue'
 import Folder from './controls/Folder.vue'
 import Viewer from './controls/Viewer.vue'
@@ -33,11 +33,17 @@ import { mapState } from 'vuex'
 import { createProcessor } from '../processors/processor'
 const electron = window.require('electron')
 
+// TODO: SelectedItem event
+// TODO: Status?
+// TODO: Viewer
+
 // TODO: Rename with copy
 // TODO: Status displays alternativly # selected items
 export default Vue.extend({
     data() {
         return {
+            leftFolderEventBus: new Vue(),
+            rightFolderEventBus: new Vue(),
             leftHasFocus: true,
             selectedItem: "",
             dialogOpen: false
@@ -57,11 +63,15 @@ export default Vue.extend({
         ...mapState(['showViewer'])
     },
     mounted() {
-        // this.$refs.leftFolder.focus()
+        this.leftFolderEventBus.$emit('focus')
+        this.eventBus.$on('refresh', this.refresh)
+    },
+    props: {
+        eventBus: Object as PropType<Vue>,
     },
     methods: {
         refresh() {
-            // this.getActiveFolder().refresh()
+            this.getActiveFolderEventBus().$emit('refresh')
         },
         properties() { electron.ipcRenderer.send("showInfo", this.selectedItem) },
         openAs() { electron.ipcRenderer.send("openAs", this.selectedItem) },
@@ -71,7 +81,7 @@ export default Vue.extend({
         },
         onKeyDown(evt: KeyboardEvent) {
             if (evt.which == 9 && !evt.shiftKey && (evt.target as HTMLInputElement).tagName != "INPUT") {
-                //this.getInactiveFolder().focus()
+                this.getInactiveFolderEventBus().$emit("focus");
                 evt.preventDefault()
             }
         },
@@ -114,7 +124,7 @@ export default Vue.extend({
             // }
         },
         openSameFolder() {
-            //this.getInactiveFolder().changeFolder(this.getActiveFolder().path)
+            //this.getInactiveFolderEventBus().changeFolder(this.getActiveFolder().path)
         },
         async rename() { 
             // const folder = this.getActiveFolder()
@@ -186,11 +196,11 @@ export default Vue.extend({
         //     if (folder.canDeleteItems()) 
         //         await folder.deleteItems(this.$refs.dialog)
         // },
-        getActiveFolder() {
-            return this.leftHasFocus ? this.$refs.leftFolder : this.$refs.rightFolder
+        getActiveFolderEventBus(): Vue {
+            return this.leftHasFocus ? this.leftFolderEventBus : this.rightFolderEventBus
         },
-        getInactiveFolder() {
-            return this.leftHasFocus ? this.$refs.rightFolder : this.$refs.leftFolder
+        getInactiveFolderEventBus(): Vue {
+            return this.leftHasFocus ? this.rightFolderEventBus : this.leftFolderEventBus
         },
         // getOtherFolder(folder) {
         //     return folder == this.$refs.leftFolder 

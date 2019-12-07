@@ -12,7 +12,7 @@
             <!-- <folder-test></folder-test> -->
             <!-- <splitter-grid-test></splitter-grid-test> -->
             <!-- <viewer-test></viewer-test> -->
-            <commander ref="commander"></commander>
+            <commander :eventBus="commanderEventBus" ref="commander"></commander>
         </div>
     </div>
 </template>
@@ -20,7 +20,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import { MenuItem } from 'vue-menubar'
-//import Scrollbar from './components/controls/Scrollbar'
 import Commander from './components/Commander.vue'
 
 // Tests
@@ -38,7 +37,6 @@ const electron = (window as any).require('electron')
 export default Vue.extend({
     name: 'app',
     components: {
-//        Scrollbar,
         Commander,
         // Tests:
         // ColumnTest,
@@ -51,6 +49,7 @@ export default Vue.extend({
     },
     data() {
         return {
+            commanderEventBus: new Vue(),
             menuItems: [
                 {
                     name: "_Datei",
@@ -249,9 +248,9 @@ export default Vue.extend({
         //         case "openSameFolder":
         //             this.$refs.commander.openSameFolder()
         //             break
-        //         case "theme":
-        //             changeTheme()
-        //             break
+                // case "theme":
+                //     changeTheme()
+                //     break
                 case "fullscreen":
                     electron.ipcRenderer.send("fullscreen")
                     break
@@ -263,14 +262,14 @@ export default Vue.extend({
                     if (menuItem)
                         menuItem.isSelected = this.$store.state.showHidden
                     break
-        //         case "showViewer":
-        //             this.$store.commit('setShowViewer', !this.$store.state.showViewer)
-        //             if (menuItem)
-        //                 menuItem.isSelected = this.$store.state.showViewer
-        //             break
-        //         case "refresh":
-        //             this.$refs.commander.refresh()
-        //             break
+                case "showViewer":
+                    this.$store.commit('setShowViewer', !this.$store.state.showViewer)
+                    if (menuItem)
+                        menuItem.isSelected = this.$store.state.showViewer
+                    break
+                case "refresh":
+                    this.commanderEventBus.$emit("refresh")
+                    break
             }
         }
     },

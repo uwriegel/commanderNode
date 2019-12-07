@@ -129,7 +129,6 @@ const createWindow = function() {
                 callback({mimeType: 'img/png', data: data})
             })
         else if (file.toLowerCase().endsWith(".theme/")) {
-            //const theme = isLightMode ? './themes/light' : './themes/dark'
             callback({data: Buffer.from(""), mimeType: 'utf8'})
             insertCss(isLightMode)
         }
