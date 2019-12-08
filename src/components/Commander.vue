@@ -33,10 +33,6 @@ import { mapState } from 'vuex'
 import { createProcessor } from '../processors/processor'
 const electron = window.require('electron')
 
-// TODO: SelectedItem event
-// TODO: Status?
-// TODO: Viewer
-
 // TODO: Rename with copy
 // TODO: Status displays alternativly # selected items
 export default Vue.extend({
@@ -76,6 +72,7 @@ export default Vue.extend({
         properties() { electron.ipcRenderer.send("showInfo", this.selectedItem) },
         openAs() { electron.ipcRenderer.send("openAs", this.selectedItem) },
         viewerHeightChanged() {
+            // TODO:
             //this.$refs.leftFolder.onResize()
             //this.$refs.rightFolder.onResize()
         },
@@ -87,11 +84,9 @@ export default Vue.extend({
         },
         onLeftFocus() { 
             this.leftHasFocus = true 
-            //this.selectedItem = this.$refs.leftFolder.getSelectedItem()
         },
         onRightFocus() { 
             this.leftHasFocus = false 
-            //this.selectedItem = this.$refs.rightFolder.getSelectedItem()
         },
         onSelectionChanged(newItem: string) {
             this.selectedItem = newItem
@@ -124,6 +119,7 @@ export default Vue.extend({
             // }
         },
         openSameFolder() {
+            // TODO:
             //this.getInactiveFolderEventBus().changeFolder(this.getActiveFolder().path)
         },
         async rename() { 
