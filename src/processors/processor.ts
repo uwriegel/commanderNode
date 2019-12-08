@@ -33,7 +33,7 @@ export interface FolderColumns {
 export interface FolderItem {
     name: string
     isCurrent?: boolean
-    index: number
+    index?: number
     isSelected?: boolean
     isDirectory: boolean
     isHidden?: boolean    
@@ -46,7 +46,8 @@ export interface Processor {
     getColumns(recentColumns: FolderColumns): FolderColumns
     getItems(path?: string, showHidden?: boolean): Promise<FolderItem[]>
     onAction(items: FolderItem[]): OnActionResult
-    sort(items: FolderItem[], index: number, descending: boolean, showHidden?: boolean): FolderItem[]
+    sort(items: FolderItem[], index: number, descending: boolean, showHidden?: boolean): FolderItem[],
+    getItemWithPath(path: string, item: FolderItem): string | undefined
 }
 
 export interface OnActionResult {
@@ -81,7 +82,8 @@ export function getDefaultProcessor(): Processor {
         getColumns: (recentColumns: FolderColumns) => { return { type: FOLDER_DEFAULT, values: []} },
         getItems: () => new Promise<FolderItem[]>(_ => {}),
         onAction: (items: FolderItem[]) => { return { done: false }},
-        sort: (items: FolderItem[], index: number, descending: boolean, showHidden?: boolean) => []
+        sort: (items: FolderItem[], index: number, descending: boolean, showHidden?: boolean) => [],
+        getItemWithPath: (path: string, item: FolderItem) => undefined 
     }
 }
 

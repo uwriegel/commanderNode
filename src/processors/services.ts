@@ -82,7 +82,7 @@ export function getServicesProcessor(processor: Processor): Processor {
             return items
     }    
 
-    function getItemWithPath(path: string, item: Service) { return item.name }
+    function getItemWithPath(path: string, item: ServiceItem) { return item.name }
 
     function onAction(items: FolderItem[]): OnActionResult {
         if (items.length == 1 && items[0].name == "..")

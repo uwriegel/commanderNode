@@ -64,7 +64,6 @@ export function getRootProcessor(processor: Processor): Processor {
             ])
             .map((n, i) => {
                 const dvi = n as DriveViewItem
-                dvi.index = i
                 if (i == 0)
                     dvi.isSelected = true
                 return dvi

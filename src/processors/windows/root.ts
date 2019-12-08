@@ -1,10 +1,12 @@
-import { ROOT, SERVICES, SHARES, Processor, FolderColumns, FolderItem, OnActionResult, DriveViewItem } from '../processor'
+import { ROOT, SERVICES, SHARES, Processor, FolderColumns, FolderItem, OnActionResult } from '../processor'
 import extFs, { DriveItem, RootType } from '../../extensionFs'
 import { getDirectoryProcessor } from '../directory'
 import { getServicesProcessor, SERVICES_NAME } from '../services'
 import { getNetworkSharesProcessor, SHARES_NAME } from '../networkShares'
 
 const processorName = "root"
+
+interface DriveViewItem extends FolderItem, DriveItem {} 
 
 export function getRootProcessor(processor: Processor): Processor {
     if (processor) {
@@ -88,7 +90,7 @@ export function getRootProcessor(processor: Processor): Processor {
             return { done: false }
     }    
     
-    function getItemWithPath(path: string, item: DriveItem) { return item.name }
+    function getItemWithPath(path: string, item: DriveViewItem) { return item.name }
 
      function canCreateFolder() { return false }
      function canDelete() { return false }

@@ -396,7 +396,7 @@ export default Vue.extend({
         },
         onSelectionChanged(newIndex: number) { 
             this.selectedIndex = newIndex
-            //this.$emit('selection-changed', this.getSelectedItem(newIndex)) 
+            this.$emit('selection-changed', this.getSelectedItem(newIndex)) 
         },
         onSelectedItemsChanged() {
             // if (this.getExtendedRename()) {
@@ -414,11 +414,11 @@ export default Vue.extend({
         //         })
         //     }
         },
-        // getSelectedItem(selectedIndex) { 
-        //     return this.$refs.table && this.path
-        //         ? this.processor.getItemWithPath(this.path, this.items[selectedIndex || this.$refs.table.index]) 
-        //         : ""
-        // },
+        getSelectedItem(selectedIndex: number) { 
+            return this.path
+                ? this.processor.getItemWithPath(this.path, this.items[selectedIndex]) 
+                : ""
+        },
         getSelectedItems() {
             const items = this.items.filter(n => n.isSelected)
             return items.length > 0 

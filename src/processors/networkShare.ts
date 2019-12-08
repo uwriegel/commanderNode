@@ -38,10 +38,7 @@ export function getNetworkShareProcessor(processor: Processor, path: string): Pr
         var sharesItems = shares.map(n => {
             return { name: n.name, description: n.description, isDirectory: true, isSelected: false }})
         const items = [{ name: "..", isDirectory: true, isSelected: false }].concat(sharesItems) as NetShareItem[]
-        items.forEach((n, i) => {
-            n.isSelected = false
-            n.index = i
-        })
+        items.forEach((n, i) => n.isSelected = false)
         return refresh(items)
     }
 
