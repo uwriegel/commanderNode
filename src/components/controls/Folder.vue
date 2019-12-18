@@ -198,6 +198,7 @@ export default Vue.extend({
     mounted() {
         this.eventBus.$on('focus', this.focus)
         this.eventBus.$on('refresh', this.refresh)
+        this.eventBus.$on('resize', () => this.tableEventBus.$emit("resize"))        
 
         const shiftTabs$ = (this as any).keyDown$.pipe(filter((n: any) => n.event.which == 9 && n.event.shiftKey))
         const inputChars$ = (this as any).keyDown$.pipe(filter((n: any) => !n.event.altKey && !n.event.ctrlKey && !n.event.shiftKey && n.event.key.length > 0 && n.event.key.length < 2))
@@ -376,7 +377,6 @@ export default Vue.extend({
                     setTimeout(() => this.tableEventBus.$emit("setCurrentIndex", newPos))
             }
         },
-        //onResize() { this.$refs.table.onResize() },
         onSort(index: number, descending: boolean) {
             const selected = this.items[this.selectedIndex]
             this.items = this.processor.sort(this.items, index, descending, (this as any).showHidden)

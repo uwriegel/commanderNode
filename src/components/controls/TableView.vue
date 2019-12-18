@@ -183,6 +183,7 @@ export default Vue.extend({
     mounted() {
         this.eventBus.$on('focus', this.focus)
         this.eventBus.$on('setCurrentIndex', this.setCurrentIndex)
+        this.eventBus.$on('resize', this.onResize)
         this.onResize()
     }
 })

@@ -72,9 +72,8 @@ export default Vue.extend({
         properties() { electron.ipcRenderer.send("showInfo", this.selectedItem) },
         openAs() { electron.ipcRenderer.send("openAs", this.selectedItem) },
         viewerHeightChanged() {
-            // TODO:
-            //this.$refs.leftFolder.onResize()
-            //this.$refs.rightFolder.onResize()
+            this.leftFolderEventBus.$emit('resize')
+            this.rightFolderEventBus.$emit('resize')
         },
         onKeyDown(evt: KeyboardEvent) {
             if (evt.which == 9 && !evt.shiftKey && (evt.target as HTMLInputElement).tagName != "INPUT") {

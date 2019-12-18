@@ -1,6 +1,6 @@
 <template>
     <transition name="slide">
-        <div ref="scrollbar" v-show="range > 1" class="scrollbar" 
+        <div v-show="range > 1" class="scrollbar" 
                 @mousedown="pageMouseDown" @mouseleave="mouseleave" @mouseup="mouseup">
             <div class="scrollbarUp" @mousedown.stop="upMouseDown" @mouseleave="mouseleave" @mouseup="mouseup">
                 <div class="scrollbarUpImg"></div>
