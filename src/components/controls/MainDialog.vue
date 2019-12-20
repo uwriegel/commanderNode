@@ -30,15 +30,45 @@
     </div>
 </template>
     
-</template>
-
-<script>
+<script lang="ts">
 import Vue from 'vue'
-import SimpleDialog from './SimpleDialog'
-import ConflictItems from './ConflictItems'
-import ExtendedRename from './ExtendedRename'
+import SimpleDialog from './SimpleDialog.vue'
+//import ConflictItems from './ConflictItems.vue'
+//import ExtendedRename from './ExtendedRename.vue'
 
-export default {
+export enum DialogResult {
+    Cancel,
+    Ok,
+    Yes,
+    No
+}
+
+export interface Configuration {
+    rightFolder: boolean
+    leftFolder: boolean
+    ok: boolean
+    no: boolean
+    yes: boolean
+    cancel: boolean
+    defButton: string
+    simpleDialog?: object
+    text: string
+}
+
+export interface FocusableElement {
+    focus(): ()=>void
+}
+
+export interface Content {
+    focusable: FocusableElement
+}
+
+export interface Result {
+    result: number
+    inputText?: string
+}
+
+export default Vue.extend({
     data() {
         return {
             transitionName: "default",
@@ -54,31 +84,38 @@ export default {
             conflictItems: null,
             extendedRename: null,
             isButtonFocused: false,
+            focusIndex: 0,
             inputText: "",
-            fullscreen: false
+            fullscreen: false,
+            content: undefined as Content|undefined,
+            focusables: [] as FocusableElement[],
+            transitionNames: [] as string[],
+            resolve: undefined as ((res: Result)=>void) | undefined,
+            reject: undefined as ((res: any)=>void) | undefined,
+            result: DialogResult.Cancel
         }
     },
     computed: {
-        isButtonYesDefault() {
+        isButtonYesDefault(): boolean {
             return this.defButton == "yes" && !this.isButtonFocused
         },
-        isButtonNoDefault() {
+        isButtonNoDefault(): boolean {
             return this.defButton == "no" && !this.isButtonFocused
         },
-        isButtonOkDefault() {
+        isButtonOkDefault(): boolean {
             return this.defButton == "ok" && !this.isButtonFocused
         },
-        isButtonCancelDefault() {
+        isButtonCancelDefault(): boolean {
             return this.defButton == "cancel" && !this.isButtonFocused
         } 
     },
     components: {
-        SimpleDialog,
-        ConflictItems,
-        ExtendedRename
+        //SimpleDialog,
+        // ConflictItems,
+        // ExtendedRename
     },
     methods: {
-        show(config) {
+        show(config: Configuration) {
             this.transitionNames = 
                 config.rightFolder 
                     ? [ "slide-left", "slide-right" ] 
@@ -87,21 +124,21 @@ export default {
                     : [ "default", "default" ] )
             this.transitionName = this.transitionNames[0]
             this.$emit("state-changed", true)
-            return new Promise((res, rej) => {
+            return new Promise<Result>((res, rej) => {
                 this.ok = config.ok
                 this.no = config.no
                 this.defButton = config.defButton
                 this.yes = config.yes
                 this.cancel = config.cancel
-                this.simpleDialog = config.simpleDialog
-                this.conflictItems = config.conflictItems
-                this.extendedRename = config.extendedRename
+                //this.simpleDialog = config.simpleDialog
+                //this.conflictItems = config.conflictItems
+                //this.extendedRename = config.extendedRename
                 this.resolve = res
                 this.text = config.text
                 this.reject = rej
                 this.isShowing = true
                 this.dialogClosed = false
-                this.fullscreen = config.conflictItems
+                //this.fullscreen = config.conflictItems
                 Vue.nextTick(() => this.mounted())
             })
         },
@@ -113,23 +150,23 @@ export default {
         },
         mounted() {
             this.focusables = []
-            this.content = this.$refs.simpleDialog || this.$refs.conflictsDialog || this.$refs.extendedRename
+            //this.content = this.$refs.simpleDialog as Element || this.$refs.conflictsDialog || this.$refs.extendedRename
             if (this.$refs.btn1)
-                this.focusables.push(this.$refs.btn1)
+                this.focusables.push(this.$refs.btn1 as any as FocusableElement)
             if (this.$refs.btn2)
-                this.focusables.push(this.$refs.btn2)
+                this.focusables.push(this.$refs.btn2 as any as FocusableElement)
             if (this.$refs.btn3)
-                this.focusables.push(this.$refs.btn3)
+                this.focusables.push(this.$refs.btn3 as any as FocusableElement)
             if (this.$refs.btn4)
-                this.focusables.push(this.$refs.btn4)
+                this.focusables.push(this.$refs.btn4 as any as FocusableElement)
             const buttonCount = this.focusables.length
-            if (this.content) 
-                this.content.getFocusables().forEach(n => this.focusables.push(n))
-            this.focusIndex = this.content ? this.content.getFocusIndex(buttonCount) : 0
-            this.defButton = this.content ? this.content.getDefaultButton(this.defButton) : this.defButton
+            // if (this.content) 
+            //     this.content.getFocusables().forEach(n => this.focusables.push(n))
+            //this.focusIndex = this.content ? this.content.getFocusIndex(buttonCount) : 0
+            // this.defButton = this.content ? this.content.getDefaultButton(this.defButton) : this.defButton
             this.focusables[this.focusIndex].focus()
         },
-        onKeydown(evt) {
+        onKeydown(evt: KeyboardEvent) {
             switch (evt.which) {
                 case 9: // tab
                     const active = document.activeElement
@@ -170,50 +207,50 @@ export default {
             evt.preventDefault()
             evt.stopPropagation()
         },
-        keydownYes(evt) {
+        keydownYes(evt: KeyboardEvent) {
             if (evt.which == 13 || evt.which == 32) {
-                this.result = 2
+                this.result = DialogResult.Yes
                 this.onClose()
             }
         },
-        keydownNo(evt) {
+        keydownNo(evt: KeyboardEvent) {
             if (evt.which == 13 || evt.which == 32) {
-                this.result = 3
+                this.result = DialogResult.No
                 this.onClose()
             }
         },
-        keydownOk(evt) {
+        keydownOk(evt: KeyboardEvent) {
             if (evt.which == 13 || evt.which == 32) {
-                this.result = 1
+                this.result = DialogResult.Ok
                 this.onClose()
             }
         },
-        keydownCancel(evt) {
+        keydownCancel(evt: KeyboardEvent) {
             if (evt.which == 13 || evt.which == 32) {
-                this.result = 0
+                this.result = DialogResult.Cancel
                 this.onClose()
             }
         },
-        clickButton(btn) {
+        clickButton(btn: DialogResult) {
             this.result = btn
             this.onClose()
         },
         onClose() {
             if (this.result == 0)
                 this.transitionName = this.transitionNames[1]
-            this.inputText = this.$refs.simpleDialog ? this.$refs.simpleDialog.getInputText() : ""
+            //this.inputText = this.$refs.simpleDialog ? this.$refs.simpleDialog.getInputText() : ""
             this.$emit("state-changed", false)
             Vue.nextTick(() => this.isShowing = false)
         },
         afterLeave() {
             this.dialogClosed = true
-            Vue.nextTick(() => this.resolve({
+            Vue.nextTick(() => this.resolve ? this.resolve({
                 result: this.result,
                 inputText: this.inputText
-            }))
+            }): {})
         }
     }
-}
+})
 </script>
 
 <style scoped>

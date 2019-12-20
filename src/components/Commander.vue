@@ -5,11 +5,11 @@
             <template v-slot:first>
                 <splitter-grid>
                     <template v-slot:first>
-                        <folder :eventBus="leftFolderEventBus" ref="leftFolder" @delete='onLeftDelete' class="folder" id="left" @focus-in=onLeftFocus 
+                        <folder :eventBus="leftFolderEventBus" @delete='onLeftDelete' class="folder" id="left" @focus-in=onLeftFocus 
                         @selection-changed=onSelectionChanged @drop-files="leftDropFiles"></folder>
                     </template>
                     <template v-slot:second>
-                        <folder :eventBus="rightFolderEventBus" ref="rightFolder" @delete='onRightDelete' class="folder" id="right" @focus-in=onRightFocus 
+                        <folder :eventBus="rightFolderEventBus" @delete='onRightDelete' class="folder" id="right" @focus-in=onRightFocus 
                         @selection-changed=onSelectionChanged @drop-files="rightDropFiles"></folder>
                     </template>
                 </splitter-grid>
@@ -28,7 +28,7 @@ import Vue, { PropType } from 'vue'
 import SplitterGrid from './controls/SplitterGrid.vue'
 import Folder from './controls/Folder.vue'
 import Viewer from './controls/Viewer.vue'
-// import MainDialog from './controls/MainDialog.vue'
+import MainDialog from './controls/MainDialog.vue'
 import { mapState } from 'vuex'
 import { createProcessor } from '../processors/processor'
 const electron = window.require('electron')
@@ -49,7 +49,7 @@ export default Vue.extend({
         SplitterGrid,
         Folder,
         Viewer,
-        //MainDialog
+        MainDialog
     },
     computed: {
         status(): string {
@@ -61,6 +61,7 @@ export default Vue.extend({
     mounted() {
         this.leftFolderEventBus.$emit('focus')
         this.eventBus.$on('refresh', this.refresh)
+        this.eventBus.$on('deleteItems', async () => this.deleteItems(this.getActiveFolderEventBus()))
     },
     props: {
         eventBus: Object as PropType<Vue>,
@@ -173,10 +174,10 @@ export default Vue.extend({
             // }
         },
         onLeftDelete() {
-//            this.deleteItems(this.$refs.leftFolder)
+            this.deleteItems(this.leftFolderEventBus)
         },
         onRightDelete() {
-//            this.deleteItems(this.$refs.rightFolder)
+           this.deleteItems(this.rightFolderEventBus)
         },
         async copyItems(move: boolean) {
             // const sourceFolder = this.getActiveFolder()
@@ -185,12 +186,11 @@ export default Vue.extend({
             // const selectedItems = sourceFolder.getSelectedItems()
             // await this.doCopyItems(sourceProcessor, sourceFolder, targetFolder, selectedItems, move)
         },
-        // async deleteItems(folder) {
-        //     if (!folder)
-        //         folder = this.getActiveFolder()
+        async deleteItems(folderEventBus: Vue) {
+            // TODO: DeleteItems
         //     if (folder.canDeleteItems()) 
         //         await folder.deleteItems(this.$refs.dialog)
-        // },
+        },
         getActiveFolderEventBus(): Vue {
             return this.leftHasFocus ? this.leftFolderEventBus : this.rightFolderEventBus
         },

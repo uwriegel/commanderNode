@@ -242,9 +242,9 @@ export default Vue.extend({
         //         case "move":
         //             this.$refs.commander.copyItems(true)
         //             break
-        //         case "delete":
-        //             this.$refs.commander.deleteItems()
-        //             break
+                case "delete":
+                    this.commanderEventBus.$emit("deleteItems")
+                    break
         //         case "openSameFolder":
         //             this.$refs.commander.openSameFolder()
         //             break

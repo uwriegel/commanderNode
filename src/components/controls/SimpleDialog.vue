@@ -4,20 +4,21 @@
     </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue'
+export default Vue.extend({
     props: [ "data" ],
-    methods: {
-        getFocusables() {
-            return this.$refs.input ? [ this.$refs.input ] : []
-        },
-        getFocusIndex(buttonCount) {
-            return this.$refs.input ? buttonCount : 0
-        },
-        getInputText() { return this.data.inputText },
-        getDefaultButton(defBtn) { return defBtn }
-    }
-}   
+//     methods: {
+//         getFocusables() {
+//             return this.$refs.input ? [ this.$refs.input ] : []
+//         },
+//         getFocusIndex(buttonCount) {
+//             return this.$refs.input ? buttonCount : 0
+//         },
+//         getInputText() { return this.data.inputText },
+//         getDefaultButton(defBtn) { return defBtn }
+//     }
+})
 </script>
 
 <style scoped>
