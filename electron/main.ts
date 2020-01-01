@@ -1,39 +1,37 @@
-import * as electron from 'electron'
+import { app, BrowserWindow, protocol, BrowserViewConstructorOptions, ipcMain, NativeImage, Item } from 'electron'
 import * as path from "path"
 import settings from 'electron-settings'
 import * as fs from "fs"
 import * as extFs from 'extension-fs'
 import * as ipc from './ipc'
 import * as os from 'os'
-const app = electron.app
-const protocol = electron.protocol
-const BrowserWindow = electron.BrowserWindow
-
-let themeCallback: (light: boolean)=>void
-import * as themeChanges from 'windows-theme-changes' 
-
-themeChanges.register(themeCallback) 
-const isLightMode = themeChanges.isLightMode() 
+import { get as getPlatform} from './platforms/platform'
+import { Themes } from './themes/themes'
 
 const isLinux = os.platform() == "linux"
 
 protocol.registerSchemesAsPrivileged([{
-        scheme: 'vue', privileges: {standard: true, secure: true }
+    scheme: 'vue', privileges: {standard: true, secure: true }
 }])
 
 const createWindow = function() {    
     // if (process.env.NODE_ENV == 'DEV')
-    //     require('vue-devtools').install()        
+//     //     require('vue-devtools').install()        
 
     const bounds = settings.get("window-bounds", { 
         width: 800,
         height: 600,
-    }) as electron.BrowserViewConstructorOptions
+    }) as BrowserViewConstructorOptions
     const b = bounds as any
     b.icon = __dirname + '/kirk2.png'
     // Undocument this to get the default menu with developer tools
     b.frame = false
     b.show = false 
+
+    const platform = getPlatform()
+    platform.initializeThemes()
+    const theme = platform.getCurrentTheme() 
+    const isLightMode = theme == Themes.LinuxLight || theme == Themes.WindowsLight
     b.backgroundColor = isLightMode ? "#fff" : "#1e1e1e" 
     bounds.webPreferences = {
         preload: path.join(__dirname, 'preload.js'),
@@ -44,20 +42,20 @@ const createWindow = function() {
     if (settings.get("isMaximized"))
         win.maximize()
 
-    electron.ipcMain.on("openDevTools",  (evt, arg) => win.webContents.openDevTools())
-    electron.ipcMain.on("fullscreen",  (evt, arg) => win.setFullScreen(!win.isFullScreen()))
-    electron.ipcMain.on("showInfo",  (evt, arg) => extFs.showInfo(arg))
-    electron.ipcMain.on("open",  (evt, arg) => extFs.open(arg))
-    electron.ipcMain.on("openAs",  (evt, arg) => extFs.openAs(arg))
-    electron.ipcMain.on("minimize",  (evt, arg) => win.minimize())
-    electron.ipcMain.on("maximize",  (evt, arg) => {
+    ipcMain.on("openDevTools",  (evt, arg) => win.webContents.openDevTools())
+    ipcMain.on("fullscreen",  (evt, arg) => win.setFullScreen(!win.isFullScreen()))
+    ipcMain.on("showInfo",  (evt, arg) => extFs.showInfo(arg))
+    ipcMain.on("open",  (evt, arg) => extFs.open(arg))
+    ipcMain.on("openAs",  (evt, arg) => extFs.openAs(arg))
+    ipcMain.on("minimize",  (evt, arg) => win.minimize())
+    ipcMain.on("maximize",  (evt, arg) => {
         if (win.isMaximized())
             win.restore()
         else
             win.maximize()  
     })
-    electron.ipcMain.on("dragStart", (evt, files) => {
-        win.webContents.startDrag( { files, icon: null as electron.NativeImage } as any as electron.Item)
+    ipcMain.on("dragStart", (evt, files) => {
+        win.webContents.startDrag( { files, icon: null as NativeImage } as any as Item)
     })
     ipc.subscribe(win.webContents, async (method, arg) => {
         switch (method) {
@@ -85,18 +83,29 @@ const createWindow = function() {
         }
     })
 
-    async function insertCss(light: boolean) {
-        const theme = light 
-            ? await import('./themes/light') 
-            : await import('./themes/dark')
-        win.webContents.insertCSS(theme.getCss()) 
+    async function insertCss(theme: Themes) {
+        let css
+        switch (theme) {
+            case Themes.LinuxLight:
+                css = './themes/ubuntu'
+                break
+            case Themes.LinuxDark:
+                css = './themes/ubuntuDark'
+                break
+            case Themes.WindowsDark:
+                css = './themes/dark'
+                break
+            case Themes.WindowsLight:
+                css = './themes/light'
+                break
+        }
+        let cssTheme = await import(css)
+        win.webContents.insertCSS(cssTheme.getCss()) 
     }
 
-    win.once('ready-to-show', () => { 
-        win.show() 
-    }) 
+    win.once('ready-to-show', () => win.show()) 
 
-    themeCallback = insertCss
+    platform.setThemeCallback(insertCss)
 
     protocol.registerBufferProtocol('vue', (request, callback) => {
         let file = decodeURIComponent(request.url.substr(6))
@@ -130,7 +139,7 @@ const createWindow = function() {
             })
         else if (file.toLowerCase().endsWith(".theme/")) {
             callback({data: Buffer.from(""), mimeType: 'utf8'})
-            insertCss(isLightMode)
+            insertCss(theme)
         }
     }, (error) => {
         if (error) console.error('Failed to register protocol', error)
@@ -179,4 +188,4 @@ app.on("activate", () => {
         createWindow()
 })
 
-var win: electron.BrowserWindow
+var win: BrowserWindow

@@ -293,7 +293,7 @@ body {
     background-color: var(--main-background-color);
     color: var(--main-color); 
     font-family: sans-serif;
-    font-size: 75%;
+    font-size: var(--font-size);
     overflow:hidden;
     height: 100vh;
     padding: 0px;

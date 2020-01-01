@@ -2,6 +2,7 @@ export function getCss() {
     return ":root {" +
 "--main-color: black;" +
 "--main-background-color: white;" +
+"--font-size: 75%;" +
 
 "--vue-electron-titlebar-color: var(--main-color);" +
 "--vue-electron-titlebar-background-color: #eee;" +

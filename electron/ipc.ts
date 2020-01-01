@@ -1,8 +1,8 @@
-import * as electron from 'electron'
+import { ipcMain, webContents } from 'electron'
 
-export async function subscribe(webContents: electron.WebContents, onMessage: (method: string, arg: any)=>Promise<string>) {
+export async function subscribe(webContents: webContents, onMessage: (method: string, arg: any)=>Promise<string>) {
     callback = onMessage
-    electron.ipcMain.on("call", async (evt, method, requestId, arg) => {
+    ipcMain.on("call", async (evt, method, requestId, arg) => {
         try {
             const result = await callback(method, arg)
             webContents.send("response", requestId, result)

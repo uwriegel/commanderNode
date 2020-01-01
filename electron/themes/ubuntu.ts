@@ -1,21 +1,21 @@
 export function getCss() {
     return ":root {" +
-"--main-color: #cccccc;" +
-"--main-background-color: #1e1e1e;" +
-"--font-size: 75%;" +
+"--main-color: black;" +
+"--main-background-color: white;" +
+"--font-size: 85%;" +
 
-"--vue-electron-titlebar-color: #cccccc;" +
-"--vue-electron-titlebar-background-color: #333333;" +
+"--vue-electron-titlebar-color: var(--main-color);" +
+"--vue-electron-titlebar-background-color: #eee;" +
 "--vue-electron-titlebar-height: 30px;" +
-"--vue-electron-titlebar-button-hover-color: #6b6969;" +
-
+"--vue-electron-titlebar-button-hover-color: lightgray;" +
+    
 "--selected-background-color: blue;" +
 "--selected-background-hover-color: #0063ff;" +
 "--selected-color: white;" +
 
-"--columns-separator-color: #cccccc;" +
+"--columns-separator-color: white;" +
 
-"--scrollbar-border-color: lightgray;" +
+"--scrollbar-border-color: var(--vue-electron-titlebar-button-hover-color);" +
 "--scrollbar-grip-color: rgb(209, 209, 209);" +
 "--scrollbar-button-active-color: #aaa;" +
 "--scrollbar-image-color: #666;" +
@@ -26,10 +26,10 @@ export function getCss() {
 
 "--tr-selected-color: red;" +
 
-"--grip-color: #333333;" +
+"--grip-color: var(--vue-electron-titlebar-background-color);" +
 
-"--vue-menu-color: #cccccc;" +
-"--vue-menu-background-color: #333333;" +
+"--vue-menu-color: var(--main-color);" +
+"--vue-menu-background-color: var(--main-background-color);" +
 "--vue-menu-hover-color: var(--vue-electron-titlebar-button-hover-color);" +
 "--vue-menu-separator-color: #ddd;" +
 "--vue-menu-border-color: lightgray;" +
@@ -39,11 +39,10 @@ export function getCss() {
 
 "--icon-color: #999;" +
 
-"--dialog-background-color: rgb(30, 30, 30);" +
-"--dialog-fader-color: #ffffff38;" +
-"--dialog-input-border-color: #444444;" +
-"--dialog-input-outline-color: lightblue;" +
-
-"--drag-highlight: darkgreen;" +
+"--dialog-background-color: white;" +
+"--dialog-fader-color: rgba(0, 0, 0, 0.50);" +
+"--dialog-input-border-color: #grey;" +
+"--dialog-input-outline-color: blue;" +
+"--drag-highlight: aqua;" +
 "}" 
 }

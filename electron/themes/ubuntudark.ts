@@ -2,7 +2,7 @@ export function getCss() {
     return ":root {" +
 "--main-color: #cccccc;" +
 "--main-background-color: #1e1e1e;" +
-"--font-size: 75%;" +
+"--font-size: 85%;" +
 
 "--vue-electron-titlebar-color: #cccccc;" +
 "--vue-electron-titlebar-background-color: #333333;" +
