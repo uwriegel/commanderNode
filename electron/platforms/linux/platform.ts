@@ -21,11 +21,14 @@ export class LinuxPlatform implements Platform {
     setThemeCallback(cb: (theme: Themes)=>void) {
         
     }
+
+    readonly isLinux = true
 }
 
 // export let themeCallback: (light: boolean)=>void
 
 // export function initialize() {
+    // https://github.com/vilnius-leopold/node-gsettings/blob/master/README.md
 //     "gsettings get org.gnome.desktop.interface gtk-theme"
 //     return true
 // }

@@ -18,6 +18,8 @@ export class WindowsPlatform implements Platform {
     setThemeCallback(cb: (theme: Themes)=>void) {
         themeCallback = cb
     }
+
+    readonly isLinux = false
 }
 
 

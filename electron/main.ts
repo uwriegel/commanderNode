@@ -8,15 +8,13 @@ import * as os from 'os'
 import { get as getPlatform} from './platforms/platform'
 import { Themes } from './themes/themes'
 
-const isLinux = os.platform() == "linux"
-
 protocol.registerSchemesAsPrivileged([{
     scheme: 'vue', privileges: {standard: true, secure: true }
 }])
 
 const createWindow = function() {    
     // if (process.env.NODE_ENV == 'DEV')
-//     //     require('vue-devtools').install()        
+    //     require('vue-devtools').install()        
 
     const bounds = settings.get("window-bounds", { 
         width: 800,
@@ -111,7 +109,7 @@ const createWindow = function() {
         let file = decodeURIComponent(request.url.substr(6))
         if (file[1] == '/')
             file = file[0] + ':' + file.substr(1)
-        else if (isLinux)
+        else if (platform.isLinux)
             file = "/" + file
         if (file.toLowerCase().endsWith(".html")) 
             fs.readFile(file, (_, data) => {
@@ -155,7 +153,7 @@ const createWindow = function() {
     })
 
     win.loadURL(process.env.NODE_ENV != 'DEV'
-        ? 'vue://' + path.join(__dirname, `/../renderer/index.html`)
+        ? 'vue://' + path.join(__dirname, `/../../renderer/index.html`)
         : 'http://localhost:8080/')
 
     win.on('close', () => {
@@ -177,7 +175,7 @@ const createWindow = function() {
         settings.set("isMaximized", false)
     })    
 
-     win.on("closed", () => {win = null})    
+    win.on("closed", () => {win = null})    
 }
 
 app.removeAllListeners('ready')
