@@ -12,6 +12,8 @@ protocol.registerSchemesAsPrivileged([{
     scheme: 'vue', privileges: {standard: true, secure: true }
 }])
 
+// TODO: Linux icons:  import gio  gio.content_type_guess('foo.pdf')
+
 const createWindow = function() {    
     // if (process.env.NODE_ENV == 'DEV')
     //     require('vue-devtools').install()        
