@@ -138,9 +138,19 @@ async function getDrives() {
     const blkstrings = 
         (await lsblk())
             .split('\n')
-            .filter((v, i) => i > 0)
-    const affe = blkstrings
-    return affe
+    const title = blkstrings[0]
+    const pos2 = title.indexOf("NAME")
+    const pos3 = title.indexOf("LABEL")
+    const pos4 = title.indexOf("MOUNT")
+    const pos5 = title.indexOf("FSTYPE")        
+    const blks = blkstrings.filter((v, i) => i > 0)
+    const drives = blks.map(n => { return {
+        displayName: n.substr(pos2, pos3 - pos2).trim(),
+        description: n.substr(pos3, pos4 - pos3).trim(),
+        mount: n.substr(pos4, pos5 - pos4).trim(),
+        driveType: n.substr(pos5).trim()
+    }}).filter(n => n.mount.length > 0 && !n.displayName.startsWith("loop"))
+    return "affe"
 }
 
 function lsblk() {
