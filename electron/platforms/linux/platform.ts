@@ -1,34 +1,30 @@
 import { Platform } from "../platformInterface"
 import { Themes } from "../../themes/themes"
-import { exec } from "child_process"
+import { getSetting } from "gtk-utils"
+
+let themeCallback: (theme: Themes)=>void
 
 export class LinuxPlatform implements Platform {
     initializeThemes() {
-        let light = 
+        let recentTheme = ""
         setInterval(() => {
-            // TODO: when got focus
-            exec('gsettings get org.gnome.desktop.interface gtk-theme', (error, stdout, stderr) =>{
-                if (stdout.trimEnd().endsWith("dark'"))
-                    console.log("dark")
-            })
+            const theme = getSetting("org.gnome.desktop.interface", "gtk-theme")
+            if (recentTheme != theme) {
+                recentTheme = theme
+                themeCallback(recentTheme.endsWith('dark') ? Themes.LinuxDark : Themes.LinuxLight)
+            }
         }, 5000)
     }
 
     getCurrentTheme() {
-        return Themes.LinuxLight
+        const theme = getSetting("org.gnome.desktop.interface", "gtk-theme")
+        return theme.endsWith('dark') ? Themes.LinuxDark : Themes.LinuxLight
     }
 
     setThemeCallback(cb: (theme: Themes)=>void) {
-        
+        themeCallback = cb
     }
 
     readonly isLinux = true
 }
 
-// export let themeCallback: (light: boolean)=>void
-
-// export function initialize() {
-    // https://github.com/vilnius-leopold/node-gsettings/blob/master/README.md
-//     "gsettings get org.gnome.desktop.interface gtk-theme"
-//     return true
-// }

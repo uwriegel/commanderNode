@@ -90,7 +90,7 @@ const createWindow = function() {
                 css = './themes/ubuntu'
                 break
             case Themes.LinuxDark:
-                css = './themes/ubuntuDark'
+                css = './themes/ubuntudark'
                 break
             case Themes.WindowsDark:
                 css = './themes/dark'
