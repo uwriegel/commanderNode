@@ -55,7 +55,7 @@ export function getRootProcessor(processor: Processor): Processor {
     function dispose() {}
 
     async function getItems() {
-        const blkString = await lsblk()
+        const blkString = await getDrives()
 
         const items = ([] as DriveItem[]) //(await extFs.getDrives()).filter(n => n.isMounted)
             .concat([ 
@@ -132,6 +132,15 @@ export function getRootProcessor(processor: Processor): Processor {
         canInsertItems
     }
     return thisProcessor
+}
+
+async function getDrives() {
+    const blkstrings = 
+        (await lsblk())
+            .split('\n')
+            .filter((v, i) => i > 0)
+    const affe = blkstrings
+    return affe
 }
 
 function lsblk() {

@@ -305,10 +305,10 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    border-top: 1px solid transparent;
+    border-top: var(--vue-electron-titlebar-top-height) solid transparent;
 }
 #app:focus-within {
-    border-top: 1px solid blue;
+    border-top: var(--vue-electron-titlebar-top-height) solid blue;
 }
 .main {
     flex-grow: 1;   

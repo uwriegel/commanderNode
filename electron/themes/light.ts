@@ -6,6 +6,7 @@ export function getCss() {
 
 "--vue-electron-titlebar-color: var(--main-color);" +
 "--vue-electron-titlebar-background-color: #eee;" +
+"--vue-electron-titlebar-top-height: 1px;" +
 "--vue-electron-titlebar-height: 30px;" +
 "--vue-electron-titlebar-button-hover-color: lightgray;" +
     
