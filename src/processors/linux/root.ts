@@ -114,6 +114,14 @@ export function getRootProcessor(processor: Processor): Processor {
 }
 
 async function getDrives() {
+    const home = await getHome()
+    const drives = [{
+        name: "Persönlicher Ordner",
+        type: RootType.HARDDRIVE,
+        mount: home,
+        isDirectory: true
+    }]
+
     const blkstrings = 
         (await lsblk())
             .split('\n')
@@ -123,7 +131,7 @@ async function getDrives() {
     const pos4 = title.indexOf("MOUNT")
     const pos5 = title.indexOf("FSTYPE")        
     const blks = blkstrings.filter((v, i) => i > 0)
-    return blks.map(n => { 
+    return drives.concat(blks.map(n => { 
         const rest = n.substr(pos5).trim()
         const pos = rest.lastIndexOf(" ")
         const type = rest.substr(0, pos).trim()
@@ -141,7 +149,7 @@ async function getDrives() {
         } 
     })
         .filter(n => n.mount.length > 0 && !n.description.startsWith("loop") && !n.mount.startsWith("/boot")) 
-        .sort((a, b) => a.name.localeCompare(b.name)) as FolderItem[]
+        .sort((a, b) => a.name.localeCompare(b.name))) as FolderItem[]
 }
 
 function trimName(name: string) {
@@ -151,9 +159,15 @@ function trimName(name: string) {
 }
 
 function lsblk() {
-    return new Promise<string>((res, rej) => 
-        child_process.exec('lsblk --bytes --output NAME,LABEL,MOUNTPOINT,FSTYPE,SIZE', (error: any, stdout: string, stderr: any) => res(stdout))
-    )
+    return getString('lsblk --bytes --output NAME,LABEL,MOUNTPOINT,FSTYPE,SIZE')
+}
+
+function getHome() {
+    return getString('echo $HOME')
+}
+
+function getString(cmd: string) {
+    return new Promise<string>((res, rej) => child_process.exec(cmd, (error: any, stdout: string, stderr: any) => res(stdout)))
 }
 
 /*
