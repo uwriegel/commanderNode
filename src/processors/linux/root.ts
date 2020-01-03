@@ -144,13 +144,28 @@ async function getDrives() {
     const pos4 = title.indexOf("MOUNT")
     const pos5 = title.indexOf("FSTYPE")        
     const blks = blkstrings.filter((v, i) => i > 0)
-    const drives = blks.map(n => { return {
-        displayName: n.substr(pos2, pos3 - pos2).trim(),
-        description: n.substr(pos3, pos4 - pos3).trim(),
-        mount: n.substr(pos4, pos5 - pos4).trim(),
-        driveType: n.substr(pos5).trim()
-    }}).filter(n => n.mount.length > 0 && !n.displayName.startsWith("loop"))
+    const drives = blks.map(n => { 
+        const rest = n.substr(pos5).trim()
+        const pos = rest.lastIndexOf(" ")
+        const type = rest.substr(0, pos).trim()
+        const size = rest.substr(pos)
+        const mount = n.substr(pos4, pos5 - pos4).trim()
+        const description = n.substr(pos3, pos4 - pos3).trim() || mount
+        return {
+            name: trimName(n.substr(pos2, pos3 - pos2)),
+            description,
+            mount,
+            driveType: type,
+            size: parseInt(size)
+        }
+    }).filter(n => n.mount.length > 0 && !n.name.startsWith("loop") && !n.mount.startsWith("/boot"))
     return "affe"
+}
+
+function trimName(name: string) {
+    return (name.startsWith("└") || name.startsWith("├")
+        ? name.substr(2)
+        : name).trim()
 }
 
 function lsblk() {
