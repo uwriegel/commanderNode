@@ -1,9 +1,7 @@
 import { Processor, ROOT, SERVICES, SHARES, FolderColumns, FolderItem, DriveViewItem } from '../processor'
 import { DriveItem, RootType } from '../../extensionFs'
 import { getDirectoryProcessor } from '../directory'
-import { getServicesProcessor, SERVICES_NAME } from '../services'
-import { getNetworkSharesProcessor, SHARES_NAME } from '../networkShares'
-import { Column } from '../../components/controls/Columns.vue'
+const child_process = window.require('child_process')
 
 const processorName = "root"
 /*
@@ -57,6 +55,8 @@ export function getRootProcessor(processor: Processor): Processor {
     function dispose() {}
 
     async function getItems() {
+        const blkString = await lsblk()
+
         const items = ([] as DriveItem[]) //(await extFs.getDrives()).filter(n => n.isMounted)
             .concat([ 
                 { name: "SHARES_NAME", type: RootType.SHARES, size: 0 },
@@ -133,6 +133,13 @@ export function getRootProcessor(processor: Processor): Processor {
     }
     return thisProcessor
 }
+
+function lsblk() {
+    return new Promise<string>((res, rej) => 
+        child_process.exec('lsblk --bytes --output NAME,LABEL,MOUNTPOINT,FSTYPE,SIZE', (error: any, stdout: string, stderr: any) => res(stdout))
+    )
+}
+
 /*
 mport { RootPresenter as RootPresenterBase, PresenterBase, RootItem } from '../../rootpresenter.js'
 import { ColumnsControl } from '../../../columnscontrol.js'
