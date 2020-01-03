@@ -4,15 +4,6 @@ import { getDirectoryProcessor } from '../directory'
 const child_process = window.require('child_process')
 
 const processorName = "root"
-/*
-struct Drive_item {
-	const std::wstring name;
-	const std::wstring description;
-	const uint64_t size;
-	const Drive_type type;
-	const bool is_mounted;
-};
-*/
 
 export function getRootProcessor(processor: Processor): Processor {
     if (processor) {
@@ -32,13 +23,13 @@ export function getRootProcessor(processor: Processor): Processor {
                 type: ROOT,
                 values: [{
                         isSortable: true,
-                        name: "Name"
-                    }, {
-                        isSortable: true,
                         name: "Beschreibung"
                     }, {
                         isSortable: true,
                         name: "Mount"
+                    }, {
+                        isSortable: true,
+                        name: "Name"
                     }, 
                     {
                         isSortable: true,
@@ -55,19 +46,7 @@ export function getRootProcessor(processor: Processor): Processor {
     function dispose() {}
 
     async function getItems() {
-        const blkString = await getDrives()
-
-        const items = ([] as DriveItem[]) //(await extFs.getDrives()).filter(n => n.isMounted)
-            .concat([ 
-                { name: "SHARES_NAME", type: RootType.SHARES, size: 0 },
-                { name: "SERVICES_NAME", type: RootType.SERVICES, size: 0 }
-            ])
-            .map((n, i) => {
-                const dvi = n as DriveViewItem
-                if (i == 0)
-                    dvi.isSelected = true
-                return dvi
-            })
+        const items = await getDrives()
         return refresh(items)
     }
     
@@ -144,7 +123,7 @@ async function getDrives() {
     const pos4 = title.indexOf("MOUNT")
     const pos5 = title.indexOf("FSTYPE")        
     const blks = blkstrings.filter((v, i) => i > 0)
-    const drives = blks.map(n => { 
+    return blks.map(n => { 
         const rest = n.substr(pos5).trim()
         const pos = rest.lastIndexOf(" ")
         const type = rest.substr(0, pos).trim()
@@ -152,14 +131,17 @@ async function getDrives() {
         const mount = n.substr(pos4, pos5 - pos4).trim()
         const description = n.substr(pos3, pos4 - pos3).trim() || mount
         return {
-            name: trimName(n.substr(pos2, pos3 - pos2)),
-            description,
+            name: description,
+            type: RootType.HARDDRIVE,
+            description: trimName(n.substr(pos2, pos3 - pos2)),
             mount,
+            isDirectory: true,
             driveType: type,
             size: parseInt(size)
-        }
-    }).filter(n => n.mount.length > 0 && !n.name.startsWith("loop") && !n.mount.startsWith("/boot"))
-    return "affe"
+        } 
+    })
+        .filter(n => n.mount.length > 0 && !n.description.startsWith("loop") && !n.mount.startsWith("/boot")) 
+        .sort((a, b) => a.name.localeCompare(b.name)) as FolderItem[]
 }
 
 function trimName(name: string) {

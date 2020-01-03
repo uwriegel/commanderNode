@@ -49,8 +49,10 @@
                         <service-icon class=icon></service-icon>
                         {{ row.item.name }}
                     </td>
+                    <td v-if='row.item.mount'>{{ row.item.mount }}</td>
                     <td>{{ row.item.description }}</td>
                     <td class="size">{{ row.item.size | size }}</td>
+                    <td v-if='row.item.driveType'>{{ row.item.driveType }}</td>
                 </tr>
                 <tr v-if='processor.name == "extendedRename" && row.item.isDirectory' 
                         draggable="true" @dragstart='onDragStart' @drag='onDrag' @dragend='onDragEnd'
