@@ -88,13 +88,25 @@ export function getDefaultProcessor(): Processor {
 }
 
 export function combinePath(path1: string, path2: string) {
-    if (path2 == "..") {
-        let pos = path1.lastIndexOf(pathDelimiter, path1.length - 2)
-        if (path1[pos - 1] == ':')
-            pos += 1
-        return pos != -1 ? path1.substr(0, pos) : undefined
+    function combineWindowsPath(path1: string, path2: string) {
+        if (path2 == "..") {
+            let pos = path1.lastIndexOf(pathDelimiter, path1.length - 2)
+            if (path1[pos - 1] == ':')
+                pos += 1
+            return pos != -1 ? path1.substr(0, pos) : undefined
+        }
+        return path1.endsWith(pathDelimiter) ? path1 + path2 : path1 + pathDelimiter + path2
     }
-    return path1.endsWith(pathDelimiter) ? path1 + path2 : path1 + pathDelimiter + path2
+
+    function combineLinuxPath(path1: string, path2: string) {
+        if (path2 == "..") {
+            let pos = path1.lastIndexOf(pathDelimiter, path1.length - 2)
+            if (pos == 0 && path1 != '/')
+                pos += 1
+            return pos != 0 ? path1.substr(0, pos) : undefined
+        }
+        return path1.endsWith(pathDelimiter) ? path1 + path2 : path1 + pathDelimiter + path2
+    }
+
+    return isLinux ? combineLinuxPath(path1, path2) : combineWindowsPath(path1, path2)
 }
-
-

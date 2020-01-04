@@ -78,7 +78,7 @@ export function getRootProcessor(processor: Processor): Processor {
                 done: false,
                 // TODO: interface RootItem
                 newProcessor: getDirectoryProcessor(thisProcessor, (driveItems[0] as any).mount), 
-                path: driveItems[0].name
+                path: (driveItems[0] as any).mount
             }
     }    
     
@@ -168,7 +168,7 @@ function getHome() {
 }
 
 function getString(cmd: string) {
-    return new Promise<string>((res, rej) => child_process.exec(cmd, (error: any, stdout: string, stderr: any) => res(stdout)))
+    return new Promise<string>((res, rej) => child_process.exec(cmd, (error: any, stdout: string, stderr: any) => res(stdout.trim())))
 }
 
 /*

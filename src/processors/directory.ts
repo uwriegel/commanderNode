@@ -2,6 +2,7 @@ import { createProcessor, combinePath, ROOT, Processor, FolderColumns, FolderIte
 import extFs, { VersionInfo, FileItem } from '../extensionFs'
 import { getNetworkShareProcessor } from './networkShare'
 import { getNameOnly, getExtension } from '../pipes'
+import { isLinux, pathDelimiter } from '@/platform'
 //import { sendToMain } from '../../cache/src/Connection'
 //const electron = window.require('electron')
 
@@ -42,23 +43,39 @@ export function getDirectoryProcessor(processor: Processor, path: string) {
             ? recentColumns
             : {
                 type: thisProcessor.name,
-                values: [{
-                        isSortable: true,
-                        name: "Name"
-                    }, {
-                        isSortable: true,
-                        name: "Erw."
-                    }, {
-                        isSortable: true,
-                        name: "Datum"
-                    }, {
-                        isSortable: true,
-                        name: "Größe"
-                    }, {
-                        isSortable: true,
-                        name: "Version"
-                    }
-                ]
+                values: 
+                    isLinux 
+                        ? [{
+                                isSortable: true,
+                                name: "Name"
+                            }, {
+                                isSortable: true,
+                                name: "Erw."
+                            }, {
+                                isSortable: true,
+                                name: "Datum"
+                            }, {
+                                isSortable: true,
+                                name: "Größe"
+                            }
+                        ]
+                        :[{
+                            isSortable: true,
+                            name: "Name"
+                        }, {
+                            isSortable: true,
+                            name: "Erw."
+                        }, {
+                            isSortable: true,
+                            name: "Datum"
+                        }, {
+                            isSortable: true,
+                            name: "Größe"
+                        }, {
+                            isSortable: true,
+                            name: "Version"
+                        }
+                    ]
             }
     }
 
@@ -75,14 +92,13 @@ export function getDirectoryProcessor(processor: Processor, path: string) {
     function refresh(values: FileViewItem[], showHidden?: boolean) {
         if (!showHidden)
             values = values.filter(n => !n.isHidden)
-        let dirs = values.filter(n => n.isDirectory)
+        let dirs = values.filter(n => n.isDirectory).sort((a: FileViewItem, b: FileViewItem) => a.name.localeCompare(b.name))
         let files = values.filter(n => !n.isDirectory)
 
         getExtendedInfos()
 
-       if (privates.sortIndex != null) {
-            const sort = 
-            privates.sortIndex == 0 
+        const sort = 
+            !!privates.sortIndex
             ? (a: FileViewItem, b: FileViewItem) => getNameOnly(a.name).localeCompare(getNameOnly(b.name)) :
             privates.sortIndex == 1 
             ? (a: FileViewItem, b: FileViewItem) => getExtension(a.name).localeCompare(getExtension(b.name)) :
@@ -93,7 +109,6 @@ export function getDirectoryProcessor(processor: Processor, path: string) {
             : (a: FileViewItem, b: FileViewItem) => compareVersions(a.version, b.version)
     
             files = files.sort((a, b) => (privates.sortDescending ? -1 : 1) * sort(a, b))
-        }
         
         if (dirs.length == 0 || dirs[0].name != "..")
             dirs = ([ {name: "..", isDirectory: true, isRoot: true, size: 0, index: 0 } as FileViewItem ]).concat(dirs)
@@ -117,14 +132,12 @@ export function getDirectoryProcessor(processor: Processor, path: string) {
         async function getExtendedInfos() {
             for (let i = 0; i < files.length; i++) {        
                 const fileItem = files[i]
-                const file = privates.path + '\\' + fileItem.name
+                const file = privates.path + pathDelimiter + fileItem.name
                 var checkName = fileItem.name.toLowerCase()
-                if (checkName.endsWith(".exe") || checkName.endsWith(".dll")) {
+                if (!isLinux && (checkName.endsWith(".exe") || checkName.endsWith(".dll"))) 
                     await getVersion(fileItem, file)
-                }
-                else if (checkName.endsWith(".jpg")) {
+                if (checkName.endsWith(".jpg")) 
                     await getExif(fileItem, file)
-                }
             }
         }
     }
@@ -172,7 +185,7 @@ export function getDirectoryProcessor(processor: Processor, path: string) {
     }        
 
     function getDirectoryName(path: string) {
-        const pos = path.lastIndexOf('\\', path.length - 2)
+        const pos = path.lastIndexOf(pathDelimiter, path.length - 2)
         return pos != -1 ? path.substr(pos + 1) : path
     }
 
