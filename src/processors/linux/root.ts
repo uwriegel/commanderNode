@@ -76,7 +76,8 @@ export function getRootProcessor(processor: Processor): Processor {
         if (driveItems.length == 1)
             return {
                 done: false,
-                newProcessor: getDirectoryProcessor(thisProcessor, driveItems[0].name), 
+                // TODO: interface RootItem
+                newProcessor: getDirectoryProcessor(thisProcessor, (driveItems[0] as any).mount), 
                 path: driveItems[0].name
             }
     }    
