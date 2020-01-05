@@ -1,12 +1,12 @@
-import { app, BrowserWindow, protocol, BrowserViewConstructorOptions, ipcMain, NativeImage, Item } from 'electron'
+import { app, BrowserWindow, protocol, BrowserViewConstructorOptions, ipcMain, NativeImage, Item, Menu } from 'electron'
 import * as path from "path"
 import settings from 'electron-settings'
 import * as fs from "fs"
 import * as extFs from 'extension-fs'
 import * as ipc from './ipc'
-import * as os from 'os'
 import { get as getPlatform} from './platforms/platform'
 import { Themes } from './themes/themes'
+import { initializeMenu } from './menu'
 
 protocol.registerSchemesAsPrivileged([{
     scheme: 'vue', privileges: {standard: true, secure: true }
@@ -24,8 +24,8 @@ const createWindow = function() {
     }) as BrowserViewConstructorOptions
     const b = bounds as any
     b.icon = __dirname + '/kirk2.png'
-    // Undocument this to get the default menu with developer tools
-    b.frame = false
+    // Document this to get the default menu with developer tools
+    // b.frame = false
     b.show = false 
 
     const platform = getPlatform()
@@ -178,6 +178,8 @@ const createWindow = function() {
     })    
 
     win.on("closed", () => {win = null})    
+
+    initializeMenu(win)
 }
 
 app.removeAllListeners('ready')

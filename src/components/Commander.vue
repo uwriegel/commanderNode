@@ -60,11 +60,9 @@ export default Vue.extend({
     },
     mounted() {
         this.leftFolderEventBus.$emit('focus')
-        this.eventBus.$on('refresh', this.refresh)
-        this.eventBus.$on('deleteItems', async () => this.deleteItems(this.getActiveFolderEventBus()))
-    },
-    props: {
-        eventBus: Object as PropType<Vue>,
+        electron.ipcRenderer.on("REFRESH", (event: any , data: any) => this.refresh())
+
+        //this.eventBus.$on('deleteItems', async () => this.deleteItems(this.getActiveFolderEventBus()))
     },
     methods: {
         refresh() {
