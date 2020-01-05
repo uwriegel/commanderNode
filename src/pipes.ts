@@ -1,4 +1,5 @@
 import { VersionInfo } from './extensionFs'
+import { isLinux } from './platform'
 
 const dateFormat = Intl.DateTimeFormat("de-DE", {
     year: "numeric",
@@ -34,16 +35,21 @@ export function getNameOnly(value: string) {
     if (!value)
         return ''
 
-    const pos = value.lastIndexOf('.')
-    return value.substring(0, pos)
+    const pos = getNameExtensionPos(value)
+    return pos != -1 ? value.substring(0, pos) : value
 }
 
 export function getExtension(value: string) {
     if (!value)
         return ''
 
+    const pos = getNameExtensionPos(value)
+    return pos != -1 ? value.substring(pos) : ""
+}
+
+function getNameExtensionPos(value: string) {
     const pos = value.lastIndexOf('.')
-    return value.substring(pos + 1)
+    return (pos == 0 && isLinux) ? -1 : pos
 }
 
 export function getDateTime(date: Date) {
