@@ -8,6 +8,36 @@ import { get as getPlatform} from './platforms/platform'
 import { Themes } from './themes/themes'
 import { initializeMenu } from './menu'
 
+
+
+
+
+import { spawn } from 'child_process'
+
+async function lsblk() {
+    
+    async function test() {
+        return new Promise<string>((res, rej) => {
+            const process = spawn('python3',["/home/uwe/projects/commander/electron/icon.py", "test.html"])
+            process.stdout.on('data', (data: Buffer) => res(data.toLocaleString()))
+        })    
+    }
+
+    var t = await test()
+    console.log(t)
+
+    let start = process.hrtime.bigint()
+    let result
+    for  (let i = 0; i < 1000; i++) {
+        result = await test()
+    }
+    let end = process.hrtime.bigint()
+    console.info(`Execution time: ${((end - start) / BigInt(1000000.0))} ms`)
+    }
+
+lsblk()
+
+
 protocol.registerSchemesAsPrivileged([{
     scheme: 'vue', privileges: {standard: true, secure: true }
 }])
@@ -183,7 +213,7 @@ const createWindow = function() {
 }
 
 app.removeAllListeners('ready')
-app.on('ready', createWindow)
+//app.on('ready', createWindow)
 
 app.on("activate", () => {
     if (win === null) 
