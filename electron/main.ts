@@ -15,21 +15,35 @@ import { initializeMenu } from './menu'
 import { spawn } from 'child_process'
 
 async function lsblk() {
+    const proc = spawn('python3',["./electron/icon.py", "test.html"])
     
-    async function test() {
+    async function test(text: String) {
         return new Promise<string>((res, rej) => {
-            const process = spawn('python3',["/home/uwe/projects/commander/electron/icon.py", "test.html"])
-            process.stdout.on('data', (data: Buffer) => res(data.toLocaleString()))
+            proc.stdout.on('data', (data: Buffer) => {
+                proc.stdout.removeAllListeners('data')
+                res(data.toLocaleString().trimEnd())
+            })
+            proc.stdin.write(text + '\n')
         })    
     }
 
-    var t = await test()
-    console.log(t)
+    var t = await test("test.css")
+    console.log("Ergebnisse", t)
+    t = await test("test.js")
+    console.log("Ergebnisse", t)
+    t = await test("test.cs")
+    console.log("Ergebnisse", t)
+    t = await test("test.py")
+    console.log("Ergebnisse", t)
+
+    
 
     let start = process.hrtime.bigint()
     let result
     for  (let i = 0; i < 1000; i++) {
-        result = await test()
+        t = await test("test.html")
+        console.log(t)
+    //     result = await test()
     }
     let end = process.hrtime.bigint()
     console.info(`Execution time: ${((end - start) / BigInt(1000000.0))} ms`)
