@@ -2,8 +2,7 @@ import { Platform } from "../platformInterface"
 import { Themes } from "../../themes/themes"
 import { getSetting } from "gtk-utils"
 import { getIconPath } from "../../linux"
-import { read } from "fs"
-import { spawn } from "child_process"
+import { promises as fs } from "fs"
 
 let themeCallback: (theme: Themes)=>void
 
@@ -28,24 +27,15 @@ export class LinuxPlatform implements Platform {
         themeCallback = cb
     }
 
-    getIcon(file: String) {
-        const iconProcess = spawn('python3',["./electron/icon.py"])
-
-        return new Promise<Buffer>((res, rej) => {
-        // return new Promise<string>((res, rej) => {
-        //     iconProcess.stdout.on('data', (data: Buffer) => {
-        //         iconProcess.stdout.removeAllListeners('data')
-        //         res(data.toLocaleString().trimEnd())
-        //     })
-        //     iconProcess.stdin.write(`${file}\n`)
-        })    
-        
-
-
-        // var iconPath = await getIconPath(file)
-        // // read(file, (_, data) => {
-        // // return new Buffer(icon)
-        // return iconPath
+    async getIcon(file: string) {
+        let iconPath = await getIconPath(file)
+        if (iconPath == 'None')
+            iconPath = "./electron/fault.png"
+        const buffer = await fs.readFile(iconPath)
+        return {
+            buffer,
+            mime: iconPath.toLowerCase().endsWith("svg") ? 'image/svg+xml' : "img/jpg"
+        }
     } 
 
     readonly isLinux = true

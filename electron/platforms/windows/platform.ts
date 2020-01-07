@@ -20,7 +20,13 @@ export class WindowsPlatform implements Platform {
         themeCallback = cb
     }
 
-    readonly getIcon = getRawIcon
+    async getIcon(file: string) {
+        const buffer = await getRawIcon(file)
+        return {
+            buffer,
+            mime: "img/jpg"
+        }
+    } 
 
     readonly isLinux = false
 }

@@ -60,11 +60,15 @@ export function getDateTime(date: Date) {
 }
 
 export function getIconUrl(value: string, path: string) {
-    if (value.toLowerCase().endsWith(".exe")) 
+    if (isLinux)
         return "icon://" + path + '/' + value 
+    else {
+        if (value.toLowerCase().endsWith(".exe")) 
+            return "icon://" + path + '/' + value 
 
-    const pos = value.lastIndexOf('.')
-    return pos != -1 ? "icon://" + value.substring(pos + 1) : ""
+        const pos = value.lastIndexOf('.')
+        return pos != -1 ? "icon://" + value.substring(pos + 1) : ""
+    }
 }
 
 export function getVersion(version: VersionInfo) {

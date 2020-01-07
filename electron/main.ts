@@ -13,8 +13,6 @@ protocol.registerSchemesAsPrivileged([{
     scheme: 'vue', privileges: {standard: true, secure: true }
 }])
 
-// TODO: Linux icons:  import gio  gio.content_type_guess('foo.pdf')
-
 const createWindow = function() {    
     // if (process.env.NODE_ENV == 'DEV')
     //     require('vue-devtools').install()        
@@ -25,8 +23,6 @@ const createWindow = function() {
     }) as BrowserViewConstructorOptions
     const b = bounds as any
     b.icon = __dirname + '/kirk2.png'
-    // Document this to get the default menu with developer tools
-    // b.frame = false
     b.show = false 
 
     const platform = getPlatform()
@@ -150,8 +146,8 @@ const createWindow = function() {
         const url = request.url
         var ext = url.substr(7)
 
-        var icon = await extFs.getIcon(ext)
-        callback({mimeType: 'img/png', data: icon})
+        var icon = await platform.getIcon(ext)
+        callback({mimeType: icon.mime, data: icon.buffer})
     }, (error) => {
         if (error) console.error('Failed to register protocol', error)
     })
@@ -185,7 +181,7 @@ const createWindow = function() {
 }
 
 app.removeAllListeners('ready')
-//app.on('ready', createWindow)
+app.on('ready', createWindow)
 
 app.on("activate", () => {
     if (win === null) 

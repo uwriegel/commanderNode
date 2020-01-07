@@ -28,7 +28,7 @@
     "scripts": {
         "electron-build": "tsc -p electron",
         "dev": "cross-env NODE_ENV=DEV vue-cli-service serve && electron electron/dist/main.js",
-        "electron": "cross-env NODE_ENV=DEV electron electron/dist/test.js",
+        "electron": "cross-env NODE_ENV=DEV electron electron/dist/main.js",
         "electron-prod": "electron electron/dist/main.js",
         "build": "vue-cli-service build --modern",
         "dist": "build -w --x64 --ia32",
