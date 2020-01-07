@@ -7,50 +7,7 @@ import * as ipc from './ipc'
 import { get as getPlatform} from './platforms/platform'
 import { Themes } from './themes/themes'
 import { initializeMenu } from './menu'
-
-
-
-
-
-import { spawn } from 'child_process'
-
-async function lsblk() {
-    const proc = spawn('python3',["./electron/icon.py", "test.html"])
-    
-    async function test(text: String) {
-        return new Promise<string>((res, rej) => {
-            proc.stdout.on('data', (data: Buffer) => {
-                proc.stdout.removeAllListeners('data')
-                res(data.toLocaleString().trimEnd())
-            })
-            proc.stdin.write(text + '\n')
-        })    
-    }
-
-    var t = await test("test.css")
-    console.log("Ergebnisse", t)
-    t = await test("test.js")
-    console.log("Ergebnisse", t)
-    t = await test("test.cs")
-    console.log("Ergebnisse", t)
-    t = await test("test.py")
-    console.log("Ergebnisse", t)
-
-    
-
-    let start = process.hrtime.bigint()
-    let result
-    for  (let i = 0; i < 1000; i++) {
-        t = await test("test.html")
-        console.log(t)
-    //     result = await test()
-    }
-    let end = process.hrtime.bigint()
-    console.info(`Execution time: ${((end - start) / BigInt(1000000.0))} ms`)
-    }
-
-lsblk()
-
+import { getIconPath } from './linux'
 
 protocol.registerSchemesAsPrivileged([{
     scheme: 'vue', privileges: {standard: true, secure: true }
@@ -192,6 +149,7 @@ const createWindow = function() {
     protocol.registerBufferProtocol('icon', async (request, callback) => {
         const url = request.url
         var ext = url.substr(7)
+
         var icon = await extFs.getIcon(ext)
         callback({mimeType: 'img/png', data: icon})
     }, (error) => {

@@ -5,4 +5,5 @@ export interface Platform {
     getCurrentTheme(): Themes
     setThemeCallback(cb: (theme: Themes)=>void): void
     isLinux: Boolean
+    getIcon: (file: String)=>Promise<Buffer>
 }
