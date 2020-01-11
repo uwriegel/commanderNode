@@ -45,7 +45,7 @@ export default Vue.extend({
             itemsPerPage: 0,
             startIndex: 0,
             displayItems: [] as TableViewItem[],
-            index: 0,
+            index: -1,
             columnHeight: undefined as number|undefined,
         }
     },
@@ -66,7 +66,9 @@ export default Vue.extend({
         },
         index: {
             immediate: true,
-            handler(newVal) { this.$emit("selection-changed", newVal) }
+            handler(newVal: number) { 
+                this.$emit("selection-changed", newVal) 
+            }
         },
     },
     computed: {
@@ -111,9 +113,6 @@ export default Vue.extend({
                 case 40:
                     this.downOne()
                     break
-                case 46: // Delete
-                    this.$emit("delete")
-                    break;
                 default:
                     return // exit this handler for other keys
             }

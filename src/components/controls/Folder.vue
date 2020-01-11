@@ -5,7 +5,7 @@
         <table-view class='table' :eventBus="tableEventBus" :columns='tableViewColumns' :items='items' :itemHeight='18' 
                 :class="{isDragging: isDragging, isDragStarted: isDragStarted, isBacktrackEnd: isBacktrackEnd}"
                 @column-click='onSort' v-stream:keydown.native='keyDown$'
-                @columns-widths-changed='onColumnsWidthChanged' @action='onAction' @selection-changed=onSelectionChanged @delete='onDelete'>
+                @columns-widths-changed='onColumnsWidthChanged' @action='onAction' @selection-changed=onSelectionChanged>
             <template v-slot=row>
                 <tr v-if='processor.name == "directory" && row.item.isDirectory' 
                         draggable="true" @dragstart='onDragStart' @drag='onDrag' @dragend='onDragEnd'
@@ -201,18 +201,6 @@ export default Vue.extend({
         this.eventBus.$on('focus', this.focus)
         this.eventBus.$on('refresh', this.refresh)
         this.eventBus.$on('resize', () => this.tableEventBus.$emit("resize"))        
-        
-        
-        
-        // TODO: weg
-        this.eventBus.$on('updateSelectedItems', () => {
-            console.log("updateSelectedItems in folder")
-            this.$emit('selected-items-changed', this.getSelectedItems())             
-        })
-
-
-
-
         const shiftTabs$ = (this as any).keyDown$.pipe(filter((n: any) => n.event.which == 9 && n.event.shiftKey))
         const inputChars$ = (this as any).keyDown$.pipe(filter((n: any) => !n.event.altKey && !n.event.ctrlKey && !n.event.shiftKey && n.event.key.length > 0 && n.event.key.length < 2))
         const backSpaces$ = (this as any).keyDown$.pipe(filter((n: any) => n.event.which == 8))
@@ -267,9 +255,6 @@ export default Vue.extend({
         },
         onColumnsWidthChanged(widths: string[]) {
             localStorage[this.getStorageColumnsWidthName()] = JSON.stringify(widths)
-        },
-        onDelete() {
-            this.$emit("delete")
         },
         onDragStart(evt: DragEvent) {
             // this.isDragStarted = true
@@ -381,20 +366,25 @@ export default Vue.extend({
             this.items = (await this.processor.getItems(path, (this as any).showHidden))
             const pathChanged = this.path != path
             this.path = path!!
+            this.$emit("item-count-changed", this.items.filter(n => n.name != "..").length)            
             localStorage[`${this.id}-path`] = path
             if (!backtrackDirection && pathChanged)
                 this.backtrackPosition = this.backtrack!!.push(path!!) -1
+            let newPos = 0
             if (lastPath) {
-                const newPos = this.items.findIndex(n => n.name == lastPath)
+                newPos = this.items.findIndex(n => n.name == lastPath)
                 if (newPos != -1) 
                     setTimeout(() => this.tableEventBus.$emit("setCurrentIndex", newPos))
             }
+            if (newPos != -1) 
+                this.onSelectionChanged(newPos)
         },
         onSort(index: number, descending: boolean) {
             const selected = this.items[this.selectedIndex]
             this.items = this.processor.sort(this.items, index, descending, (this as any).showHidden)
             const newPos = this.items.findIndex(n => n == selected)
             this.onSelectedItemsChanged()
+            this.onSelectionChanged(newPos)
             if (newPos != -1) 
                 setTimeout(() => this.tableEventBus.$emit("setCurrentIndex", newPos))
         },
@@ -412,6 +402,8 @@ export default Vue.extend({
             this.$emit('selection-changed', this.getSelectedItem(newIndex)) 
         },
         onSelectedItemsChanged() {
+            this.$emit('selected-items-changed', this.getSelectedItems())             
+
             // if (this.getExtendedRename()) {
             //     const prefix = localStorage["extendedRenamePrexix"]
             //     const digits = localStorage["extendedRenameDigits"]
@@ -457,6 +449,7 @@ export default Vue.extend({
             // TODO: emit processorChanged
             if (processor) {
                 this.processor = processor
+                this.$emit("on-processor", processor)
                 const columns = this.processor.getColumns(this.columns)
                 const value = localStorage[this.getStorageColumnsWidthName()]
                 if (value) {
@@ -505,12 +498,14 @@ export default Vue.extend({
                 this.restrictValue += evt.key      
                 this.items = items      
             }
+            this.onSelectionChanged(0)
         },
         restrictClose(leaveItems?: boolean) {
             this.restrictValue = ""
             if (this.originalItems && !leaveItems)
                 this.items = this.originalItems
-             this.originalItems = null
+            this.originalItems = null
+            this.onSelectionChanged(0)
         },
         restrictBack() {
             if (this.restrictValue.length > 0) {
@@ -520,6 +515,7 @@ export default Vue.extend({
                 else 
                     this.items = this.originalItems!!.filter(n => n.name!!.toLowerCase().startsWith(this.restrictValue))
             }
+            this.onSelectionChanged(0)
         },
         // deleteFiles(itemsToDelete) {
         //     return this.processor.deleteFiles(itemsToDelete)
@@ -550,30 +546,34 @@ export default Vue.extend({
                     this.tableEventBus.$emit("setCurrentIndex", this.selectedIndex + 1)
                 this.onSelectedItemsChanged()
             })
-            this.$subscribeTo(pluses$, () => this.items.forEach(n => {
-                if (n.isSelected != undefined) {
-                    n.isSelected = true
-                    this.onSelectedItemsChanged()
-                }
-            }))
-            this.$subscribeTo(minuses$, () => this.items.forEach(n => {
-                if (n.isSelected != undefined) {
-                    n.isSelected = false
-                    this.onSelectedItemsChanged()
-                }
-            }))
-            this.$subscribeTo(homes$, () => this.items.forEach((n, i) => {
-                if (n.isSelected != undefined) {
-                    n.isSelected = i <= this.selectedIndex
-                    this.onSelectedItemsChanged()
-                }
-            }))
-            this.$subscribeTo(ends$, () => this.items.forEach((n, i) => {
-                if (n.isSelected != undefined) {
-                    n.isSelected = i >= this.selectedIndex
-                    this.onSelectedItemsChanged()
-                }
-            }))
+            this.$subscribeTo(pluses$, () => {
+                this.items.forEach(n => {
+                    if (n.isSelected != undefined) 
+                        n.isSelected = true
+                })
+                this.onSelectedItemsChanged()
+            })
+            this.$subscribeTo(minuses$, () => {
+                this.items.forEach(n => {
+                    if (n.isSelected != undefined) 
+                        n.isSelected = false
+                })
+                this.onSelectedItemsChanged()
+            })
+            this.$subscribeTo(homes$, () => {
+                this.items.forEach((n, i) => {
+                    if (n.isSelected != undefined) 
+                        n.isSelected = i <= this.selectedIndex
+                })
+                this.onSelectedItemsChanged()
+            })
+            this.$subscribeTo(ends$, () => {
+                this.items.forEach((n, i) => {
+                    if (n.isSelected != undefined) 
+                        n.isSelected = i >= this.selectedIndex
+                })
+                this.onSelectedItemsChanged()
+            })
         }
     }
 })

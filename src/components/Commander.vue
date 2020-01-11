@@ -5,12 +5,14 @@
             <template v-slot:first>
                 <splitter-grid>
                     <template v-slot:first>
-                        <folder :eventBus="leftFolderEventBus" @delete='onLeftDelete' class="folder" id="left" @focus-in=onLeftFocus 
-                        @selection-changed=onSelectionChanged @selected-items-changed=onSelectedItemsChanged @drop-files="leftDropFiles"></folder>
+                        <folder :eventBus="modelLeft.folderEventBus" class="folder" id="left" @focus-in=onLeftFocus @on-processor=onLeftProcessor
+                        @selection-changed=onLeftSelectionChanged @selected-items-changed=onLeftSelectedItemsChanged @item-count-changed=onLeftItemCountChanged  
+                        @drop-files="leftDropFiles"></folder>
                     </template>
                     <template v-slot:second>
-                        <folder :eventBus="rightFolderEventBus" @delete='onRightDelete' class="folder" id="right" @focus-in=onRightFocus 
-                        @selection-changed=onSelectionChanged @selected-items-changed=onSelectedItemsChanged @drop-files="rightDropFiles"></folder>
+                        <folder :eventBus="modelRight.folderEventBus" class="folder" id="right" @focus-in=onRightFocus @on-processor=onRightProcessor
+                        @selection-changed=onRightSelectionChanged @selected-items-changed=onRightSelectedItemsChanged @item-count-changed=onRightItemCountChanged 
+                        @drop-files="rightDropFiles"></folder>
                     </template>
                 </splitter-grid>
             </template>
@@ -18,7 +20,13 @@
                 <viewer class="viewer" :src=selectedItem></viewer>
             </template>
         </splitter-grid>
-        <div class="status">{{ status }}</div>
+        <div class="status">
+            <span>{{ model.selectedItem }}</span>    
+            <span class="space"/>
+            <span>{{ model.selectedItems.length }}</span>    
+            <span>/</span>
+            <span>{{ model.itemCount }}</span>    
+        </div>
         <main-dialog ref="dialog" @state-changed=onDialogStateChanged></main-dialog>
     </div>
 </template>
@@ -30,20 +38,38 @@ import Folder from './controls/Folder.vue'
 import Viewer from './controls/Viewer.vue'
 import MainDialog from './controls/MainDialog.vue'
 import { mapState } from 'vuex'
-import { createProcessor, FolderItem } from '../processors/processor'
+import { createProcessor, FolderItem, Processor, getDefaultProcessor } from '../processors/processor'
 const electron = window.require('electron')
-// TODO: Always actualized model with processor, otherProcessor, selectedItem ans SelectedOtems and itemsToProcessed getter
+
+interface Model {
+    folderEventBus: Vue
+    processor: Processor
+    selectedItem: string
+    selectedItems: FolderItem[]
+    itemCount: number
+}
+
 // TODO: Rename with copy
 // TODO: Status displays alternativly # selected items
 export default Vue.extend({
     data() {
         return {
-            leftFolderEventBus: new Vue(),
-            rightFolderEventBus: new Vue(),
             leftHasFocus: true,
-            selectedItem: "",
+            modelLeft: { 
+                folderEventBus: new Vue(),
+                processor: getDefaultProcessor(),   
+                selectedItem: "",
+                selectedItems: [] as FolderItem[],
+                itemCount: 0
+            },
+            modelRight: { 
+                folderEventBus: new Vue(),
+                processor: getDefaultProcessor(),   
+                selectedItem: "",
+                selectedItems: [] as FolderItem[],
+                itemCount: 0
+            },
             dialogOpen: false,
-            selectedItems: undefined as FolderItem[] | undefined
         }
     },
     components: {
@@ -53,32 +79,33 @@ export default Vue.extend({
         MainDialog
     },
     computed: {
-        status(): string {
-            return this.selectedItem
+        model(): Model {
+            return this.leftHasFocus ? this.modelLeft : this.modelRight
         },
         // mix this into the outer object with the object spread operator
         ...mapState(['showViewer'])
     },
     mounted() {
-        this.leftFolderEventBus.$emit('focus')
+        this.modelLeft.folderEventBus.$emit('focus')
         electron.ipcRenderer.on("REFRESH", (event: any , data: any) => this.refresh())
-
-
-        electron.ipcRenderer.on("DELETE_FILES", async (event: any , data: any) => this.deleteItems(this.getActiveFolderEventBus()))
+        electron.ipcRenderer.on("DELETE_FILES", async (event: any , data: any) => this.deleteItems())
     },
     methods: {
         refresh() {
-            this.getActiveFolderEventBus().$emit('refresh')
+            this.model.folderEventBus.$emit('refresh')
         },
-        properties() { electron.ipcRenderer.send("showInfo", this.selectedItem) },
-        openAs() { electron.ipcRenderer.send("openAs", this.selectedItem) },
+        getInactiveModel(): Model {
+            return this.leftHasFocus ? this.modelRight : this.modelLeft
+        },
+        properties() { electron.ipcRenderer.send("showInfo", this.model.selectedItem) },
+        openAs() { electron.ipcRenderer.send("openAs", this.model.selectedItem) },
         viewerHeightChanged() {
-            this.leftFolderEventBus.$emit('resize')
-            this.rightFolderEventBus.$emit('resize')
+            this.modelLeft.folderEventBus.$emit('resize')
+            this.modelRight.folderEventBus.$emit('resize')
         },
         onKeyDown(evt: KeyboardEvent) {
             if (evt.which == 9 && !evt.shiftKey && (evt.target as HTMLInputElement).tagName != "INPUT") {
-                this.getInactiveFolderEventBus().$emit("focus");
+                this.getInactiveModel().folderEventBus.$emit("focus");
                 evt.preventDefault()
             }
         },
@@ -90,13 +117,35 @@ export default Vue.extend({
             console.log("leftHasFocus = false ")
             this.leftHasFocus = false 
         },
-        onSelectionChanged(newItem: string) {
-            this.selectedItem = newItem
+        onLeftProcessor(processor: Processor) {
+            this.modelLeft.processor = processor
         },
-        onSelectedItemsChanged(selectedItems: FolderItem[]) { this.selectedItems = selectedItems },
+        onRightProcessor(processor: Processor) {
+            this.modelRight.processor = processor
+        },
+        onLeftSelectionChanged(newItem: string) {
+            this.modelLeft.selectedItem = newItem
+        },
+        onRightSelectionChanged(newItem: string) {
+            this.modelRight.selectedItem = newItem
+        },
+        onLeftSelectedItemsChanged(selectedItems: FolderItem[]) { 
+            this.modelLeft.selectedItems = selectedItems 
+        },
+        onRightSelectedItemsChanged(selectedItems: FolderItem[]) { 
+            this.modelRight.selectedItems = selectedItems 
+        },
+        onLeftItemCountChanged(count: number) {
+            console.log("Count", count)
+            this.modelLeft.itemCount = count
+        },
+        onRightItemCountChanged(count: number) {
+            console.log("Count", count)
+            this.modelRight.itemCount = count
+        },
         onDialogStateChanged(isShowing: boolean) { this.dialogOpen = isShowing },
         async createFolder() {
-            const folder = this.getActiveFolderEventBus()
+            
             // if (folder.canCreateFolder()) {
             //     const selectedItems = folder.getSelectedItems()
             //     const proposalName = 
@@ -176,12 +225,6 @@ export default Vue.extend({
             //         folder.setExtendedRename(param.isEnabled) 
             // }
         },
-        onLeftDelete() {
-            this.deleteItems(this.leftFolderEventBus)
-        },
-        onRightDelete() {
-           this.deleteItems(this.rightFolderEventBus)
-        },
         async copyItems(move: boolean) {
             // const sourceFolder = this.getActiveFolder()
             // const sourceProcessor = sourceFolder.getProcessor()
@@ -189,25 +232,13 @@ export default Vue.extend({
             // const selectedItems = sourceFolder.getSelectedItems()
             // await this.doCopyItems(sourceProcessor, sourceFolder, targetFolder, selectedItems, move)
         },
-        async deleteItems(folderEventBus: Vue) {
-
-        console.log("SelectedItems", this.selectedItems)
-        console.log("Will löschen")
-        folderEventBus.$emit('updateSelectedItems')
-        console.log("Hab updateSelectedItems geschickt")
-        console.log("SelectedItems", this.selectedItems)
-        
+        async deleteItems() {
+            console.log("delete")
 
 
             // TODO: DeleteItems
         //     if (folder.canDeleteItems()) 
         //         await folder.deleteItems(this.$refs.dialog)
-        },
-        getActiveFolderEventBus(): Vue {
-            return this.leftHasFocus ? this.leftFolderEventBus : this.rightFolderEventBus
-        },
-        getInactiveFolderEventBus(): Vue {
-            return this.leftHasFocus ? this.rightFolderEventBus : this.leftFolderEventBus
         },
         // getOtherFolder(folder) {
         //     return folder == this.$refs.leftFolder 
@@ -305,5 +336,8 @@ export default Vue.extend({
     height: var(--status-height); 
     color: var(--selected-color);
     background-color: var(--selected-background-color);
+}
+.space {
+    margin-left: 10px;
 }
 </style>
