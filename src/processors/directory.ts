@@ -98,7 +98,7 @@ export function getDirectoryProcessor(processor: Processor, path: string) {
         getExtendedInfos()
 
         const sort = 
-            !!privates.sortIndex
+            !privates.sortIndex
             ? (a: FileViewItem, b: FileViewItem) => getNameOnly(a.name).localeCompare(getNameOnly(b.name)) :
             privates.sortIndex == 1 
             ? (a: FileViewItem, b: FileViewItem) => getExtension(a.name).localeCompare(getExtension(b.name)) :

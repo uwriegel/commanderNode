@@ -1,5 +1,6 @@
 import { Menu, BrowserWindow } from "electron"
 
+const DELETE_FILES = "DELETE_FILES"
 const REFRESH = "REFRESH"
 const PREVIEW = "PREVIEW"
 const SHOWHIDDEN = "SHOWHIDDEN"
@@ -34,7 +35,7 @@ export function initializeMenu(win: BrowserWindow) {
             {
                 label: '&Löschen',
                 accelerator: "Delete",
-                //click: evt => win.webContents.send(DELETE_FILES)
+                click: evt => win.webContents.send(DELETE_FILES)
             },
             {
                 type: 'separator'

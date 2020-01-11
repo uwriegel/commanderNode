@@ -201,6 +201,17 @@ export default Vue.extend({
         this.eventBus.$on('focus', this.focus)
         this.eventBus.$on('refresh', this.refresh)
         this.eventBus.$on('resize', () => this.tableEventBus.$emit("resize"))        
+        
+        
+        
+        // TODO: weg
+        this.eventBus.$on('updateSelectedItems', () => {
+            console.log("updateSelectedItems in folder")
+            this.$emit('selected-items-changed', this.getSelectedItems())             
+        })
+
+
+
 
         const shiftTabs$ = (this as any).keyDown$.pipe(filter((n: any) => n.event.which == 9 && n.event.shiftKey))
         const inputChars$ = (this as any).keyDown$.pipe(filter((n: any) => !n.event.altKey && !n.event.ctrlKey && !n.event.shiftKey && n.event.key.length > 0 && n.event.key.length < 2))
@@ -443,6 +454,7 @@ export default Vue.extend({
             return `${this.id}-${this.processor.name}-columnsWidths`
         },
         changeProcessor(processor: Processor) {
+            // TODO: emit processorChanged
             if (processor) {
                 this.processor = processor
                 const columns = this.processor.getColumns(this.columns)

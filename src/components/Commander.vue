@@ -6,11 +6,11 @@
                 <splitter-grid>
                     <template v-slot:first>
                         <folder :eventBus="leftFolderEventBus" @delete='onLeftDelete' class="folder" id="left" @focus-in=onLeftFocus 
-                        @selection-changed=onSelectionChanged @drop-files="leftDropFiles"></folder>
+                        @selection-changed=onSelectionChanged @selected-items-changed=onSelectedItemsChanged @drop-files="leftDropFiles"></folder>
                     </template>
                     <template v-slot:second>
                         <folder :eventBus="rightFolderEventBus" @delete='onRightDelete' class="folder" id="right" @focus-in=onRightFocus 
-                        @selection-changed=onSelectionChanged @drop-files="rightDropFiles"></folder>
+                        @selection-changed=onSelectionChanged @selected-items-changed=onSelectedItemsChanged @drop-files="rightDropFiles"></folder>
                     </template>
                 </splitter-grid>
             </template>
@@ -30,9 +30,9 @@ import Folder from './controls/Folder.vue'
 import Viewer from './controls/Viewer.vue'
 import MainDialog from './controls/MainDialog.vue'
 import { mapState } from 'vuex'
-import { createProcessor } from '../processors/processor'
+import { createProcessor, FolderItem } from '../processors/processor'
 const electron = window.require('electron')
-
+// TODO: Always actualized model with processor, otherProcessor, selectedItem ans SelectedOtems and itemsToProcessed getter
 // TODO: Rename with copy
 // TODO: Status displays alternativly # selected items
 export default Vue.extend({
@@ -42,7 +42,8 @@ export default Vue.extend({
             rightFolderEventBus: new Vue(),
             leftHasFocus: true,
             selectedItem: "",
-            dialogOpen: false
+            dialogOpen: false,
+            selectedItems: undefined as FolderItem[] | undefined
         }
     },
     components: {
@@ -62,7 +63,8 @@ export default Vue.extend({
         this.leftFolderEventBus.$emit('focus')
         electron.ipcRenderer.on("REFRESH", (event: any , data: any) => this.refresh())
 
-        //this.eventBus.$on('deleteItems', async () => this.deleteItems(this.getActiveFolderEventBus()))
+
+        electron.ipcRenderer.on("DELETE_FILES", async (event: any , data: any) => this.deleteItems(this.getActiveFolderEventBus()))
     },
     methods: {
         refresh() {
@@ -81,14 +83,17 @@ export default Vue.extend({
             }
         },
         onLeftFocus() { 
+            console.log("leftHasFocus = true ")
             this.leftHasFocus = true 
         },
         onRightFocus() { 
+            console.log("leftHasFocus = false ")
             this.leftHasFocus = false 
         },
         onSelectionChanged(newItem: string) {
             this.selectedItem = newItem
         },
+        onSelectedItemsChanged(selectedItems: FolderItem[]) { this.selectedItems = selectedItems },
         onDialogStateChanged(isShowing: boolean) { this.dialogOpen = isShowing },
         async createFolder() {
             const folder = this.getActiveFolderEventBus()
@@ -185,6 +190,15 @@ export default Vue.extend({
             // await this.doCopyItems(sourceProcessor, sourceFolder, targetFolder, selectedItems, move)
         },
         async deleteItems(folderEventBus: Vue) {
+
+        console.log("SelectedItems", this.selectedItems)
+        console.log("Will löschen")
+        folderEventBus.$emit('updateSelectedItems')
+        console.log("Hab updateSelectedItems geschickt")
+        console.log("SelectedItems", this.selectedItems)
+        
+
+
             // TODO: DeleteItems
         //     if (folder.canDeleteItems()) 
         //         await folder.deleteItems(this.$refs.dialog)
