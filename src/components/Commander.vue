@@ -91,7 +91,7 @@ export default Vue.extend({
         },
         onDialogStateChanged(isShowing: boolean) { this.dialogOpen = isShowing },
         async createFolder() {
-            // const folder = this.getActiveFolder()
+            const folder = this.getActiveFolderEventBus()
             // if (folder.canCreateFolder()) {
             //     const selectedItems = folder.getSelectedItems()
             //     const proposalName = 
@@ -288,7 +288,7 @@ export default Vue.extend({
 }
 .status {
     padding: 2px 2px 1px 5px;
-    height: 14px; 
+    height: var(--status-height); 
     color: var(--selected-color);
     background-color: var(--selected-background-color);
 }

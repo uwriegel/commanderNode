@@ -214,7 +214,7 @@ td {
     padding-right: 19px;
 }
 .scrollbar-container {
-    top: 16px;
+    top: var(--scrollbar-top);
     position: absolute;
     right: 0px;
     width: 0px;
