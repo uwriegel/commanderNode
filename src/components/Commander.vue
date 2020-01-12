@@ -17,11 +17,11 @@
                 </splitter-grid>
             </template>
             <template v-slot:second>
-                <viewer class="viewer" :src=selectedItem></viewer>
+                <viewer class="viewer" :src=model.selectedItem.path></viewer>
             </template>
         </splitter-grid>
         <div class="status">
-            <span>{{ model.selectedItem }}</span>    
+            <span>{{ model.selectedItem.path }}</span>    
             <span class="space"/>
             <span>{{ model.selectedItems.length }}</span>    
             <span>/</span>
@@ -34,7 +34,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import SplitterGrid from './controls/SplitterGrid.vue'
-import Folder from './controls/Folder.vue'
+import Folder, { SelectedItem } from './controls/Folder.vue'
 import Viewer from './controls/Viewer.vue'
 import MainDialog from './controls/MainDialog.vue'
 import { mapState } from 'vuex'
@@ -44,11 +44,12 @@ const electron = window.require('electron')
 interface Model {
     folderEventBus: Vue
     processor: Processor
-    selectedItem: string
+    selectedItem: SelectedItem
     selectedItems: FolderItem[]
     itemCount: number
-    isProcessable: boolean
 }
+
+// TODO:             || (item && item.name != "..")            
 
 // TODO: Rename with copy
 // TODO: Status displays alternativly # selected items
@@ -59,18 +60,16 @@ export default Vue.extend({
             modelLeft: { 
                 folderEventBus: new Vue(),
                 processor: getDefaultProcessor(),   
-                selectedItem: "",
+                selectedItem: { name: "", path: undefined } as SelectedItem,
                 selectedItems: [] as FolderItem[],
-                itemCount: 0,
-                isProcessable: false
+                itemCount: 0
             },
             modelRight: { 
                 folderEventBus: new Vue(),
                 processor: getDefaultProcessor(),   
-                selectedItem: "",
+                selectedItem: { name: "", path: undefined } as SelectedItem,
                 selectedItems: [] as FolderItem[],
-                itemCount: 0,
-                isProcessable: false
+                itemCount: 0
             },
             dialogOpen: false,
         }
@@ -127,13 +126,11 @@ export default Vue.extend({
         onRightProcessor(processor: Processor) {
             this.modelRight.processor = processor
         },
-        onLeftSelectionChanged(newItem: string, isProcessable: boolean) {
+        onLeftSelectionChanged(newItem: SelectedItem) {
             this.modelLeft.selectedItem = newItem
-            this.modelRight.isProcessable = isProcessable
         },
-        onRightSelectionChanged(newItem: string, isProcessable: boolean) {
+        onRightSelectionChanged(newItem: SelectedItem) {
             this.modelRight.selectedItem = newItem
-            this.modelRight.isProcessable = isProcessable
         },
         onLeftSelectedItemsChanged(selectedItems: FolderItem[]) { 
             this.modelLeft.selectedItems = selectedItems 

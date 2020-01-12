@@ -144,9 +144,12 @@ import { mapState } from 'vuex'
 import { Column } from './Columns.vue'
 import { Observable } from 'rxjs'
 import { FileItem } from '../../extensionFs'
-// import { getExtension } from '../../pipes'
 // import { renameFiles } from "../../extendedRename"
-// const path = window.require('path')
+
+export interface SelectedItem {
+    name: string | undefined
+    path: string | undefined
+}
 
 // TODO: drag: icon
 export default Vue.extend({
@@ -397,19 +400,22 @@ export default Vue.extend({
                 this.changePath(result.path, result.lastPath)
             }
         },
-        onSelectionChanged(newIndex: number, isAlwaysProcessable?: boolean) { 
+        onSelectionChanged(newIndex: number) { 
             this.selectedIndex = newIndex
             const item = this.items[this.selectedIndex]
-            const itemPath = this.path
+            
+            const path = this.path
                 ? this.processor.getItemWithPath(this.path, item) 
                 : ""
-            this.$emit('selection-changed', itemPath, isAlwaysProcessable || (item && item.name != "..")) 
+            const selectedItem: SelectedItem = {
+                name: item ? item.name : "",
+                path
+            }
+            this.$emit('selection-changed', selectedItem) 
         },
         onSelectedItemsChanged() {
             const items = this.getSelectedItems()
             this.$emit('selected-items-changed', items)             
-            this.onSelectionChanged(this.selectedIndex, items.length > 0)
-
             // if (this.getExtendedRename()) {
             //     const prefix = localStorage["extendedRenamePrexix"]
             //     const digits = localStorage["extendedRenameDigits"]
