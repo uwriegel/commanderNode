@@ -8,13 +8,17 @@
         <!-- <folder-test></folder-test> -->
         <!-- <splitter-grid-test></splitter-grid-test> -->
         <!-- <viewer-test></viewer-test> -->
-        <commander></commander>
+        <dialog-test :class="{dialogOpen: dialogOpen}"></dialog-test>
+        <!-- <commander></commander> -->
+        <!-- <main-dialog @state-changed=onDialogStateChanged></main-dialog> -->
+        <main-dialog @state-changed=onDialogStateChanged></main-dialog>
     </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import Commander from './components/Commander.vue'
+import MainDialog from './components/controls/MainDialog.vue'
 const electron = (window as any).require('electron')
 
 // Tests
@@ -26,10 +30,12 @@ const electron = (window as any).require('electron')
 // import FolderTest from './components/test/FolderTest.vue'
 // import SplitterGridTest from './components/test/SplitterGridTest.vue'
 // import ViewerTest from './components/test/ViewerTest.vue'
+import DialogTest from './components/test/DialogTest.vue'
 
 export default Vue.extend({
     name: 'app',
     components: {
+        MainDialog,
         Commander,
         // Tests:
         // ColumnTest,
@@ -39,6 +45,7 @@ export default Vue.extend({
         // FolderTest,
         // SplitterGridTest,
         // ViewerTest
+        DialogTest
     },
     mounted: function () {
         electron.ipcRenderer.on("SHOWHIDDEN", (event: any , data: boolean)=> {
@@ -47,6 +54,14 @@ export default Vue.extend({
         electron.ipcRenderer.on("PREVIEW", (event: any , data: boolean)=> {
             this.$store.commit('setShowViewer', this.$store.state.showViewer = data)
         })
+    },
+    data() {
+        return {
+            dialogOpen: false
+        }
+    },
+    methods: {
+        onDialogStateChanged(isShowing: boolean) { this.dialogOpen = isShowing }
     }
 })
 </script>
@@ -69,5 +84,8 @@ body {
     display: flex;
     flex-direction: column;
     /* border-top: var(--vue-electron-titlebar-top-height) solid transparent; */
+}
+.dialogOpen {
+    filter: blur(1px);
 }
 </style>

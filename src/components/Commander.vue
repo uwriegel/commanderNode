@@ -1,6 +1,6 @@
 <template>
     <div class="commander" @keydown=onKeyDown>
-        <splitter-grid class="content" :class="{dialogOpen: dialogOpen}"
+        <splitter-grid class="content"
             :isVertical=true :isSecondInvisible="!showViewer" @splitter-position-changed="viewerHeightChanged">
             <template v-slot:first>
                 <splitter-grid>
@@ -27,7 +27,6 @@
             <span>/</span>
             <span>{{ model.itemCount }}</span>    
         </div>
-        <main-dialog ref="dialog" @state-changed=onDialogStateChanged></main-dialog>
     </div>
 </template>
 
@@ -143,7 +142,6 @@ export default Vue.extend({
         onRightItemCountChanged(count: number) {
             this.modelRight.itemCount = count
         },
-        onDialogStateChanged(isShowing: boolean) { this.dialogOpen = isShowing },
         async createFolder() {
              if (this.model.processor.canCreateFolder()) {
                 const proposalName = 
@@ -323,9 +321,6 @@ export default Vue.extend({
 .content {
     transition: .3s filter;
     will-change: filter;
-}
-.content.dialogOpen {
-    filter: blur(2px);
 }
 .folder {
     flex-grow: 1;

@@ -1,10 +1,10 @@
 <template>
-    <div class=dialogroot :class="{ closed: dialogClosed }">
+    <div class=dialogroot :class="{ closed: model.dialogClosed }">
         <transition name="fade">
-            <div class=fader v-if="isShowing"></div>
+            <div class=fader v-if="model.isShowing"></div>
         </transition>                        
         <transition :name="transitionName" v-on:after-leave="afterLeave">
-            <div class="dialogContainer" v-if="isShowing">
+            <div class="dialogContainer" v-if="model.isShowing">
                 <div class="dialog" :class="{fullscreen: fullscreen}" @keydown="onKeydown">
                     <p v-if="text">{{text}}</p>
                     <simple-dialog ref="simpleDialog" v-if="simpleDialog" :data="simpleDialog"></simple-dialog>
@@ -44,11 +44,11 @@ export enum DialogResult {
 }
 
 export interface Configuration {
-    rightFolder: boolean
-    leftFolder: boolean
-    ok: boolean
-    no: boolean
-    yes: boolean
+    rightFolder?: boolean
+    leftFolder?: boolean
+    ok?: boolean
+    no?: boolean
+    yes?: boolean
     cancel: boolean
     defButton: string
     simpleDialog?: object
@@ -68,12 +68,37 @@ export interface Result {
     inputText?: string
 }
 
+interface Model {
+    isShowing: boolean
+    dialogClosed: boolean
+    configuration: Configuration | null
+    resolve: ((res: Result)=>void) | undefined
+    reject: ((res: any)=>void) | undefined
+}
+
+const model: Model = {
+    isShowing: false,
+    dialogClosed: true,
+    configuration: null as Configuration | null,
+    resolve: undefined as ((res: Result)=>void) | undefined,
+    reject: undefined as ((res: any)=>void) | undefined
+}
+
+export function showDialog(configuration: Configuration ) {
+    return new Promise<Result>((res, rej) => {
+        model.isShowing = true
+        model.dialogClosed = false
+        model.resolve = res
+        model.reject = rej
+        model.configuration = configuration
+    })
+}
+
 export default Vue.extend({
     data() {
         return {
+            model,
             transitionName: "default",
-            isShowing: false,
-            dialogClosed: true,
             ok: false,
             yes: false,
             no: false,
@@ -90,9 +115,35 @@ export default Vue.extend({
             content: undefined as Content|undefined,
             focusables: [] as FocusableElement[],
             transitionNames: [] as string[],
-            resolve: undefined as ((res: Result)=>void) | undefined,
-            reject: undefined as ((res: any)=>void) | undefined,
             result: DialogResult.Cancel
+        }
+    },
+    watch: {
+        'model.configuration': {
+            immediate: true,
+            handler (newVal: Configuration, oldVal: Configuration) {
+                if (newVal) {
+                    this.transitionNames = 
+                        newVal.rightFolder 
+                            ? [ "slide-left", "slide-right" ] 
+                            : (newVal.leftFolder 
+                            ? [ "slide-right", "slide-left" ]
+                            : [ "default", "default" ] )
+                    this.transitionName = this.transitionNames[0]
+                    this.$emit("state-changed", true)
+                    this.ok = newVal.ok || false
+                    this.no = newVal.no || false
+                    this.defButton = newVal.defButton
+                    this.yes = newVal.yes || false
+                    this.cancel = newVal.cancel
+                    //this.simpleDialog = newVal.configuration.simpleDialog
+                    //this.conflictItems = config.conflictItems
+                    //this.extendedRename = config.extendedRename
+                    this.text = newVal.text
+                    //this.fullscreen = config.conflictItems
+                    Vue.nextTick(() => this.mounted())
+                }
+            }
         }
     },
     computed: {
@@ -115,33 +166,6 @@ export default Vue.extend({
         // ExtendedRename
     },
     methods: {
-        show(config: Configuration) {
-            this.transitionNames = 
-                config.rightFolder 
-                    ? [ "slide-left", "slide-right" ] 
-                    : (config.leftFolder 
-                    ? [ "slide-right", "slide-left" ]
-                    : [ "default", "default" ] )
-            this.transitionName = this.transitionNames[0]
-            this.$emit("state-changed", true)
-            return new Promise<Result>((res, rej) => {
-                this.ok = config.ok
-                this.no = config.no
-                this.defButton = config.defButton
-                this.yes = config.yes
-                this.cancel = config.cancel
-                //this.simpleDialog = config.simpleDialog
-                //this.conflictItems = config.conflictItems
-                //this.extendedRename = config.extendedRename
-                this.resolve = res
-                this.text = config.text
-                this.reject = rej
-                this.isShowing = true
-                this.dialogClosed = false
-                //this.fullscreen = config.conflictItems
-                Vue.nextTick(() => this.mounted())
-            })
-        },
         onFocus() {
             this.isButtonFocused = true
         },
@@ -240,11 +264,11 @@ export default Vue.extend({
                 this.transitionName = this.transitionNames[1]
             //this.inputText = this.$refs.simpleDialog ? this.$refs.simpleDialog.getInputText() : ""
             this.$emit("state-changed", false)
-            Vue.nextTick(() => this.isShowing = false)
+            Vue.nextTick(() => this.model.isShowing = false)
         },
         afterLeave() {
-            this.dialogClosed = true
-            Vue.nextTick(() => this.resolve ? this.resolve({
+            this.model.dialogClosed = true
+            Vue.nextTick(() => this.model.resolve ? this.model.resolve({
                 result: this.result,
                 inputText: this.inputText
             }): {})
