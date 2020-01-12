@@ -109,7 +109,8 @@ export function getRootProcessor(processor: Processor): Processor {
         canExtendedRename,
         canCopyItems,
         canMoveItems,        
-        canInsertItems
+        canInsertItems,
+        getCreateFolderText : () => ""
     }
     return thisProcessor
 }

@@ -230,9 +230,9 @@ export function getDirectoryProcessor(processor: Processor, path: string) {
     //     }
     // }
 
-    // function getCreateFolderText() {
-    //     return "Neuen Ordner anlegen"
-    // }
+    function getCreateFolderText() {
+        return "Neuen Ordner anlegen"
+    }
 
     // async function createFolder(folderName) {
     //     await sendToMain("createDirectory", privates.path + '\\' + folderName)
@@ -272,7 +272,7 @@ export function getDirectoryProcessor(processor: Processor, path: string) {
         canRename,
         canExtendedRename,
         canInsertItems,
-        // getCreateFolderText,
+        getCreateFolderText,
         // deleteItems,
         // createFolder,
         // renameItem,

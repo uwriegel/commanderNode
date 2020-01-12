@@ -95,7 +95,8 @@ export function getNetworkShareProcessor(processor: Processor, path: string): Pr
         getItemWithPath,
         onAction,
         canCreateFolder,
-        canDelete
+        canDelete,
+        getCreateFolderText : () => ""
     }
     return thisProcessor
 }

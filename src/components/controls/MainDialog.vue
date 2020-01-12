@@ -43,6 +43,11 @@ export enum DialogResult {
     No
 }
 
+export interface SimpleDialog {
+    input: boolean 
+    inputText: string
+}
+
 export interface Configuration {
     rightFolder?: boolean
     leftFolder?: boolean
@@ -51,7 +56,7 @@ export interface Configuration {
     yes?: boolean
     cancel: boolean
     defButton: string
-    simpleDialog?: object
+    simpleDialog?: SimpleDialog
     text: string
 }
 
@@ -61,6 +66,9 @@ export interface FocusableElement {
 
 export interface Content {
     focusable: FocusableElement
+    getFocusables: ()=>FocusableElement[]
+    getFocusIndex(buttonCount: number): number 
+    getDefaultButton(defBtn: string): string 
 }
 
 export interface Result {
@@ -105,7 +113,7 @@ export default Vue.extend({
             cancel: false, 
             defButton: "",
             text: "",
-            simpleDialog: null,
+            simpleDialog: null as SimpleDialog | null,
             conflictItems: null,
             extendedRename: null,
             isButtonFocused: false,
@@ -136,7 +144,8 @@ export default Vue.extend({
                     this.defButton = newVal.defButton
                     this.yes = newVal.yes || false
                     this.cancel = newVal.cancel
-                    //this.simpleDialog = newVal.configuration.simpleDialog
+                    if (newVal.simpleDialog)
+                        this.simpleDialog = newVal.simpleDialog
                     //this.conflictItems = config.conflictItems
                     //this.extendedRename = config.extendedRename
                     this.text = newVal.text
@@ -161,7 +170,7 @@ export default Vue.extend({
         } 
     },
     components: {
-        //SimpleDialog,
+        SimpleDialog,
         // ConflictItems,
         // ExtendedRename
     },
@@ -174,7 +183,7 @@ export default Vue.extend({
         },
         mounted() {
             this.focusables = []
-            //this.content = this.$refs.simpleDialog as Element || this.$refs.conflictsDialog || this.$refs.extendedRename
+            this.content = this.$refs.simpleDialog as Content //  || this.$refs.conflictsDialog || this.$refs.extendedRename
             if (this.$refs.btn1)
                 this.focusables.push(this.$refs.btn1 as any as FocusableElement)
             if (this.$refs.btn2)
@@ -184,10 +193,10 @@ export default Vue.extend({
             if (this.$refs.btn4)
                 this.focusables.push(this.$refs.btn4 as any as FocusableElement)
             const buttonCount = this.focusables.length
-            // if (this.content) 
-            //     this.content.getFocusables().forEach(n => this.focusables.push(n))
-            //this.focusIndex = this.content ? this.content.getFocusIndex(buttonCount) : 0
-            // this.defButton = this.content ? this.content.getDefaultButton(this.defButton) : this.defButton
+            if (this.content) 
+                this.content.getFocusables().forEach(n => this.focusables.push(n))
+            this.focusIndex = this.content ? this.content.getFocusIndex(buttonCount) : 0
+            this.defButton = this.content ? this.content.getDefaultButton(this.defButton) : this.defButton
             this.focusables[this.focusIndex].focus()
         },
         onKeydown(evt: KeyboardEvent) {
@@ -262,7 +271,7 @@ export default Vue.extend({
         onClose() {
             if (this.result == 0)
                 this.transitionName = this.transitionNames[1]
-            //this.inputText = this.$refs.simpleDialog ? this.$refs.simpleDialog.getInputText() : ""
+            this.inputText = this.$refs.simpleDialog ? this.$refs.simpleDialog.getInputText() : ""
             this.$emit("state-changed", false)
             Vue.nextTick(() => this.model.isShowing = false)
         },

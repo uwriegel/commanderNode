@@ -19,9 +19,10 @@ export default Vue.extend({
                 cancel : true,
                 defButton: "ok",
                 text: "Der Text des Dialoges", 
-                //simpleDialog: { 
-            //     //         input: true, 
-            //     //         inputText: proposalName
+                simpleDialog: { 
+                    input: true, 
+                    inputText: "Der Vorschlag"
+                }
             })
             console.log("Dialog result", result)
         }

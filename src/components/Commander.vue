@@ -35,7 +35,7 @@ import Vue, { PropType } from 'vue'
 import SplitterGrid from './controls/SplitterGrid.vue'
 import Folder, { SelectedItem } from './controls/Folder.vue'
 import Viewer from './controls/Viewer.vue'
-import MainDialog from './controls/MainDialog.vue'
+import MainDialog, { showDialog } from './controls/MainDialog.vue'
 import { mapState } from 'vuex'
 import { createProcessor, FolderItem, Processor, getDefaultProcessor } from '../processors/processor'
 const electron = window.require('electron')
@@ -148,24 +148,22 @@ export default Vue.extend({
                     this.model.selectedItem.item && this.model.selectedItem.item.isDirectory && this.model.selectedItem.item.name != ".."
                     ? this.model.selectedItem.item.name 
                     : ""
-                console.log("CreateFolder", proposalName)
-                 
-
-            //     // const result = await this.$refs.dialog.show({
-            //     //     ok: true, 
-            //     //     cancel : true,
-            //     //     defButton: "ok",
-            //     //     text: folder.getCreateFolderText(), 
-            //     //     simpleDialog: { 
-            //     //         input: true, 
-            //     //         inputText: proposalName
-            //     //     }
-            //     // })
-            //     // folder.focus()
-            //     // if (result.result == 1) {
+                const result = await showDialog({
+                    ok: true, 
+                    cancel : true,
+                    defButton: "ok",
+                    text: this.model.processor.getCreateFolderText(), 
+                    simpleDialog: { 
+                        input: true, 
+                        inputText: proposalName
+                    }
+                })
+                this.model.folderEventBus.$emit('focus')
+                if (result.result == 1) {
+                    console.log("Create Folder", result.inputText)
             //     //     await folder.createFolder(result.inputText)
-            //     //     folder.refresh()                    
-            //     // }
+                    this.model.folderEventBus.$emit('refresh')
+                }
             }
         },
         openSameFolder() {

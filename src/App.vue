@@ -8,9 +8,8 @@
         <!-- <folder-test></folder-test> -->
         <!-- <splitter-grid-test></splitter-grid-test> -->
         <!-- <viewer-test></viewer-test> -->
-        <dialog-test :class="{dialogOpen: dialogOpen}"></dialog-test>
-        <!-- <commander></commander> -->
-        <!-- <main-dialog @state-changed=onDialogStateChanged></main-dialog> -->
+        <!-- <dialog-test :class="{dialogOpen: dialogOpen}"></dialog-test> -->
+        <commander></commander>
         <main-dialog @state-changed=onDialogStateChanged></main-dialog>
     </div>
 </template>

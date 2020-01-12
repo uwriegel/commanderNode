@@ -49,6 +49,7 @@ export interface Processor {
     sort(items: FolderItem[], index: number, descending: boolean, showHidden?: boolean): FolderItem[],
     getItemWithPath(path: string, item: FolderItem): string | undefined
     canCreateFolder(): boolean 
+    getCreateFolderText(): string
 }
 
 export interface OnActionResult {
@@ -85,7 +86,8 @@ export function getDefaultProcessor(): Processor {
         onAction: (items: FolderItem[]) => { return { done: false }},
         sort: (items: FolderItem[], index: number, descending: boolean, showHidden?: boolean) => [],
         getItemWithPath: (path: string, item: FolderItem) => undefined,
-        canCreateFolder: () => false 
+        canCreateFolder: () => false, 
+        getCreateFolderText : () => ""
     }
 }
 

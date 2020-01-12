@@ -526,7 +526,6 @@ export default Vue.extend({
         // deleteFiles(itemsToDelete) {
         //     return this.processor.deleteFiles(itemsToDelete)
         // },
-        // getCreateFolderText() { return this.processor.getCreateFolderText() },
         // createFolder(folderName) {
         //     return this.processor.createFolder(folderName)
         // },
