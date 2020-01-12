@@ -49,8 +49,6 @@ interface Model {
     itemCount: number
 }
 
-// TODO:             || (item && item.name != "..")            
-
 // TODO: Rename with copy
 // TODO: Status displays alternativly # selected items
 export default Vue.extend({
@@ -60,14 +58,14 @@ export default Vue.extend({
             modelLeft: { 
                 folderEventBus: new Vue(),
                 processor: getDefaultProcessor(),   
-                selectedItem: { name: "", path: undefined } as SelectedItem,
+                selectedItem: { item: undefined, path: undefined } as SelectedItem,
                 selectedItems: [] as FolderItem[],
                 itemCount: 0
             },
             modelRight: { 
                 folderEventBus: new Vue(),
                 processor: getDefaultProcessor(),   
-                selectedItem: { name: "", path: undefined } as SelectedItem,
+                selectedItem: { item: undefined, path: undefined } as SelectedItem,
                 selectedItems: [] as FolderItem[],
                 itemCount: 0
             },
@@ -90,6 +88,7 @@ export default Vue.extend({
     mounted() {
         this.modelLeft.folderEventBus.$emit('focus')
         electron.ipcRenderer.on("REFRESH", (event: any , data: any) => this.refresh())
+        electron.ipcRenderer.on("ADAPT_PATH", (event: any , data: any) => this.openSameFolder())
         electron.ipcRenderer.on("CREATE_FOLDER", async (event: any , data: any) => this.createFolder())
         electron.ipcRenderer.on("DELETE_FILES", async (event: any , data: any) => this.deleteItems())
     },
@@ -147,12 +146,12 @@ export default Vue.extend({
         onDialogStateChanged(isShowing: boolean) { this.dialogOpen = isShowing },
         async createFolder() {
              if (this.model.processor.canCreateFolder()) {
-                 console.log("CreateFolder")
-            //     const selectedItems = folder.getSelectedItems()
-            //     const proposalName = 
-            //         selectedItems.length == 1 && selectedItems[0].isDirectory 
-            //         ? selectedItems[0].name 
-            //         : ""
+                const proposalName = 
+                    this.model.selectedItem.item && this.model.selectedItem.item.isDirectory && this.model.selectedItem.item.name != ".."
+                    ? this.model.selectedItem.item.name 
+                    : ""
+                console.log("CreateFolder", proposalName)
+                 
 
             //     // const result = await this.$refs.dialog.show({
             //     //     ok: true, 
@@ -172,8 +171,7 @@ export default Vue.extend({
             }
         },
         openSameFolder() {
-            // TODO:
-            //this.getInactiveFolderEventBus().changeFolder(this.getActiveFolder().path)
+            this.getInactiveModel().folderEventBus.$emit("change-folder", this.model.processor.path)
         },
         async rename() { 
             // const folder = this.getActiveFolder()
@@ -234,9 +232,10 @@ export default Vue.extend({
             // await this.doCopyItems(sourceProcessor, sourceFolder, targetFolder, selectedItems, move)
         },
         async deleteItems() {
-            console.log("delete")
-
-
+            const items = this.getItemsToProcess()
+                if (items.length > 0) {
+                    console.log("delete")
+                }
             // TODO: DeleteItems
         //     if (folder.canDeleteItems()) 
         //         await folder.deleteItems(this.$refs.dialog)
@@ -303,6 +302,13 @@ export default Vue.extend({
         //         // }
         //     }
         // }
+        getItemsToProcess() {
+            return this.model.selectedItems.length > 0 
+                ? this.model.selectedItems
+                : this.model.selectedItem.item  && this.model.selectedItem.item.name != ".."            
+                    ? [ this.model.selectedItem.item ]
+                    : []
+        }
     }
 })
 </script>

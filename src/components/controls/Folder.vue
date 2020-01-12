@@ -147,7 +147,7 @@ import { FileItem } from '../../extensionFs'
 // import { renameFiles } from "../../extendedRename"
 
 export interface SelectedItem {
-    name: string | undefined
+    item: FolderItem | undefined
     path: string | undefined
 }
 
@@ -203,6 +203,7 @@ export default Vue.extend({
     mounted() {
         this.eventBus.$on('focus', this.focus)
         this.eventBus.$on('refresh', this.refresh)
+        this.eventBus.$on('change-folder', (path: string) => this.changePath(path, path, true))
         this.eventBus.$on('resize', () => this.tableEventBus.$emit("resize"))        
         const shiftTabs$ = (this as any).keyDown$.pipe(filter((n: any) => n.event.which == 9 && n.event.shiftKey))
         const inputChars$ = (this as any).keyDown$.pipe(filter((n: any) => !n.event.altKey && !n.event.ctrlKey && !n.event.shiftKey && n.event.key.length > 0 && n.event.key.length < 2))
@@ -233,9 +234,6 @@ export default Vue.extend({
         onfocusIn() { this.$emit("focus-in") },
         refresh() {
             this.changePath(this.path, this.path, false)
-        },
-        changeFolder(path: string) { 
-            this.changePath(path, path, true)
         },
         onBacktrack(evt: KeyboardEvent) {
             if (!this.restrictValue) 
@@ -408,7 +406,7 @@ export default Vue.extend({
                 ? this.processor.getItemWithPath(this.path, item) 
                 : ""
             const selectedItem: SelectedItem = {
-                name: item ? item.name : "",
+                item,
                 path
             }
             this.$emit('selection-changed', selectedItem) 

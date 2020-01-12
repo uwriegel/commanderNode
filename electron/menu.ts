@@ -3,6 +3,7 @@ import { Menu, BrowserWindow } from "electron"
 const DELETE_FILES = "DELETE_FILES"
 const CREATE_FOLDER = "CREATE_FOLDER"
 const REFRESH = "REFRESH"
+const ADAPT_PATH = "ADAPT_PATH"
 const PREVIEW = "PREVIEW"
 const SHOWHIDDEN = "SHOWHIDDEN"
 
@@ -77,7 +78,7 @@ export function initializeMenu(win: BrowserWindow) {
             {
                 label: '&Gleichen Ordner öffnen',
                 accelerator: 'F9',
-                //click: evt => win.webContents.send(ADAPT_PATH)
+                click: evt => win.webContents.send(ADAPT_PATH)
             }
         ]},
         {
