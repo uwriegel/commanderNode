@@ -397,12 +397,18 @@ export default Vue.extend({
                 this.changePath(result.path, result.lastPath)
             }
         },
-        onSelectionChanged(newIndex: number) { 
+        onSelectionChanged(newIndex: number, isAlwaysProcessable?: boolean) { 
             this.selectedIndex = newIndex
-            this.$emit('selection-changed', this.getSelectedItem(newIndex)) 
+            const item = this.items[this.selectedIndex]
+            const itemPath = this.path
+                ? this.processor.getItemWithPath(this.path, item) 
+                : ""
+            this.$emit('selection-changed', itemPath, isAlwaysProcessable || (item && item.name != "..")) 
         },
         onSelectedItemsChanged() {
-            this.$emit('selected-items-changed', this.getSelectedItems())             
+            const items = this.getSelectedItems()
+            this.$emit('selected-items-changed', items)             
+            this.onSelectionChanged(this.selectedIndex, items.length > 0)
 
             // if (this.getExtendedRename()) {
             //     const prefix = localStorage["extendedRenamePrexix"]
@@ -419,13 +425,9 @@ export default Vue.extend({
         //         })
         //     }
         },
-        getSelectedItem(selectedIndex: number) { 
-            return this.path
-                ? this.processor.getItemWithPath(this.path, this.items[selectedIndex]) 
-                : ""
-        },
         getSelectedItems() {
-            const items = this.items.filter(n => n.isSelected)
+            const itemList = this.originalItems || this.items
+            const items = itemList.filter(n => n.isSelected)
             return items.length > 0 
             ? items 
             : (this.items[this.selectedIndex].name != ".." 

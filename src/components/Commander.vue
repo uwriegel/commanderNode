@@ -47,6 +47,7 @@ interface Model {
     selectedItem: string
     selectedItems: FolderItem[]
     itemCount: number
+    isProcessable: boolean
 }
 
 // TODO: Rename with copy
@@ -60,14 +61,16 @@ export default Vue.extend({
                 processor: getDefaultProcessor(),   
                 selectedItem: "",
                 selectedItems: [] as FolderItem[],
-                itemCount: 0
+                itemCount: 0,
+                isProcessable: false
             },
             modelRight: { 
                 folderEventBus: new Vue(),
                 processor: getDefaultProcessor(),   
                 selectedItem: "",
                 selectedItems: [] as FolderItem[],
-                itemCount: 0
+                itemCount: 0,
+                isProcessable: false
             },
             dialogOpen: false,
         }
@@ -88,6 +91,7 @@ export default Vue.extend({
     mounted() {
         this.modelLeft.folderEventBus.$emit('focus')
         electron.ipcRenderer.on("REFRESH", (event: any , data: any) => this.refresh())
+        electron.ipcRenderer.on("CREATE_FOLDER", async (event: any , data: any) => this.createFolder())
         electron.ipcRenderer.on("DELETE_FILES", async (event: any , data: any) => this.deleteItems())
     },
     methods: {
@@ -123,11 +127,13 @@ export default Vue.extend({
         onRightProcessor(processor: Processor) {
             this.modelRight.processor = processor
         },
-        onLeftSelectionChanged(newItem: string) {
+        onLeftSelectionChanged(newItem: string, isProcessable: boolean) {
             this.modelLeft.selectedItem = newItem
+            this.modelRight.isProcessable = isProcessable
         },
-        onRightSelectionChanged(newItem: string) {
+        onRightSelectionChanged(newItem: string, isProcessable: boolean) {
             this.modelRight.selectedItem = newItem
+            this.modelRight.isProcessable = isProcessable
         },
         onLeftSelectedItemsChanged(selectedItems: FolderItem[]) { 
             this.modelLeft.selectedItems = selectedItems 
@@ -136,17 +142,15 @@ export default Vue.extend({
             this.modelRight.selectedItems = selectedItems 
         },
         onLeftItemCountChanged(count: number) {
-            console.log("Count", count)
             this.modelLeft.itemCount = count
         },
         onRightItemCountChanged(count: number) {
-            console.log("Count", count)
             this.modelRight.itemCount = count
         },
         onDialogStateChanged(isShowing: boolean) { this.dialogOpen = isShowing },
         async createFolder() {
-            
-            // if (folder.canCreateFolder()) {
+             if (this.model.processor.canCreateFolder()) {
+                 console.log("CreateFolder")
             //     const selectedItems = folder.getSelectedItems()
             //     const proposalName = 
             //         selectedItems.length == 1 && selectedItems[0].isDirectory 
@@ -168,7 +172,7 @@ export default Vue.extend({
             //     //     await folder.createFolder(result.inputText)
             //     //     folder.refresh()                    
             //     // }
-            // }
+            }
         },
         openSameFolder() {
             // TODO:
@@ -240,17 +244,12 @@ export default Vue.extend({
         //     if (folder.canDeleteItems()) 
         //         await folder.deleteItems(this.$refs.dialog)
         },
-        // getOtherFolder(folder) {
-        //     return folder == this.$refs.leftFolder 
-        //         ? this.$refs.rightFolder 
-        //         : this.$refs.leftFolder
-        // },
-        // leftDropFiles(param) {
+        leftDropFiles(param: any) {
         //     this.dropFiles(this.$refs.leftFolder, param)
-        // },
-        // rightDropFiles(param) {
+        },
+        rightDropFiles(param: any) {
         //     this.dropFiles(this.$refs.rightFolder, param)
-        // },
+        },
         // dropFiles(targetFolder, param) {
         //     this.doCopyItems(createProcessor(null, param.sourcePath), null, targetFolder, param.files, param.dropEffect == "move")
         // },        

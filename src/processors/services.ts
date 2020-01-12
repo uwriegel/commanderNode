@@ -127,7 +127,8 @@ export function getServicesProcessor(processor: Processor): Processor {
         refresh,
         onAction,
         canDelete,
-        deleteItems
+        deleteItems,
+        canCreateFolder: () => false 
     }
     return thisProcessor
 }

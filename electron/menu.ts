@@ -1,6 +1,7 @@
 import { Menu, BrowserWindow } from "electron"
 
 const DELETE_FILES = "DELETE_FILES"
+const CREATE_FOLDER = "CREATE_FOLDER"
 const REFRESH = "REFRESH"
 const PREVIEW = "PREVIEW"
 const SHOWHIDDEN = "SHOWHIDDEN"
@@ -43,7 +44,7 @@ export function initializeMenu(win: BrowserWindow) {
             {
                 label: '&Ordner anlegen',
                 accelerator: "F7",
-                //click: evt => win.webContents.send(CREATE_FOLDER)
+                click: evt => win.webContents.send(CREATE_FOLDER)
             },
             {
                 type: 'separator'
