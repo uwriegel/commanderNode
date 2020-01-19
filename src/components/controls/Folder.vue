@@ -15,7 +15,7 @@
                         {{ row.item.name }}
                     </td>  
                     <td v-if='row.item.name != ".."' class="icon-name">
-                        <folder-icon class=icon></folder-icon>
+                        <folder-icon class="icon"></folder-icon>
                         {{ row.item.name }}
                     </td>  
                     <td></td>
@@ -622,7 +622,6 @@ input {
 }
 .icon {
     margin-right: 1px;
-    fill: var(--icon-color);
     vertical-align: bottom;
 }
 .size {

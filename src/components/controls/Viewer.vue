@@ -2,7 +2,8 @@
     <div class="viewer">
         <img :src="'vue://' + itemPath" v-if="isImage(itemPath)">
         <!-- <iframe :src="'vue://' + itemPath" frameBorder="0" v-if="isPdf(itemPath)"></iframe> -->
-        <video :src="'vue://' + itemPath" controls autoplay v-if="isVideo(itemPath)"></video>
+        <!-- <video :src="'vue://' + itemPath" controls autoplay v-if="isVideo(itemPath)"></video> -->
+        <video src="http://localhost:9865/test/allein.mp4" controls autoplay></video>
     </div>
 </template>
 

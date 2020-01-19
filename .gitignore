@@ -21,3 +21,5 @@ yarn-error.log*
 renderer
 
 electron/dist
+electron/test/8 Mile.mp4
+electron/test/allein.mp4

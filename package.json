@@ -38,9 +38,11 @@
     },
     "dependencies": {
         "@types/electron-settings": "^3.1.1",
+        "@types/express": "^4.17.2",
         "core-js": "^3.4.5",
         "cross-env": "^5.2.0",
         "electron-settings": "^3.2.0",
+        "express": "^4.17.1",
         "extension-fs": "^6.1.2",
         "gtk-utils": "^2.0.2",
         "rxjs": "^6.5.2",

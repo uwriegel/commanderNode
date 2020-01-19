@@ -7,11 +7,15 @@ import * as ipc from './ipc'
 import { get as getPlatform} from './platforms/platform'
 import { Themes } from './themes/themes'
 import { initializeMenu } from './menu'
+import { fork } from 'child_process'
+
 import { getIconPath } from './linux'
 
 protocol.registerSchemesAsPrivileged([{
     scheme: 'vue', privileges: {standard: true, secure: true }
 }])
+
+const server = fork(__dirname + '/server.js')
 
 const createWindow = function() {    
     // if (process.env.NODE_ENV == 'DEV')

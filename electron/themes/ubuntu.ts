@@ -26,7 +26,8 @@ export function getCss() {
 
 "--grip-color: #eee;" +
 
-"--icon-color: #999;" +
+"--icon-color: black;" +
+"--icon-selected-color: white;" +
 
 "--dialog-background-color: white;" +
 "--dialog-fader-color: rgba(0, 0, 0, 0.50);" +
