@@ -28,7 +28,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
      inkscape:cx="194.70998"
-     inkscape:cy="100"
+     inkscape:cy="189.08439"
      inkscape:document-units="px"
      inkscape:current-layer="layer3"
      showgrid="true"
@@ -81,8 +81,8 @@
        id="path5102"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccccccc" />
-   </g>
-   </svg>
+  </g>
+</svg>
 </template>
 
 <script>
