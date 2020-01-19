@@ -1,6 +1,8 @@
 <template>
     <div class="viewer">
         <img :src="'vue://' + itemPath" v-if="isImage(itemPath)">
+        <!-- <iframe :src="'vue://' + itemPath" frameBorder="0" v-if="isPdf(itemPath)"></iframe> -->
+        <video :src="'vue://' + itemPath" controls autoplay v-if="isVideo(itemPath)"></video>
     </div>
 </template>
 
@@ -31,6 +33,12 @@ export default Vue.extend({
     methods: {
         isImage(value: string) {
             return value.toLowerCase().endsWith('jpg')
+        },
+        isVideo(value: string) {
+            return value.toLowerCase().endsWith('mp4') || value.toLowerCase().endsWith('mpg')
+        },
+        isPdf(value: string) {
+            return value.toLowerCase().endsWith('pdf')
         }
     }
 })
