@@ -30,7 +30,12 @@ export class LinuxPlatform implements Platform {
     async getIcon(file: string) {
         let iconPath = await getIconPath(file)
         if (iconPath == 'None')
-            iconPath = "./electron/fault.png"
+            return {
+                buffer: new Buffer(""),
+                mime: 'text/plain'
+            }
+            
+            //iconPath = "./electron/fault.svg"
         const buffer = await fs.readFile(iconPath)
         return {
             buffer,

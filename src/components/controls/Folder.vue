@@ -26,10 +26,7 @@
                 <tr v-if='processor.name == "directory" && !row.item.isDirectory ' 
                         draggable="true" @dragstart='onDragStart' @drag='onDrag' @dragend='onDragEnd'
                         :class="{ 'isCurrent': row.item.index == selectedIndex, 'isHidden': row.item.isHidden, 'isSelected': row.item.isSelected }">
-                    <td class="icon-name">
-                        <img :src='row.item.name | iconUrl(processor.path)' alt="">
-                        {{ row.item.name | nameOnly }}
-                    </td>
+                    <file-icon :itemUrl='row.item.name | iconUrl(processor.path)' :itemName='row.item.name' />
                     <td>{{ row.item.name | extension }}</td>
                     <td :class="{ 'isExif': row.item.isExif }">{{ row.item.time | dateTime }}</td>
                     <td class="size">{{ row.item.size | size }}</td>
@@ -139,6 +136,7 @@ import DriveIcon from '../../icons/DriveIcon.vue'
 import FolderIcon from '../../icons/FolderIcon.vue'
 import ServiceIcon from '../../icons/ServiceIcon.vue'
 import ShareIcon from '../../icons/ShareIcon.vue'
+import FileIcon from './FileIcon.vue'
 import { map, filter } from "rxjs/operators"
 import { mapState } from 'vuex'
 import { Column } from './Columns.vue'
@@ -158,6 +156,7 @@ export default Vue.extend({
         ParentIcon,
         DriveIcon,
         FolderIcon,
+        FileIcon,
         ServiceIcon,
         ShareIcon
     },
