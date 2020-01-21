@@ -1,6 +1,6 @@
 <template>
     <td class="icon-name"  >
-        <img :src='itemUrl' @error="error" v-if='defaultIcon==false'>
+        <img :src='itemUrl' @error="error" v-on:load="onload"  :class="{ hidden: defaultIcon==true }" >
         <file-icon v-if='defaultIcon==true'/>
         {{ itemName | nameOnly }}
     </td>
@@ -24,6 +24,9 @@ export default Vue.extend({
         itemName: String
     },
     methods: {
+        onload(e: any) {
+            this.defaultIcon = false
+        },
         error(e: any) {
             this.$nextTick(() => this.defaultIcon = true)
         }
@@ -32,6 +35,10 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.hidden {
+    opacity: 0.4;
+    width: 0px;
+}
 img,svg {
     vertical-align: bottom;
     height: 16px;
