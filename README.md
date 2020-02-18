@@ -5,6 +5,10 @@
 npm install
 ```
 
+## Linux setup:
+```
+sudo apt-get install libglib2.0-dev
+```
 ### Compiles and hot-reloads for development
 ```
 npm run dev
