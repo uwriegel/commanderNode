@@ -4,7 +4,7 @@
                 :class="{ 'scrollbar': items.length > itemsPerPage }">
             <columns :columns='columns' @onColumnHeight='onColumnHeight'
                 @on-columns-widths-changed='onColumnsWidthChanged' @on-column-click='onColumnClick'></columns>
-            <tbody>
+            <tbody ref="tbody">
                 <slot v-for="item in displayItems" :item="item"></slot>
             </tbody>
         </table>    
@@ -35,7 +35,6 @@ export default Vue.extend({
     props: {
         eventBus: { type: Object as PropType<Vue>, default: () => new Vue() },
         columns: Array as PropType<Column[]>,
-        itemHeight: Number,
         items: Array as PropType<TableViewItem[]>
     },
     data() {
@@ -44,6 +43,7 @@ export default Vue.extend({
             height: 0,
             itemsPerPage: 0,
             startIndex: 0,
+            itemHeight: 0,
             displayItems: [] as TableViewItem[],
             index: -1,
             columnHeight: undefined as number|undefined,
@@ -180,6 +180,14 @@ export default Vue.extend({
         window.removeEventListener("resize", this.onResize)
     },
     mounted() {
+        const observer = new MutationObserver((mutationsList, observer) => {
+            let tr = mutationsList[0].addedNodes[0] as HTMLTableRowElement
+            this.itemHeight = tr.clientHeight
+            observer.disconnect()
+            this.onResize()
+        });
+        observer.observe(this.$refs.tbody as HTMLElement, { attributes: true, childList: true, subtree: true })
+
         this.eventBus.$on('focus', this.focus)
         this.eventBus.$on('setCurrentIndex', this.setCurrentIndex)
         this.eventBus.$on('resize', this.onResize)

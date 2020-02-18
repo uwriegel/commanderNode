@@ -2,7 +2,7 @@
     <div tabindex="1" class="root" @focus=focus @focusin=onfocusIn 
             @dragenter='onDragEnter' @dragleave='onDragLeave' @dragover='onDragOver' @drop='onDrop'> 
             <input ref="input" v-selectall @keydown='onInputKeyDown' :value="path">
-        <table-view class='table' :eventBus="tableEventBus" :columns='tableViewColumns' :items='items' :itemHeight='18' 
+        <table-view class='table' :eventBus="tableEventBus" :columns='tableViewColumns' :items='items' 
                 :class="{isDragging: isDragging, isDragStarted: isDragStarted, isBacktrackEnd: isBacktrackEnd}"
                 @column-click='onSort' v-stream:keydown.native='keyDown$'
                 @columns-widths-changed='onColumnsWidthChanged' @action='onAction' @selection-changed=onSelectionChanged>

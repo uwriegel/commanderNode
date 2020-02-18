@@ -2,7 +2,7 @@
     <div class="root">
         <h1>Table View Test</h1>
         <div class="container">
-            <table-view :eventBus="tableEventBus" :columns='columns' :items='items' :itemHeight='16'
+            <table-view :eventBus="tableEventBus" :columns='columns' :items='items' 
                 @selection-changed="onSelectionChanged">
                 <template v-slot=row >
                     <tr :class="{ 'isCurrent': row.item.index == selectedIndex }">
